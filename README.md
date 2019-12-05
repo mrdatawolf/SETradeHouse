@@ -15,4 +15,7 @@ Foundation for a commodity based game
     4. Convert  https://docs.google.com/spreadsheets/d/1jdBDvfjAFwv2tfIrWEjWPZxNC_9pdszka0bCViDcyX0/edit?usp=sharing to SQL for the economy
 2. next goals
     1. roles
-    2. 
+    2. Ship to shore fighting
+    3. allow upgrades at ports
+    4. allow player made ports.
+    5. Factions
