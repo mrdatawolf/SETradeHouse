@@ -15,7 +15,7 @@ $ingots->read();
 $components = new components();
 $components->read();
 
-$servers = new components();
+$servers = new servers();
 $servers->read();
 
 $stations = new stations();
@@ -193,19 +193,95 @@ $tradeZones->read();
   </section>
   <section id="components">
     <h2><a href="#components">Components</a></h2>
-    <div class="tab-content">Components Panel</div>
+    <div class="tab-content">
+      <table>
+        <thead>
+        <tr>
+            <?php foreach($components->headers as $header) : ?>
+              <th><?=$header; ?></th>
+            <?php endforeach; ?>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach($components->rows as $data) : ?>
+          <tr>
+              <?php foreach($data as $row) : ?>
+                <td><?= $row; ?></td>
+              <?php endforeach; ?>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
   </section>
   <section id="servers">
     <h2><a href="#servers">Servers</a></h2>
-    <div class="tab-content">Server Panel</div>
+    <div class="tab-content">
+      <table>
+        <thead>
+        <tr>
+            <?php foreach($servers->headers as $header) : ?>
+              <th><?=$header; ?></th>
+            <?php endforeach; ?>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach($servers->rows as $data) : ?>
+          <tr>
+              <?php foreach($data as $row) : ?>
+                <td><?= $row; ?></td>
+              <?php endforeach; ?>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
   </section>
   <section id="stations">
     <h2><a href="#stations">Stations</a></h2>
-    <div class="tab-content">Stations Panel</div>
+    <div class="tab-content">
+      <table>
+        <thead>
+        <tr>
+            <?php foreach($stations->headers as $header) : ?>
+              <th><?=$header; ?></th>
+            <?php endforeach; ?>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach($stations->rows as $data) : ?>
+          <tr>
+              <?php foreach($data as $row) : ?>
+                <td><?= $row; ?></td>
+              <?php endforeach; ?>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
   </section>
   <section id="tradezones">
     <h2><a href="#tradezones">TradeZones</a></h2>
-    <div class="tab-content">TradeZones Panel</div>
+    <div class="tab-content">
+      <table>
+        <thead>
+        <tr>
+            <?php foreach($tradeZones->headers as $header) : ?>
+              <th><?=$header; ?></th>
+            <?php endforeach; ?>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach($tradeZones->rows as $data) : ?>
+          <tr>
+              <?php foreach($data as $row) : ?>
+                <td><?= $row; ?></td>
+              <?php endforeach; ?>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
   </section>
 </article>
 </body>
