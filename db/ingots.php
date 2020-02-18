@@ -1,4 +1,4 @@
-<?php
+<?php namespace Colonization\db;
 
 require_once('dbClass.php');
 

@@ -1,6 +1,8 @@
 <?php
 
 
+namespace Colonization\db;
+
 class dbClass
 {
     /**
@@ -9,15 +11,15 @@ class dbClass
     public $dbase;
     public $headers;
     public $rows;
-
-
-    public function initDB()
+    
+    public function __construct()
     {
-        $dsn = 'sqlite:/Users/patrickmoon/Projects/Colonization2/db/core.sqlite';
+        $dsn = 'sqlite:'.getcwd().'/db/app.sqlite';
+        
         $this->dbase = new PDO($dsn);
         $this->dbase->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
-
+    
     public function create($insertArray, $table) {
         $prepareColumns = "";
         $executeArray = [];

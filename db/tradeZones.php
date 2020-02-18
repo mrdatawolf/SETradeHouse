@@ -1,13 +1,12 @@
-<?php
+<?php namespace Colonization\db;
 
 require_once('dbClass.php');
 
-class ores extends dbClass
+class tradeZones extends dbClass
 {
 
     public function __construct()
     {
         $this->initDB();
     }
-
 }
