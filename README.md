@@ -1,4 +1,4 @@
-# Colonization2
+# Colonization
 Foundation for a commodity based game
 
 1. 1.0 goals
