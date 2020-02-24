@@ -1,7 +1,8 @@
 <?php
 
 
-namespace Colonization\db;
+namespace DB;
+
 
 class ores extends dbClass
 {

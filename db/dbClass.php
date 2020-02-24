@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Colonization\db;
+namespace DB;
 
 class dbClass
 {
