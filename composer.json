@@ -1,5 +1,13 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Colonization\\": "app/",
+            "DB\\": "db/",
+            "API\\": "api/"
+        }
+    },
     "require": {
-        "eftec/bladeone": "^3.34"
+        "eftec/bladeone": "^3.34",
+        "vue.js":
     }
 }
