@@ -1,7 +1,4 @@
-<?php
-
-
-namespace DB;
+<?php namespace Core;
 
 
 class magicNumbers extends dbClass

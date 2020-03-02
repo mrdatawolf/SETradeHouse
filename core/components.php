@@ -1,4 +1,4 @@
-<?php namespace DB;
+<?php namespace Core;
 
 require_once('dbClass.php');
 

@@ -1,8 +1,8 @@
-<?php namespace DB;
+<?php namespace Core;
 
 require_once('dbClass.php');
 
-class ingots extends dbClass
+class stations extends dbClass
 {
 
     public function __construct()
