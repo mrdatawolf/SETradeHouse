@@ -4,6 +4,6 @@
 class refinery
 {
 
-	public $baseGameRefinerySpeed = 1.30;
+	public $baseRefinerySpeed = 1.30;
 
 }

@@ -1,11 +1,11 @@
 <?php namespace Colonization;
 
-use DB\ores;
-use DB\ingots;
-use DB\components;
-use DB\servers;
-use DB\stations;
-use DB\tradeZones;
+use Core\ores;
+use Core\ingots;
+use Core\components;
+use Core\servers;
+use Core\stations;
+use Core\tradeZones;
 
 //include "vendor/eftec/bladeone/lib/BladeOne.php";
 //use eftec\bladeone;
