@@ -1,5 +1,7 @@
 <?php namespace DB;
 
+use \PDO;
+
 class dbClass
 {
     /**
@@ -8,13 +10,73 @@ class dbClass
     public $dbase;
     public $headers;
     public $rows;
+	public $clusterId;
+    public $clusterData;
+    public $magicData;
+    public $baseGameRefinerySpeed;
+    public $baseRefineryKilowattPerHourUsage;
+    public $costPerKilowattHour;
+    public $foundationalOreId;
+    public $foundationalIngotId;
+    public $foundationOreData;
+    public $foundationIngotData;
+    public $foundationOrePerIngot;
     
     public function __construct()
     {
+		$this->clusterId = 2;
         $dsn = 'sqlite:'.getcwd().'/db/app.sqlite';
         
         $this->dbase = new PDO($dsn);
         $this->dbase->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$this->gatherMagicData();
+        $this->gatherClusterData();
+        $this->gatherFoundationOre();
+        $this->gatherFoundationIngot();
+    }
+    
+    protected function gatherFromTable($table) {
+        $stmt = $this->dbase->prepare("SELECT * FROM " . $table);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    protected function find($table, $id) {
+        $stmt = $this->dbase->prepare("SELECT * FROM " . $table . " WHERE id=". $id);
+        $stmt->execute();
+        
+       return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    protected function findPivots($table, $where, $id) {
+        $stmt = $this->dbase->prepare("SELECT * FROM " . $table . " WHERE " . $where . "=". $id);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+	public function gatherMagicData() {
+        $this->magicData                        = $this->gatherFromTable('magic_numbers');
+        $this->baseRefineryKilowattPerHourUsage = $this->magicData['base_refinery_kwh'];
+        $this->costPerKilowattHour              = $this->magicData['cost_kw_hour'];
+    }
+
+    public function gatherClusterData() {
+        $this->clusterData          = $this->find('clusters', $this->clusterId);
+        $this->foundationalOreId    = $this->clusterData['economyData'];
+    }
+    
+    public function gatherFoundationOre() {
+        $this->foundationOreData = $this->find('ores',  $this->foundationalOreId);
+    }
+    
+    public function gatherFoundationIngot() {
+        $pivot = $this->findPivots('ingot_ores','ore_id', $this->foundationalOreId);
+        $this->foundationalIngotId      = $pivot['ingot_id'];
+        $this->foundationIngotData      = $this->find('ingots', $this->foundationalIngotId);
+        $this->foundationOrePerIngot    = $this->foundationIngotData['orerequired'];
     }
     
     public function create($insertArray, $table) {
