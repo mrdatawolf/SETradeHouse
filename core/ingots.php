@@ -9,12 +9,13 @@ use DB\dbClass;
 class Ingots extends dbClass
 {
     protected $ingotId;
-    protected $oreId;
     protected $ingotData;
+    protected $oreId;
     protected $oreData;
     
     private $oreClass;
     private $baseValue;
+    private $title;
     
     public function __construct($ingotId)
     {
@@ -34,7 +35,7 @@ class Ingots extends dbClass
         return $this->title;
     }
     
-    public function getEffeciencyPerSecond() {
+    public function getEfficiencyPerSecond() {
         $derivedEfficiency  = $this->magicData['base_multiplier_for_buy_vs_sell']*$this->oreClass->getBaseConversionEfficiency();
         $time               = ($this->magicData['base_labor_per_hour']/$this->oreClass->getBaseProcessingTimePerOre());
         

@@ -1,11 +1,7 @@
 <?php namespace Colonization;
 
-use Core\ores;
-use Core\ingots;
-use Core\components;
-use Core\servers;
-use Core\stations;
-use Core\tradeZones;
+require_once('db/dbClass.php');
+use DB\dbClass;
 
 //include "vendor/eftec/bladeone/lib/BladeOne.php";
 //use eftec\bladeone;
@@ -17,38 +13,51 @@ use Core\tradeZones;
 
 class corePHP
 {
-    function readTable($table)
+    function readTable($title)
     {
-        switch ($table) {
+        switch ($title) {
             case 'ores' :
-                $return = new ores();
-                $return->read('ores');
+                $table = 'ores';
                 break;
             case 'ingots' :
-                $return = new ingots();
-                $return->read('ingots');
+                $table = 'ingots';
                 break;
             case 'components' :
-                $return = new components();
-                $return->read('components');
+                $table = 'components';
                 break;
             case 'servers' :
-                $return = new servers();
-                $return->read('servers');
+                $table = 'servers';
                 break;
             case 'stations' :
-                $return = new stations();
-                $return->read('stations');
+                $table = 'stations';
                 break;
             case 'tradeZones' :
-                $return = new tradeZones();
-                $return->read('trade_zones');
+                $table = 'trade_zones';
+                break;
+            case 'systemTypes' :
+                $table = 'system_types';
+                break;
+            case 'ingotOres' :
+                $table = 'ingot_ores';
+                break;
+            case 'oresServers' :
+                $table = 'ores_servers';
+                break;
+            case 'oresStations' :
+                $table = 'ores_stations';
+                break;
+            case 'serversLinks' :
+                $table = 'servers_links';
+                break;
+            case 'serversSystemTypes' :
+                $table = 'servers_systemtypes';
                 break;
             default :
-                $return = new Ma;
+                $table = 'magic_numbers';
         }
-        
-        return $return;
+        $dbClass = new dbClass();
+
+        return $dbClass->read($table);
     }
     
     function ddng($var)

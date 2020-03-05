@@ -16,6 +16,7 @@ class Ores extends dbClass
     protected $serversData;
     protected $ingotsData;
     protected $baseConversionEfficiency;
+    protected $maxConversionEfficiency;
     protected $baseProcessingTimePerOre;
     
     private $baseValue;
@@ -52,6 +53,7 @@ class Ores extends dbClass
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/$this->serverCount));
         $this->baseCostToGatherAnOre    = $this->baseValue*$this->scalingModifier;
         $this->baseConversionEfficiency = $this->oreData['base_conversion_efficiency'];
+        $this->maxConversionEfficiency = $this->oreData['max_efficiency_with_mods'];
         $this->baseProcessingTimePerOre = $this->oreData['base_processing_time_per_ore'];
     }
     
@@ -91,7 +93,11 @@ class Ores extends dbClass
         $perHourCosts               = $refineryCostPerHour+$drillingCostPerHour+$laborCostPerHour;
         $this->baseValue            = $perHourCosts*($this->orePerIngot/$this->foundationOrePerIngot)*$this->scalingModifier;
     }
-    
+
+    public function getOreData() {
+        return $this->oreData;
+    }
+
     public function getOreName() {
         return $this->title;
     }
@@ -134,7 +140,11 @@ class Ores extends dbClass
     }
     
     public function getBaseProcessingTimePerOre() {
-        return$this->baseProcessingTimePerOre;
+        return $this->baseProcessingTimePerOre;
+    }
+
+    public function getMaxEfficiencyWithModules() {
+        return $this->maxConversionEfficiency;
     }
 
 }

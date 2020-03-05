@@ -74,7 +74,7 @@ article.tabs section:last-child .tab-content { display: block; }
 
 article.tabs section h2 {
     position: absolute;
-    font-size: 1em;
+    font-size: .8em;
     font-weight: normal;
     width: 120px;
     height: 1.8em;
@@ -87,12 +87,21 @@ article.tabs section h2 {
     border-radius: 5px 5px 0 0;
 }
 
-article.tabs section:nth-child(1) h2 { left: 132px; }
-article.tabs section:nth-child(2) h2 { left: 254px; }
-article.tabs section:nth-child(3) h2 { left: 376px; }
-article.tabs section:nth-child(4) h2 { left: 498px; }
-article.tabs section:nth-child(5) h2 { left: 620px; }
-article.tabs section:nth-child(6) h2 { left: 742px; }
+article.tabs section:nth-child(1) h2 { left: 0em; }
+article.tabs section:nth-child(2) h2 { left: 8em; }
+article.tabs section:nth-child(3) h2 { left: 16em; }
+article.tabs section:nth-child(4) h2 { left: 24em; }
+article.tabs section:nth-child(5) h2 { left: 32em; }
+article.tabs section:nth-child(6) h2 { left: 40em; }
+article.tabs section:nth-child(7) h2 { left: 48em; }
+article.tabs section:nth-child(8) h2 { left: 56em; }
+article.tabs section:nth-child(9) h2 { left: 64em; }
+article.tabs section:nth-child(10) h2 { left: 72em; }
+article.tabs section:nth-child(11) h2 { left: 80em; }
+article.tabs section:nth-child(12) h2 { left: 88em; }
+article.tabs section:nth-child(13) h2 { left: 96em; }
+article.tabs section:nth-child(14) h2 { left: 102em; }
+article.tabs section:nth-child(15) h2 { left: 110em; }
 
 article.tabs section h2 a {
     display: block;

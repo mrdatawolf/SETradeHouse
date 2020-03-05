@@ -1,6 +1,7 @@
 <?php namespace DB;
 
 use \PDO;
+use \PDOException;
 
 class dbClass
 {
@@ -25,10 +26,12 @@ class dbClass
     public function __construct()
     {
 		$this->clusterId = 2;
-        $dsn = 'sqlite:'.getcwd().'/db/app.sqlite';
-        
+
+        $dsn = 'sqlite:'.getcwd().'/db/core.sqlite';
+
         $this->dbase = new PDO($dsn);
         $this->dbase->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        //$this->dbase->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
 		$this->gatherMagicData();
         $this->gatherClusterData();
@@ -36,36 +39,45 @@ class dbClass
         $this->gatherFoundationIngot();
     }
     
-    protected function gatherFromTable($table) {
-        $stmt = $this->dbase->prepare("SELECT * FROM " . $table);
-        $stmt->execute();
+    public function gatherFromTable($table) {
+        //$stmt = $this->dbase->prepare("SELECT * FROM " . $table);
+        //$stmt->execute();
         
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //return $stmt->fetchAll(PDO::FETCH_OBJ);
+        $stmt =  $this->dbase->query("SELECT * FROM " . $table);
+
+        return $stmt->fetchObject();
+    }
+
+
+    /**
+     * @param $table
+     * @param $id
+     *
+     * @return array
+     */
+    public function find($table, $id) {
+        $stmt =  $this->dbase->query("SELECT * FROM " . $table . " WHERE id=". $id);
+        
+       return $stmt->fetchObject();
     }
     
-    protected function find($table, $id) {
-        $stmt = $this->dbase->prepare("SELECT * FROM " . $table . " WHERE id=". $id);
-        $stmt->execute();
-        
-       return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    protected function findPivots($table, $where, $id) {
-        $stmt = $this->dbase->prepare("SELECT * FROM " . $table . " WHERE " . $where . "=". $id);
-        $stmt->execute();
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function findPivots($table, $where, $id) {
+        $stmt =  $this->dbase->query("SELECT * FROM " . $table . " WHERE " . $where . "=". $id);
+        //die("SELECT * FROM " . $table . " WHERE " . $where . "=". $id);
+        return $stmt->fetchObject();
     }
 
 	public function gatherMagicData() {
         $this->magicData                        = $this->gatherFromTable('magic_numbers');
-        $this->baseRefineryKilowattPerHourUsage = $this->magicData['base_refinery_kwh'];
-        $this->costPerKilowattHour              = $this->magicData['cost_kw_hour'];
+
+        $this->baseRefineryKilowattPerHourUsage = $this->magicData->base_refinery_kwh;
+        $this->costPerKilowattHour              = $this->magicData->cost_kw_hour;
     }
 
     public function gatherClusterData() {
         $this->clusterData          = $this->find('clusters', $this->clusterId);
-        $this->foundationalOreId    = $this->clusterData['economyData'];
+        $this->foundationalOreId    = $this->clusterData->economy_ore;
     }
     
     public function gatherFoundationOre() {
@@ -74,9 +86,10 @@ class dbClass
     
     public function gatherFoundationIngot() {
         $pivot = $this->findPivots('ingot_ores','ore_id', $this->foundationalOreId);
-        $this->foundationalIngotId      = $pivot['ingot_id'];
+
+        $this->foundationalIngotId      = $pivot->ingot_id;
         $this->foundationIngotData      = $this->find('ingots', $this->foundationalIngotId);
-        $this->foundationOrePerIngot    = $this->foundationIngotData['orerequired'];
+        $this->foundationOrePerIngot    = $this->foundationIngotData->ore_required;
     }
     
     public function create($insertArray, $table) {
@@ -119,6 +132,8 @@ class dbClass
                 $this->rows[]    = "No valid data found!";
             }
         }
+
+        return ['headers' => $this->headers, 'rows' => $this->rows];
     }
 
 
