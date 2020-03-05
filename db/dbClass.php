@@ -2,6 +2,7 @@
 
 use \PDO;
 use \PDOException;
+use \Exception;
 
 class dbClass
 {
@@ -31,7 +32,6 @@ class dbClass
 
         $this->dbase = new PDO($dsn);
         $this->dbase->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        //$this->dbase->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
 		$this->gatherMagicData();
         $this->gatherClusterData();
@@ -40,10 +40,6 @@ class dbClass
     }
     
     public function gatherFromTable($table) {
-        //$stmt = $this->dbase->prepare("SELECT * FROM " . $table);
-        //$stmt->execute();
-        
-        //return $stmt->fetchAll(PDO::FETCH_OBJ);
         $stmt =  $this->dbase->query("SELECT * FROM " . $table);
 
         return $stmt->fetchObject();
@@ -54,17 +50,19 @@ class dbClass
      * @param $table
      * @param $id
      *
-     * @return array
+     * @return mixed
      */
     public function find($table, $id) {
-        $stmt =  $this->dbase->query("SELECT * FROM " . $table . " WHERE id=". $id);
-        
-       return $stmt->fetchObject();
+        $stmt = $this->dbase->prepare("SELECT * FROM " . $table . " WHERE id= ?");
+        $stmt->execute([$id]);
+
+        return $stmt->fetchObject();
     }
     
     public function findPivots($table, $where, $id) {
-        $stmt =  $this->dbase->query("SELECT * FROM " . $table . " WHERE " . $where . "=". $id);
-        //die("SELECT * FROM " . $table . " WHERE " . $where . "=". $id);
+        $stmt =  $this->dbase->prepare("SELECT * FROM " . $table . " WHERE " . $where . " = ?");
+        $stmt->execute([$id]);
+
         return $stmt->fetchObject();
     }
 
@@ -109,14 +107,16 @@ class dbClass
             try {
                 $stmt = $this->dbase->prepare("SELECT * FROM ".$table);
                 $stmt->execute();
-                $stat[0] = true;
-                $stat[1] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 $row = 0;
                 $lastRow = [];
-                foreach ($stat[1] as $data) {
+                foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $data) {
                     $row++;
                     foreach ($data as $key => $value) {
+                        if($key === 'base_cost_to_gather') {
+                            $value = sprintf('%f', $value);
+                            $key = $key . ' (rounded)';
+                        }
                         if ($row === 1) {
                             $this->headers[] = $key;
 
@@ -142,11 +142,17 @@ class dbClass
         foreach ($updateArray as $title => $value) {
             $updates .= $title . "='" . $value . "', ";
         }
-        $trimmedString = rtrim($updates, ", ");
-        $updateString = "UPDATE " . $table . " SET " . $trimmedString . " WHERE id=" . $id;
-        $rowsEffected = $this->dbase->exec($updateString);
+        try {
+            $this->dbase->beginTransaction();
+            $trimmedString = rtrim($updates, ", ");
+            $stmt          = $this->dbase->prepare("UPDATE ".$table." SET ".$trimmedString." WHERE id= ?");
+            $stmt->execute([$id]);
+            $this->dbase->commit();
+        } catch (Exception $e) {
+            $this->dbase->rollBack();
+        }
 
-        return $rowsEffected;
+        return $stmt->rowCount();
     }
 
 
