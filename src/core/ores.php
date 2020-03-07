@@ -2,7 +2,7 @@
 
 
 use DB\dbClass;
-use productionParts\refinery;
+use Production\Refinery;
 
 /**
  * Class Ores
@@ -10,15 +10,15 @@ use productionParts\refinery;
  */
 class Ores extends dbClass
 {
-    protected $oreId;
+    public $id;
     protected $title;
-    protected $oreData;
+    protected $data;
     protected $serversData;
     protected $ingotsData;
     protected $baseConversionEfficiency;
     protected $maxConversionEfficiency;
     protected $baseProcessingTimePerOre;
-    
+
     private $baseValue;
     private $refiningTimePerOre;
     private $orePerIngot;
@@ -31,16 +31,18 @@ class Ores extends dbClass
     private $keenCrapFix;
     private $baseCostToGatherAnOre;
     private $scalingModifier;
+
+    private $table = 'ores';
     
     /**
      * Ores constructor.
-     * @param $oreId
+     * @param $id
      */
-    public function __construct($oreId)
+    public function __construct($id)
     {
         parent::__construct();
-        $this->oreId = $oreId;
-        $this->gatherOreData($oreId);
+        $this->id = $id;
+        $this->gatherData();
         $this->gatherIngotsData();
         $this->gatherRefineryData();
         $this->gatherServersData();
@@ -48,57 +50,64 @@ class Ores extends dbClass
 
         $this->setBaseValue();
 
-        $this->storeAdjustedValue       = $this->baseValue/$this->keenCrapFix;
+        $this->storeAdjustedValue       = (empty($this->baseValue)) ? 0 : $this->baseValue/$this->keenCrapFix;
         $this->scarcityAdjustment       = ($this->planetCount*10)+($this->otherCount*5);
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/$this->serverCount));
         $this->baseCostToGatherAnOre    = $this->baseValue*$this->scalingModifier;
-        $this->baseConversionEfficiency = $this->oreData['base_conversion_efficiency'];
-        $this->maxConversionEfficiency = $this->oreData['max_efficiency_with_mods'];
-        $this->baseProcessingTimePerOre = $this->oreData['base_processing_time_per_ore'];
-    }
-    
-    /**
-     * @param $oreId
-     */
-    public function gatherOreData($oreId) {
-        $this->oreData              = $this->find('ores', $oreId);
-        $this->title                = $this->oreData['title'];
-        $oresBaseProcessingTime     = $this->oreData['base_processing_time_per_ore'];
-        $this->refiningTimePerOre   = $this->baseGameRefinerySpeed/$oresBaseProcessingTime;
-        $this->keenCrapFix          = $this->oreData['keen_crap_fix'];
-    }
-    
-    public function gatherIngotsData() {
-        $pivot            = $this->findPivots('ingot_ores', 'ore_id', $this->oreId);
-        $this->ingotsData   = $this->find('ingots', $pivot['ingot_id']);
-        $this->orePerIngot  = $this->ingotsData['oreRequired'];
-    }
-    
-    public function gatherServersData() {
-        $pivot               = $this->findPivots('ores_servers','ore_id', $this->oreId);
-        $this->serversData      = $this->find('servers', $pivot['server_id']);
-        $this->serverCount      = count($this->serversData);
-        $this->scalingModifier  = $this->clusterData['scaling_modifier'];
+        $this->baseConversionEfficiency = $this->data->base_conversion_efficiency;
+        $this->maxConversionEfficiency = $this->data->max_efficiency_with_mods;
+        $this->baseProcessingTimePerOre = $this->data->base_processing_time_per_ore;
     }
 
-    public function gatherRefineryData() {
-        $refinery = new refinery();
+    private function gatherData() {
+        $this->data               = $this->find($this->table, $this->id);
+        $this->title              = $this->data->title;
+        $oresBaseProcessingTime   = $this->data->base_processing_time_per_ore;
+        $this->refiningTimePerOre = $this->baseGameRefinerySpeed/$oresBaseProcessingTime;
+        $this->keenCrapFix        = $this->data->keen_crap_fix;
+    }
+    
+    private function gatherIngotsData() {
+        $ingotIds           = $this->findPivots('ore', 'ingot', $this->id);
+        $this->ingotsData   = $this->findIn('ingots', $ingotIds);
+        foreach($this->ingotsData as $ingotData) {
+            $this->orePerIngot[$ingotData->id] = $ingotData->ore_required;
+        }
+    }
+    
+    private function gatherServersData() {
+        $serverIds              = $this->findPivots('ore','server', $this->id);
+        $clusterServers         = $this->findPivots('cluster','server', $this->clusterId);
+        $this->serversData      = $this->findIn('servers', array_intersect($clusterServers, $serverIds));
+        $this->serverCount      = count($this->serversData);
+        $this->scalingModifier  = $this->clusterData->scaling_modifier;
+    }
+
+    private function gatherRefineryData() {
+        $refinery = new Refinery();
         $this->baseGameRefinerySpeed = (is_null($refinery->baseRefinerySpeed)) ? 0 : $refinery->baseRefinerySpeed;
     }
 
     public function setBaseValue() {
         $refineryCostPerHour        = $this->baseRefineryKilowattPerHourUsage*$this->costPerKilowattHour;
-        $drillingCostPerHour        = $this->magicData['drill_kw_hour']*$this->costPerKilowattHour;
-        $laborCostPerHour           = $this->magicData['base_labor_per_hour'];
+        $drillingCostPerHour        = $this->magicData->base_drill_per_kw_hour*$this->costPerKilowattHour;
+        $laborCostPerHour           = $this->magicData->base_labor_per_hour;
         $perHourCosts               = $refineryCostPerHour+$drillingCostPerHour+$laborCostPerHour;
-        $this->baseValue            = $perHourCosts*($this->orePerIngot/$this->foundationOrePerIngot)*$this->scalingModifier;
+        $this->baseValue            = 0;
+        $baseValuesArray            = [];
+        if(is_array($this->orePerIngot)) {
+            foreach ($this->orePerIngot as $ore_required) {
+                $baseValuesArray[] = $perHourCosts * ($ore_required / $this->foundationOrePerIngot) * $this->scalingModifier;
+            }
+            $this->baseValue = array_sum($baseValuesArray);
+        }
     }
 
-    public function getOreData() {
-        return $this->oreData;
+    public function getData() {
+        return $this->data;
     }
 
-    public function getOreName() {
+    public function getName() {
         return $this->title;
     }
     
@@ -108,7 +117,7 @@ class Ores extends dbClass
     }
 
 	public function getRefineryTime() {
-		return  (empty($this->oreData['base_processing_time_per_ore'])) ? null : $this->baseGameRefinerySpeed/$this->refiningTimePerOre;
+		return  (empty($this->data['base_processing_time_per_ore'])) ? null : $this->baseGameRefinerySpeed/$this->refiningTimePerOre;
 	}
 
 	public function getOreRequiredPerIngot() {
@@ -146,5 +155,4 @@ class Ores extends dbClass
     public function getMaxEfficiencyWithModules() {
         return $this->maxConversionEfficiency;
     }
-
 }

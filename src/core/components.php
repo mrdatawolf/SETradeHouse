@@ -11,11 +11,11 @@ class components extends dbClass
     protected $ingotData;
 
 
-    public function __construct($compId)
+    public function __construct($id)
     {
         parent::__construct();
-        $this->componentId      = $compId;
-        $this->componentData    =  $this->find('components', $this->componentId);
+        $this->componentId      = $id;
+        $this->componentData    = $this->find('components', $this->componentId);
     }
 
     public function getIngotAmountNeeded($ingotId) {

@@ -17,6 +17,8 @@ class dbClass
     public $magicData;
     public $baseGameRefinerySpeed;
     public $baseRefineryKilowattPerHourUsage;
+    public $baseRefineryCostPerHour;
+    public $baseDrillCostPerHour;
     public $costPerKilowattHour;
     public $foundationalOreId;
     public $foundationalIngotId;
@@ -58,12 +60,47 @@ class dbClass
 
         return $stmt->fetchObject();
     }
-    
-    public function findPivots($table, $where, $id) {
-        $stmt =  $this->dbase->prepare("SELECT * FROM " . $table . " WHERE " . $where . " = ?");
-        $stmt->execute([$id]);
 
-        return $stmt->fetchObject();
+
+    /**
+     * @param string $table
+     * @param array $ids
+     *
+     * @return mixed
+     */
+    public function findIn($table, $ids) {
+        $idString = implode(",", $ids);
+
+        return $this->dbase->query("SELECT * FROM " . $table . " WHERE id IN (" . $idString . ")")->fetchAll(PDO::FETCH_OBJ);
+    }
+
+
+    /**
+     * @param $from
+     * @param $to
+     * @param $fromIds
+     *
+     * @return array
+     */
+    public function findPivots($from, $to, $fromIds) {
+        if(! is_array($fromIds)) {
+            $fromIds = [$fromIds];
+        }
+        $fromIdString = implode(',',$fromIds);
+        $pivotedIds = [];
+        $sortArray = [$from."s", $to."s"];
+        sort($sortArray);
+        $table = $sortArray[0]."_".$sortArray[1];
+        $toColumn = $to . "_id";
+        $fromColumn = $from . "_id";
+        $select = "SELECT " . $toColumn . " FROM " . $table . " WHERE " . $fromColumn . " IN (" . $fromIdString . ")";
+        $stmt =  $this->dbase->query($select)->fetchAll(PDO::FETCH_OBJ);
+        foreach($stmt as $object) {
+
+            $pivotedIds[] = $object->$toColumn;
+        }
+
+        return $pivotedIds;
     }
 
 	public function gatherMagicData() {
@@ -71,6 +108,9 @@ class dbClass
 
         $this->baseRefineryKilowattPerHourUsage = $this->magicData->base_refinery_kwh;
         $this->costPerKilowattHour              = $this->magicData->cost_kw_hour;
+        $this->baseRefineryCostPerHour          = $this->magicData->base_refinery_kwh*$this->magicData->cost_kw_hour;
+        $this->baseDrillCostPerHour             = $this->magicData->base_drill_per_kw_hour*$this->magicData->cost_kw_hour;
+
     }
 
     public function gatherClusterData() {
@@ -83,9 +123,8 @@ class dbClass
     }
     
     public function gatherFoundationIngot() {
-        $pivot = $this->findPivots('ingot_ores','ore_id', $this->foundationalOreId);
+        $this->foundationalIngotId = $this->findPivots('ore','ingot', $this->foundationalOreId)[0];
 
-        $this->foundationalIngotId      = $pivot->ingot_id;
         $this->foundationIngotData      = $this->find('ingots', $this->foundationalIngotId);
         $this->foundationOrePerIngot    = $this->foundationIngotData->ore_required;
     }
@@ -163,9 +202,7 @@ class dbClass
      * @return int
      */
     public function destroy($id, $table) {
-        $rowsEffected = $this->dbase->exec('DELETE FROM ' . $table . ' WHERE id='. $id);
-
-        return $rowsEffected;
+        return $this->dbase->exec('DELETE FROM ' . $table . ' WHERE id='. $id);;
     }
 
 
@@ -186,5 +223,25 @@ class dbClass
         }
 
             return $row;
+    }
+
+    public function getClusterId() {
+        return $this->clusterId;
+    }
+
+
+    function ddng($var)
+    {
+        ini_set("highlight.keyword", "#a50000;  font-weight: bolder");
+        ini_set("highlight.string", "#5825b6; font-weight: lighter; ");
+
+        ob_start();
+        highlight_string("<?php\n" . var_export($var, true) . "?>");
+        $highlighted_output = ob_get_clean();
+
+        $highlighted_output = str_replace(["&lt;?php", "?&gt;"], '', $highlighted_output);
+
+        echo $highlighted_output;
+        die();
     }
 }

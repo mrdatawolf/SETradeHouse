@@ -17,10 +17,10 @@ class Ingots extends dbClass
     private $baseValue;
     private $title;
     
-    public function __construct($ingotId)
+    public function __construct($id)
     {
         parent::__construct();
-        $this->ingotId      = $ingotId;
+        $this->ingotId      = $id;
         $this->ingotData    =  $this->find('ingots', $this->ingotId);
         $this->oreId        = $this->ingotData['base_ore'];
         $this->oreClass     = new Ores($this->oreId);

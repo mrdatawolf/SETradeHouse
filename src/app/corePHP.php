@@ -1,6 +1,5 @@
 <?php namespace Colonization;
 
-require_once('db/dbClass.php');
 use DB\dbClass;
 
 //include "vendor/eftec/bladeone/lib/BladeOne.php";
@@ -60,18 +59,5 @@ class corePHP
         return $dbClass->read($table);
     }
     
-    function ddng($var)
-    {
-        ini_set("highlight.keyword", "#a50000;  font-weight: bolder");
-        ini_set("highlight.string", "#5825b6; font-weight: lighter; ");
-        
-        ob_start();
-        highlight_string("<?php\n" . var_export($var, true) . "?>");
-        $highlighted_output = ob_get_clean();
-        
-        $highlighted_output = str_replace(["&lt;?php", "?&gt;"], '', $highlighted_output);
-        
-        echo $highlighted_output;
-        die();
-    }
+
 }

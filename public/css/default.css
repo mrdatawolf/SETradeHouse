@@ -1,25 +1,26 @@
 /* general table styling */
-#ores table, #ingots table, #components table, #servers table, #stations table, #tradeZones table {
+.simpleDisplay table {
     border: 2px solid #CCCCCC;
+    width: 97em;
 }
-#ores table td, #ores table th, #ingots table td, #ingots table th, #components table td, #components table th, #servers table td, #servers table th, #stations table td, #stations table th, #tradeZones table td, #tradeZones table th {
+.simpleDisplay table td, .simpleDisplay table th {
     border: 1px solid #CCC;
     border-collapse: collapse;
     padding: 1em;
     font-family: Tahoma, sans-serif;
 }
-#ores table tr:nth-of-type(2n + 2), #ingots table tr:nth-of-type(2n + 2), #components table tr:nth-of-type(2n + 2), #servers table tr:nth-of-type(2n + 2), #stations table tr:nth-of-type(2n + 2), #tradeZones table tr:nth-of-type(2n + 2) {
+.simpleDisplay table tr:nth-of-type(2n + 2) {
     background-color: #ECF7FF;
 }
-#ores table td:nth-of-type(1), #ores table th:nth-of-type(1), #ingots table td:nth-of-type(1), #ingots table th:nth-of-type(1), #servers table td:nth-of-type(1), #servers table th:nth-of-type(1), #stations table td:nth-of-type(1), #stations table th:nth-of-type(1), #tradeZones table td:nth-of-type(1), #tradeZones table th:nth-of-type(1) {
+.simpleDisplay table td:nth-of-type(1) {
     width: 5em;
     text-align: center;
 }
-#ores table th, #ingots table th, #components table th, #servers table th, #stations table th, #tradeZones table th {
+.simpleDisplay table th {
     font-size: 10pt;
     background-color: #DDE9FF;
 }
-#ores table td, #ingots table td, #servers table td, #stations table td, #tradeZones table td  {
+.simpleDisplay table td {
     font-size: 8pt;
 }
 
@@ -42,7 +43,7 @@
 article.tabs {
     position: relative;
     display: block;
-    width: 74em;
+    width: 100em;
     height: 50em;
     margin: 2em auto;
 }
@@ -62,7 +63,9 @@ article.tabs section {
     color: black;
 }
 
-article.tabs section .tab-content { display: none; }
+article.tabs section .tab-content {
+    display: none;
+}
 
 article.tabs section:last-child {
     z-index: 1;
@@ -70,13 +73,15 @@ article.tabs section:last-child {
     background-color: #fff;
 }
 
-article.tabs section:last-child .tab-content { display: block; }
+article.tabs section:last-child .tab-content {
+    display: block;
+}
 
 article.tabs section h2 {
     position: absolute;
     font-size: .8em;
     font-weight: normal;
-    width: 120px;
+    width: 8em;
     height: 1.8em;
     top: -1.8em;
     left: 10px;
@@ -88,20 +93,20 @@ article.tabs section h2 {
 }
 
 article.tabs section:nth-child(1) h2 { left: 0em; }
-article.tabs section:nth-child(2) h2 { left: 8em; }
-article.tabs section:nth-child(3) h2 { left: 16em; }
-article.tabs section:nth-child(4) h2 { left: 24em; }
-article.tabs section:nth-child(5) h2 { left: 32em; }
-article.tabs section:nth-child(6) h2 { left: 40em; }
-article.tabs section:nth-child(7) h2 { left: 48em; }
-article.tabs section:nth-child(8) h2 { left: 56em; }
-article.tabs section:nth-child(9) h2 { left: 64em; }
-article.tabs section:nth-child(10) h2 { left: 72em; }
-article.tabs section:nth-child(11) h2 { left: 80em; }
-article.tabs section:nth-child(12) h2 { left: 88em; }
-article.tabs section:nth-child(13) h2 { left: 96em; }
-article.tabs section:nth-child(14) h2 { left: 102em; }
-article.tabs section:nth-child(15) h2 { left: 110em; }
+article.tabs section:nth-child(2) h2 { left: 8.25em; }
+article.tabs section:nth-child(3) h2 { left: 16.5em; }
+article.tabs section:nth-child(4) h2 { left: 24.75em; }
+article.tabs section:nth-child(5) h2 { left: 33em; }
+article.tabs section:nth-child(6) h2 { left: 41.25em; }
+article.tabs section:nth-child(7) h2 { left: 49.5em; }
+article.tabs section:nth-child(8) h2 { left: 57.75em; }
+article.tabs section:nth-child(9) h2 { left: 66em; }
+article.tabs section:nth-child(10) h2 { left: 74.25em; }
+article.tabs section:nth-child(11) h2 { left: 82.5em; }
+article.tabs section:nth-child(12) h2 { left: 90.75em; }
+article.tabs section:nth-child(13) h2 { left: 99em; }
+article.tabs section:nth-child(14) h2 { left: 107.25em; }
+article.tabs section:nth-child(15) h2 { left: 115.5em; }
 
 article.tabs section h2 a {
     display: block;
@@ -119,17 +124,19 @@ article.tabs section:target, article.tabs section:target h2 {
     z-index: 2;
 }
 
-article.tabs section:target h2{
+article.tabs section:target h2 {
     background-color: #DDE9FF;
 }
 
-article.tabs section:target .tab-content { display: block; }
+article.tabs section:target .tab-content {
+    display: block; }
 
 article.tabs section:target ~ section:last-child h2 {
     color: #999;
 }
 
-article.tabs section:target ~ section:last-child .tab-content { display: none; }
+article.tabs section:target ~ section:last-child .tab-content {
+    display: none; }
 
 .addGeneral, .addId {
     max-width: 3em;
@@ -137,4 +144,8 @@ article.tabs section:target ~ section:last-child .tab-content { display: none; }
 
 .headerTitle {
     text-transform: capitalize;
+}
+
+.hasOre {
+    background-color: green;
 }
