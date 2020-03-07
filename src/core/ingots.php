@@ -8,30 +8,47 @@ use DB\dbClass;
  */
 class Ingots extends dbClass
 {
-    protected $ingotId;
-    protected $ingotData;
+    public $id;
+    protected $data;
     protected $oreId;
     protected $oreData;
+    protected $storeAdjustedValue;
+    protected $scarcityAdjustment;
+    protected $scarcityAdjustedValue;
+    protected $keenCrapFix;
     
     private $oreClass;
     private $baseValue;
     private $title;
-    
+
+    private $table = 'ingots';
+
     public function __construct($id)
     {
         parent::__construct();
-        $this->ingotId      = $id;
-        $this->ingotData    =  $this->find('ingots', $this->ingotId);
-        $this->oreId        = $this->ingotData['base_ore'];
-        $this->oreClass     = new Ores($this->oreId);
+        $this->id      = $id;
 
+        $this->gatherData();
         $this->gatherBaseOreData();
+
+        $this->oreClass     = new Ores($this->oreId);
+        $this->storeAdjustedValue       = (empty($this->baseValue)) ? 0 : $this->baseValue/$this->keenCrapFix;
+        $this->scarcityAdjustment = ($this->planetCount*10)+($this->otherCount*5);
+        $this->scarcityAdjustedValue = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/$this->serverCount));
     }
     
-    public function gatherBaseOreData() {
+    private function gatherBaseOreData() {
         $this->oreData = $this->find('ores', $this->oreId);
     }
-    public function getIngotName() {
+
+    private function gatherData() {
+        $this->data     = $this->find($this->table, $this->id);
+        $this->oreId    = $this->data->base_ore;
+        $this->title    = $this->data->title;
+    }
+
+
+    public function getName() {
         return $this->title;
     }
     
@@ -43,7 +60,7 @@ class Ingots extends dbClass
     }
     
     public function setBaseValue() {
-        $this->baseValue = $this->ingotData['oreRequired']*$this->oreClass->getStoreAdjustedValue();
+        $this->baseValue = $this->data['oreRequired']*$this->oreClass->getStoreAdjustedValue();
     }
     
     public function getBaseValue() {
@@ -51,6 +68,14 @@ class Ingots extends dbClass
     }
     
     public function getStoreAdjustedMinimum() {
-        return $this->baseValue*$this->ingotData['keen_crap_fix'];
+        return $this->baseValue*$this->data['keen_crap_fix'];
+    }
+
+    public function getScarcityAdjustedValue() {
+        return $this->scarcityAdjustedValue;
+    }
+
+    public function getKeenCrapFix() {
+        return $this->keenCrapFix;
     }
 }

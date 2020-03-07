@@ -1,15 +1,15 @@
 <?php
 require __DIR__ .'/vendor/autoload.php';
 
-use Colonization\corePHP;
+use Colonization\CorePHP;
 $tablesRequired = ['ores','ingots','components','servers', 'stations', 'tradeZones', 'clusters', 'cluster_servers', 'magicNumbers', 'systemTypes', 'ingotOres', 'oresServers', 'oresStations', 'serversLinks', 'serversSystemTypes'];
-$corePHP = new corePHP();
+$corePHP = new CorePHP();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Landing Page</title>
+  <title>Raw Data</title>
   <script src="https://kit.fontawesome.com/b61a9642d4.js" crossorigin="anonymous"></script>
   <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

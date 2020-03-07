@@ -10,7 +10,7 @@ use DB\dbClass;
 //$blade=new bladeone\BladeOne($views,$compiledFolder);
 //echo $blade->run("Test.hello", ["name" => "hola mundo"]);
 
-class corePHP
+class CorePHP
 {
     function readTable($title)
     {

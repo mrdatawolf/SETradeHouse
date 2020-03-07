@@ -25,6 +25,9 @@ class dbClass
     public $foundationOreData;
     public $foundationIngotData;
     public $foundationOrePerIngot;
+    public $serverCount;
+    public $planetCount;
+    public $otherCount;
     
     public function __construct()
     {
@@ -39,12 +42,11 @@ class dbClass
         $this->gatherClusterData();
         $this->gatherFoundationOre();
         $this->gatherFoundationIngot();
+        $this->gatherSystemTypeCount();
     }
     
     public function gatherFromTable($table) {
-        $stmt =  $this->dbase->query("SELECT * FROM " . $table);
-
-        return $stmt->fetchObject();
+        return $this->dbase->query("SELECT * FROM " . $table)->fetchAll(PDO::FETCH_OBJ);
     }
 
 
@@ -103,9 +105,8 @@ class dbClass
         return $pivotedIds;
     }
 
-	public function gatherMagicData() {
-        $this->magicData                        = $this->gatherFromTable('magic_numbers');
-
+	private function gatherMagicData() {
+        $this->magicData                        = $this->gatherFromTable('magic_numbers')[0];
         $this->baseRefineryKilowattPerHourUsage = $this->magicData->base_refinery_kwh;
         $this->costPerKilowattHour              = $this->magicData->cost_kw_hour;
         $this->baseRefineryCostPerHour          = $this->magicData->base_refinery_kwh*$this->magicData->cost_kw_hour;
@@ -113,16 +114,23 @@ class dbClass
 
     }
 
-    public function gatherClusterData() {
+    private function gatherClusterData() {
         $this->clusterData          = $this->find('clusters', $this->clusterId);
         $this->foundationalOreId    = $this->clusterData->economy_ore;
     }
-    
-    public function gatherFoundationOre() {
+
+    private function gatherSystemTypeCount() {
+        // note: hacking these in to not have to think...
+        $this->planetCount = 6;
+        $this->otherCount = 4;
+        $this->serverCount = $this->planetCount+$this->otherCount;
+    }
+
+    private function gatherFoundationOre() {
         $this->foundationOreData = $this->find('ores',  $this->foundationalOreId);
     }
-    
-    public function gatherFoundationIngot() {
+
+    private function gatherFoundationIngot() {
         $this->foundationalIngotId = $this->findPivots('ore','ingot', $this->foundationalOreId)[0];
 
         $this->foundationIngotData      = $this->find('ingots', $this->foundationalIngotId);

@@ -4,15 +4,20 @@ use DB\dbClass;
 
 class Clusters extends dbClass
 {
-    protected $id;
+    public $id;
+    public $totalServers;
+
     protected $data;
     protected $servers;
-    protected $totalServers;
     protected $scalingModifier;
     protected $serverIds;
     protected $magicNumbersClass;
     protected $oreIds;
     protected $ores;
+    protected $ingotIds;
+    protected $ingots;
+    protected $componentIds;
+    protected $components;
 
     private $table = 'clusters';
 
@@ -26,17 +31,46 @@ class Clusters extends dbClass
         $this->scalingModifier = $this->clusterData->scaling_modifier;
         $this->magicNumbersClass = new MagicNumbers();
         $this->gatherOres();
+        $this->gatherIngots();
+        $this->gatherComponents();
     }
 
     private function gatherData() {
         $this->data = $this->clusterData;
     }
 
-    public function gatherServers() {
+    private function gatherServers() {
         $this->serverIds = $this->findPivots('cluster','server', $this->clusterId);
         $this->totalServers = count($this->serverIds);
         foreach($this->serverIds as $serverId) {
             $this->servers[$serverId] = new Servers($serverId);
+        }
+    }
+
+    private function gatherOres() {
+        $this->oreIds = $this->findPivots('server','ore', $this->serverIds);
+        $this->ores = [];
+        foreach($this->oreIds as $oreId) {
+            $this->ores[$oreId] = new Ores($oreId);
+        }
+    }
+
+    private function gatherIngots() {
+        $this->ingotIds = $this->findPivots('ore','ingot', $this->oreIds);
+        $this->ingots = [];
+        foreach($this->ingotIds as $ingotId) {
+            $this->ingots[$ingotId] = new Ingots($ingotId);
+        }
+    }
+
+    private function gatherComponents() {
+        $components = $this->gatherFromTable('components');
+        $this->componentIds = [];
+        foreach($components as $component) {
+            $this->componentIds[] = $component->id;
+        }
+        foreach($this->componentIds as $componentId) {
+            $this->components[$componentId] = new Components($componentId);
         }
     }
 
@@ -72,16 +106,15 @@ class Clusters extends dbClass
         return $this->clusterData->base_modifier;
     }
 
-    public function gatherOres() {
-        $this->oreIds = $this->findPivots('server','ore', $this->serverIds);
-        $this->ores = [];
-        foreach($this->oreIds as $oreId) {
-            $ore = new Ores($oreId);
-            $this->ores[$oreId] = $ore;
-        }
-    }
-
     public function getOres() {
         return $this->ores;
+    }
+
+    public function getIngots() {
+        return $this->ingots;
+    }
+
+    public function getComponents() {
+        return $this->components;
     }
 }

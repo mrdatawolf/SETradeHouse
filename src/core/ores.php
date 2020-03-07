@@ -25,9 +25,6 @@ class Ores extends dbClass
     private $storeAdjustedValue;
     private $scarcityAdjustment;
     private $scarcityAdjustedValue;
-    private $serverCount;
-    private $planetCount;
-    private $otherCount;
     private $keenCrapFix;
     private $baseCostToGatherAnOre;
     private $scalingModifier;
@@ -46,7 +43,6 @@ class Ores extends dbClass
         $this->gatherIngotsData();
         $this->gatherRefineryData();
         $this->gatherServersData();
-        $this->gatherClusterData();
 
         $this->setBaseValue();
 
@@ -74,7 +70,7 @@ class Ores extends dbClass
             $this->orePerIngot[$ingotData->id] = $ingotData->ore_required;
         }
     }
-    
+
     private function gatherServersData() {
         $serverIds              = $this->findPivots('ore','server', $this->id);
         $clusterServers         = $this->findPivots('cluster','server', $this->clusterId);
