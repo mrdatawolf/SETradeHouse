@@ -151,4 +151,14 @@ class Ores extends dbClass
     public function getMaxEfficiencyWithModules() {
         return $this->maxConversionEfficiency;
     }
+
+    public function getSystemStock() {
+        //has to wait until we have tradezones
+        return 1;
+    }
+
+    public function getSystemStockGoal() {
+        //has to wait until we have tradezones
+        return 1;
+    }
 }

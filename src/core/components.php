@@ -17,6 +17,7 @@ class Components extends dbClass
     public function __construct($id)
     {
         parent::__construct();
+
         $this->id      = $id;
         $this->gatherData();
         $this->scarcityAdjustedValue = 1;

@@ -204,6 +204,30 @@ $corePhp        = new CorePHP();
           </table>
         </div>
     </section>
+    <section id="systemValues" class="simpleDisplay">
+        <h2><a class="headerTitle" href="#systemValues">System Values</a></h2>
+        <h3>ORE</h3>
+        <div class="tab-content">
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Stock</th>
+                    <th>Goal</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($cluster->getOres() as $ore) : ?>
+                    <tr>
+                        <td><?= $ore->getName(); ?></td>
+                        <td><?= $ore->getSystemStock(); ?></td>
+                        <td><?= $ore->getSystemStockGoal(); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </article>
 </body>
 </html>
