@@ -57,8 +57,7 @@ article.tabs section {
     height: 48em;
     padding: 10px 20px;
     background-color: #ddd;
-    border-radius: 5px;
-    box-shadow: 0 3px 3px rgba(0,0,0,0.1);
+
     z-index: 0;
     color: black;
 }
@@ -149,3 +148,14 @@ article.tabs section:target ~ section:last-child .tab-content {
 .hasOre {
     background-color: green;
 }
+
+#menubar .a{
+    float:right;
+    min-width: 8em;
+    background-color: #ddd;
+
+    z-index: 0;
+    color: black;
+
+}
+#menubar .first{float:left}

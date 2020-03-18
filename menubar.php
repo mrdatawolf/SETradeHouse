@@ -1,7 +1,9 @@
 <div id="menubar">
   <ul>
-    <li><a href="index.php">Home</a></li>
-    <li><a href="spreadsheet.php">Spreadsheet</a></li>
-    <li><a href="rawdata.php">Raw Data</a></li>
+    <li class="first"><a href="index.php">Home</a></li>
+    <li class="a"><a href="spreadsheet.php">Spreadsheet</a></li>
+    <li class="a"><a href="rawdata.php">Raw Data</a></li>
   </ul>
 </div>
+<br>
+<br>

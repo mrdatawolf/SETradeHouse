@@ -145,9 +145,9 @@ $corePhp        = new CorePHP();
     <section id="generalValues" class="simpleDisplay">
         <h2><a class="headerTitle" href="#generalValues">General Values</a></h2>
         <div class="tab-content">
-            <h3>Ores</h3>
             <table>
                 <thead>
+                <tr><th colspan="3">Ore</th> </tr>
                 <tr>
                     <th>Name</th>
                     <th>Base Value</th>
@@ -163,10 +163,8 @@ $corePhp        = new CorePHP();
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
-            </table>
-            <h3>Ingots</h3>
-            <table>
                 <thead>
+                <tr><th colspan="3">Ingots</th> </tr>
                 <tr>
                     <th>Name</th>
                     <th>Base Value</th>
@@ -182,26 +180,25 @@ $corePhp        = new CorePHP();
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
+
+                <thead>
+                    <tr><th colspan="3">Components</th> </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Base Value</th>
+                        <th>Base Value + Scarcity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($cluster->getComponents() as $component) : ?>
+                    <tr>
+                        <td><?=$component->getName();?></td>
+                        <td><?=$component->getBaseValue();?></td>
+                        <td><?=$component->getScarcityAdjustedValue();?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
             </table>
-          <h3>Components</h3>
-          <table>
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Base Value</th>
-              <th>Base Value + Scarcity</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach($cluster->getComponents() as $component) : ?>
-              <tr>
-                <td><?=$component->getName();?></td>
-                <td><?=$component->getBaseValue();?></td>
-                <td><?=$component->getScarcityAdjustedValue();?></td>
-              </tr>
-            <?php endforeach; ?>
-            </tbody>
-          </table>
         </div>
     </section>
     <section id="systemValues" class="simpleDisplay">
@@ -210,6 +207,7 @@ $corePhp        = new CorePHP();
         <div class="tab-content">
             <table>
                 <thead>
+                <tr><th colspan="3">Ore</th> </tr>
                 <tr>
                     <th>Name</th>
                     <th>Stock</th>
@@ -217,11 +215,120 @@ $corePhp        = new CorePHP();
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($cluster->getOres() as $ore) : ?>
+                <?php foreach($cluster->getOres() as $thing) : ?>
                     <tr>
-                        <td><?= $ore->getName(); ?></td>
-                        <td><?= $ore->getSystemStock(); ?></td>
-                        <td><?= $ore->getSystemStockGoal(); ?></td>
+                        <td><?= $thing->getName(); ?></td>
+                        <td><?= $thing->getSystemStock(); ?></td>
+                        <td><?= $thing->getSystemStockGoal(); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <?php //variables
+    $specialHeaders = ["TZ Data" => 5,"System Data" => 3,"Goals" =>3];
+    $baseHeaders = ["Name","Buy","Sell","Stock","Goal","Base Value","Stock","Goal","TZ","System","Adjusted"];
+    ?>
+    <section id="AlphaTrade" class="simpleDisplay">
+        <h2><a class="headerTitle" href="#AlphaTrade">Alpha Trade</a></h2>
+        <div class="tab-content">
+            <table>
+                <thead>
+                <tr><th colspan="11">Ore</th> </tr>
+                <tr>
+                    <?php foreach ($specialHeaders as $header => $span) : ?>
+                        <th colspan="<?=$span;?>"><?=$header;?></th>
+                    <?php endforeach; ?>
+                </tr>
+                <tr>
+                    <?php foreach ($baseHeaders as $header) : ?>
+                    <th><?=$header;?></th>
+                    <?php endforeach; ?>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($cluster->getOres() as $thing) : ?>
+                    <tr>
+                        <td><?=$thing->getName();?></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                <?php endforeach; ?>
+                <tr><th colspan="11">Ingot</th> </tr>
+                <tr>
+                    <th colspan="5">TZ Data</th>
+                    <th colspan="3">System Data</th>
+                    <th colspan="3">Goals</th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Buy</th>
+                    <th>Sell</th>
+                    <th>Stock</th>
+                    <th>Goal</th>
+                    <th>Base Value</th>
+                    <th>Stock</th>
+                    <th>Goal</th>
+                    <th>TZ</th>
+                    <th>System</th>
+                    <th>Adjusted</th>
+                </tr>
+                <?php foreach($cluster->getIngots() as $thing) : ?>
+                    <tr>
+                        <td><?=$thing->getName();?></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                <?php endforeach; ?>
+                <tr><th colspan="11">Component</th> </tr>
+                <tr>
+                    <th colspan="5">TZ Data</th>
+                    <th colspan="3">System Data</th>
+                    <th colspan="3">Goals</th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Buy</th>
+                    <th>Sell</th>
+                    <th>Stock</th>
+                    <th>Goal</th>
+                    <th>Base Value</th>
+                    <th>Stock</th>
+                    <th>Goal</th>
+                    <th>TZ</th>
+                    <th>System</th>
+                    <th>Adjusted</th>
+                </tr>
+                <?php foreach($cluster->getComponents() as $thing) : ?>
+                    <tr>
+                        <td><?=$thing->getName();?></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
