@@ -115,7 +115,44 @@ $corePhp        = new CorePHP();
             </table>
         </div>
     </section>
-    <?php foreach(['ores','ingots','components'] as $table) :
+    <section id="ores" class="simpleDisplay">
+      <h2><a class="headerTitle" href="#ores">Ores</a></h2>
+      <div class="tab-content">
+        <table>
+          <thead>
+          <tr>
+                <th>Name</th>
+                <th>Refinery Speed/Base time per ore</th>
+                <th>kWh/Ore<br>Refinery kWh</th>
+                <th>Ore per Ingot</th>
+                <th>Ore per Ingot Max effec</th>
+                <th>Base Value</th>
+                <th>Store Adjusted</th>
+                <th>Scarcity Adjusted Value</th>
+                <th>Keen crap fix</th>
+                <th>Base cost to gather 1 ore</th>
+          </tr>
+          </thead>
+          <tbody>
+          <?php foreach($cluster->getOres() as $ore) : ?>
+            <tr>
+              <td><?=$ore->getName();?></td>
+              <td><?=$magicNumbers->getBaseRefinerySpeed()/$ore->getBaseProcessingTimePerOre();?></td>
+              <td><?=$ore->getRefineryKiloWattHour();?></td>
+              <td><?=$ore->getOreRequiredPerIngot();?></td>
+              <td><?=$ore->getOreRequiredPerIngot(4);?></td>
+              <td><?=$ore->getBaseValue();?></td>
+              <td><?=$ore->getStoreAdjustedValue();?></td>
+              <td><?=$ore->getScarcityAdjustedValue();?></td>
+              <td><?=$ore->getKeenCrapFix();?></td>
+              <td><?=$ore->getBaseCostToGatherAnOre();?></td>
+            </tr>
+          <?php endforeach ?>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <?php foreach(['ingots','components'] as $table) :
         $$table = $corePhp->readTable($table);
         ?>
         <section id="<?=$table;?>" class="simpleDisplay">

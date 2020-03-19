@@ -18,6 +18,7 @@ class Ores extends dbClass
     protected $baseConversionEfficiency;
     protected $maxConversionEfficiency;
     protected $baseProcessingTimePerOre;
+    protected $efficincyModifier;
 
     private $baseValue;
     private $refiningTimePerOre;
@@ -58,16 +59,15 @@ class Ores extends dbClass
     private function gatherData() {
         $this->data               = $this->find($this->table, $this->id);
         $this->title              = $this->data->title;
-        $oresBaseProcessingTime   = $this->data->base_processing_time_per_ore;
-        $this->refiningTimePerOre = $this->baseGameRefinerySpeed/$oresBaseProcessingTime;
         $this->keenCrapFix        = $this->data->keen_crap_fix;
+        $this->efficincyModifier  = $this->data->efficiency_modifier;
     }
     
     private function gatherIngotsData() {
         $ingotIds           = $this->findPivots('ore', 'ingot', $this->id);
         $this->ingotsData   = $this->findIn('ingots', $ingotIds);
         foreach($this->ingotsData as $ingotData) {
-            $this->orePerIngot[$ingotData->id] = $ingotData->ore_required;
+            $this->orePerIngot[$ingotData->base_ore] = $ingotData->ore_required;
         }
     }
 
@@ -95,8 +95,11 @@ class Ores extends dbClass
             foreach ($this->orePerIngot as $ore_required) {
                 $baseValuesArray[] = $perHourCosts * ($ore_required / $this->foundationOrePerIngot) * $this->scalingModifier;
             }
+
             $this->baseValue = array_sum($baseValuesArray);
         }
+        $oresBaseProcessingTime   = $this->data->base_processing_time_per_ore;
+        $this->refiningTimePerOre = $this->baseGameRefinerySpeed/$oresBaseProcessingTime;
     }
 
     public function getData() {
@@ -108,7 +111,12 @@ class Ores extends dbClass
     }
     
     public function getRefineryKiloWattHour() {
-        return $this->baseRefineryKilowattPerHourUsage/($this->refiningTimePerOre)/60/60;
+        $return = 0;
+        if(!empty($this->baseRefineryKilowattPerHourUsage) && !empty($this->refiningTimePerOre)) {
+            $return = $this->baseRefineryKilowattPerHourUsage / ($this->refiningTimePerOre) / 60 / 60;
+        }
+
+        return $return;
 
     }
 
@@ -116,8 +124,17 @@ class Ores extends dbClass
 		return  (empty($this->data['base_processing_time_per_ore'])) ? null : $this->baseGameRefinerySpeed/$this->refiningTimePerOre;
 	}
 
-	public function getOreRequiredPerIngot() {
-        return $this->orePerIngot;
+	public function getOreRequiredPerIngot($modules = 0) {
+        $ingotIds           = $this->findPivots('ore', 'ingot', $this->id);
+        if(! empty($ingotIds[0])) {
+            if($modules === 0) {
+                return $this->orePerIngot[$ingotIds[0]];
+            } else {
+                return $this->orePerIngot[$ingotIds[0]] * $this->efficincyModifier * $modules;
+            }
+        }
+
+        return null;
     }
 
     public function getBaseValue() {
@@ -149,7 +166,7 @@ class Ores extends dbClass
     }
 
     public function getMaxEfficiencyWithModules() {
-        return $this->maxConversionEfficiency;
+        return $this->efficincyModifier*4;
     }
 
     public function getSystemStock() {
