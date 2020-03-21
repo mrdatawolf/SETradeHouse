@@ -103,8 +103,8 @@ $corePhp        = new CorePHP();
                     <tr>
                         <td><?=$ore->getName();?></td>
                         <td><?=$ore->getBaseProcessingTimePerOre();?></td>
-                        <td><?=$ore->getBaseConversionEfficiency();?></td>
-                        <td><?=$ore->getMaxEfficiencyWithModules();?></td>
+                        <td><?=$ore->getMaxEfficiencyWithModules(0)*100;?>%</td>
+                        <td><?=round($ore->getMaxEfficiencyWithModules(4)*100, 2);?>%</td>
                         <?php foreach($cluster->getServers() as $server) : ?>
                             <?php $hasOre = (in_array($ore->id, $server->getOreIds()));?>
                             <td class="<?=($hasOre) ? 'hasOre' : '';?>"><?= ($hasOre) ? "1" : "0"; ?></td>
@@ -138,14 +138,14 @@ $corePhp        = new CorePHP();
             <tr>
               <td><?=$ore->getName();?></td>
               <td><?=$magicNumbers->getBaseRefinerySpeed()/$ore->getBaseProcessingTimePerOre();?></td>
-              <td><?=$ore->getRefineryKiloWattHour();?></td>
-              <td><?=$ore->getOreRequiredPerIngot();?></td>
+              <td><?=round($ore->getRefineryKiloWattHour(),7);?></td>
+              <td><?=round($ore->getOreRequiredPerIngot(),2);?></td>
               <td><?=$ore->getOreRequiredPerIngot(4);?></td>
               <td><?=$ore->getBaseValue();?></td>
               <td><?=$ore->getStoreAdjustedValue();?></td>
               <td><?=$ore->getScarcityAdjustedValue();?></td>
               <td><?=$ore->getKeenCrapFix();?></td>
-              <td><?=$ore->getBaseCostToGatherAnOre();?></td>
+              <td><?=$ore->getBaseCostToGatherOre(1);?></td>
             </tr>
           <?php endforeach ?>
           </tbody>

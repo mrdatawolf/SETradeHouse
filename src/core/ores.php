@@ -16,9 +16,8 @@ class Ores extends dbClass
     protected $serversData;
     protected $ingotsData;
     protected $baseConversionEfficiency;
-    protected $maxConversionEfficiency;
     protected $baseProcessingTimePerOre;
-    protected $efficincyModifier;
+    protected $moduleEfficiencyModifier;
 
     private $baseValue;
     private $refiningTimePerOre;
@@ -45,14 +44,13 @@ class Ores extends dbClass
         $this->gatherRefineryData();
         $this->gatherServersData();
 
+        $this->setBaseCostToGather();
         $this->setBaseValue();
 
-        $this->storeAdjustedValue       = (empty($this->baseValue)) ? 0 : $this->baseValue/$this->keenCrapFix;
+        $this->storeAdjustedValue       = (empty($this->baseValue) || empty($this->keenCrapFix)) ? 0 : $this->baseValue/$this->keenCrapFix;
         $this->scarcityAdjustment       = ($this->planetCount*10)+($this->otherCount*5);
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/$this->serverCount));
-        $this->baseCostToGatherAnOre    = $this->baseValue*$this->scalingModifier;
         $this->baseConversionEfficiency = $this->data->base_conversion_efficiency;
-        $this->maxConversionEfficiency = $this->data->max_efficiency_with_mods;
         $this->baseProcessingTimePerOre = $this->data->base_processing_time_per_ore;
     }
 
@@ -60,7 +58,7 @@ class Ores extends dbClass
         $this->data               = $this->find($this->table, $this->id);
         $this->title              = $this->data->title;
         $this->keenCrapFix        = $this->data->keen_crap_fix;
-        $this->efficincyModifier  = $this->data->efficiency_modifier;
+        $this->moduleEfficiencyModifier  = $this->data->module_efficiency_modifier;
     }
     
     private function gatherIngotsData() {
@@ -85,21 +83,27 @@ class Ores extends dbClass
     }
 
     public function setBaseValue() {
+        //Ore gather and process markup * $this->getBaseCostToGatherOre
         $refineryCostPerHour        = $this->baseRefineryKilowattPerHourUsage*$this->costPerKilowattHour;
         $drillingCostPerHour        = $this->magicData->base_drill_per_kw_hour*$this->costPerKilowattHour;
         $laborCostPerHour           = $this->magicData->base_labor_per_hour;
         $perHourCosts               = $refineryCostPerHour+$drillingCostPerHour+$laborCostPerHour;
         $this->baseValue            = 0;
-        $baseValuesArray            = [];
-        if(is_array($this->orePerIngot)) {
-            foreach ($this->orePerIngot as $ore_required) {
-                $baseValuesArray[] = $perHourCosts * ($ore_required / $this->foundationOrePerIngot) * $this->scalingModifier;
-            }
-
-            $this->baseValue = array_sum($baseValuesArray);
-        }
+        $baseValuesArray = ($perHourCosts * $this->baseCostToGatherAnOre)/60/60;
+        $this->baseValue = $baseValuesArray;
         $oresBaseProcessingTime   = $this->data->base_processing_time_per_ore;
         $this->refiningTimePerOre = $this->baseGameRefinerySpeed/$oresBaseProcessingTime;
+    }
+
+    public function setBaseCostToGather() {
+        $orePerIngot = 0;
+        foreach ($this->orePerIngot as $required) {
+            $orePerIngot+=(double)$required;
+        }
+        $baseOrePerIngot    = (double)$this->foundationOrePerIngot;
+        $scalingModifier    = (double)$this->clusterData->scaling_modifier;
+
+        $this->baseCostToGatherAnOre = ($orePerIngot/$baseOrePerIngot)*$scalingModifier;
     }
 
     public function getData() {
@@ -130,7 +134,7 @@ class Ores extends dbClass
             if($modules === 0) {
                 return $this->orePerIngot[$ingotIds[0]];
             } else {
-                return $this->orePerIngot[$ingotIds[0]] * $this->efficincyModifier * $modules;
+                return $this->orePerIngot[$ingotIds[0]] * $this->moduleEfficiencyModifier * $modules;
             }
         }
 
@@ -153,8 +157,8 @@ class Ores extends dbClass
         return $this->keenCrapFix;
     }
     
-    public function getBaseCostToGatherAnOre() {
-        return $this->baseCostToGatherAnOre;
+    public function getBaseCostToGatherOre($total = 1) {
+        return $this->baseCostToGatherAnOre*$total;
     }
     
     public function getBaseConversionEfficiency() {
@@ -165,8 +169,10 @@ class Ores extends dbClass
         return $this->baseProcessingTimePerOre;
     }
 
-    public function getMaxEfficiencyWithModules() {
-        return $this->efficincyModifier*4;
+    public function getMaxEfficiencyWithModules($modules = 0) {
+        $modifer = $modules*$this->moduleEfficiencyModifier;
+
+        return $this->baseConversionEfficiency + $modifer;
     }
 
     public function getSystemStock() {
