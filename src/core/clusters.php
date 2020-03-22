@@ -5,7 +5,9 @@ use DB\dbClass;
 class Clusters extends dbClass
 {
     public $id;
-    public $totalServers;
+    public $totalServers = 0;
+    public $totalPlanets = 0;
+    public $totalAsteroids = 0;
 
     protected $data;
     protected $servers;
@@ -41,8 +43,19 @@ class Clusters extends dbClass
 
     private function gatherServers() {
         $this->serverIds = $this->findPivots('cluster','server', $this->clusterId);
-        $this->totalServers = count($this->serverIds);
         foreach($this->serverIds as $serverId) {
+            $this->totalServers++;
+            $serverTypes = $this->findPivots('server', 'systemtype', $serverId);
+            if(!empty($serverTypes)) {
+                foreach($serverTypes as $serverType) {
+                    if($serverType === 1) {
+                        $this->totalPlanets++;
+                    } else {
+                        $this->totalAsteroids++;
+                    }
+                }
+
+            }
             $this->servers[$serverId] = new Servers($serverId);
         }
     }

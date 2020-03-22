@@ -25,9 +25,11 @@ class dbClass
     public $foundationOreData;
     public $foundationIngotData;
     public $foundationOrePerIngot;
-    public $serverCount;
-    public $planetCount;
-    public $otherCount;
+    public $totalServers;
+    public $totalPlanets;
+    public $totalAsteroids;
+    public $planetIds = [];
+    public $asteroidIds = [];
     
     public function __construct()
     {
@@ -42,7 +44,6 @@ class dbClass
         $this->gatherClusterData();
         $this->gatherFoundationOre();
         $this->gatherFoundationIngot();
-        $this->gatherSystemTypeCount();
     }
     
     public function gatherFromTable($table) {
@@ -116,14 +117,23 @@ class dbClass
 
     private function gatherClusterData() {
         $this->clusterData          = $this->find('clusters', $this->clusterId);
+        $serverIds = $this->findPivots('cluster','server', $this->clusterId);
+        foreach($serverIds as $serverId) {
+            $this->totalServers++;
+            $serverTypes = $this->findPivots('server', 'systemtype', $serverId);
+            if(!empty($serverTypes)) {
+                foreach($serverTypes as $serverType) {
+                    if((int)$serverType === 1) {
+                        $this->planetIds[] = $serverId;
+                        $this->totalPlanets++;
+                    } else {
+                        $this->asteroidIds[] = $serverId;
+                        $this->totalAsteroids++;
+                    }
+                }
+            }
+        }
         $this->foundationalOreId    = $this->clusterData->economy_ore;
-    }
-
-    private function gatherSystemTypeCount() {
-        // note: hacking these in to not have to think...
-        $this->planetCount = 6;
-        $this->otherCount = 4;
-        $this->serverCount = $this->planetCount+$this->otherCount;
     }
 
     private function gatherFoundationOre() {

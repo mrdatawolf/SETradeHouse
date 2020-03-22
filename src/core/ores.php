@@ -18,6 +18,9 @@ class Ores extends dbClass
     protected $baseConversionEfficiency;
     protected $baseProcessingTimePerOre;
     protected $moduleEfficiencyModifier;
+    protected $serverCount;
+    protected $totalPlanetsOn = 0;
+    protected $totalAsteroidsOn = 0;
 
     private $baseValue;
     private $refiningTimePerOre;
@@ -38,7 +41,7 @@ class Ores extends dbClass
     public function __construct($id)
     {
         parent::__construct();
-        $this->id = $id;
+        $this->id = (int) $id;
         $this->gatherData();
         $this->gatherIngotsData();
         $this->gatherRefineryData();
@@ -46,10 +49,11 @@ class Ores extends dbClass
 
         $this->setBaseCostToGather();
         $this->setBaseValue();
+        $this->setTotalPlanetsAsteroidsOn();
+        $this->setScarcityAdjustment();
 
-        $this->storeAdjustedValue       = (empty($this->baseValue) || empty($this->keenCrapFix)) ? 0 : $this->baseValue/$this->keenCrapFix;
-        $this->scarcityAdjustment       = ($this->planetCount*10)+($this->otherCount*5);
-        $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/$this->serverCount));
+        $this->storeAdjustedValue       = (empty($this->baseValue) || empty($this->keenCrapFix)) ? 0 : $this->baseValue*$this->keenCrapFix;
+        $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/($this->totalServers*10)));
         $this->baseConversionEfficiency = $this->data->base_conversion_efficiency;
         $this->baseProcessingTimePerOre = $this->data->base_processing_time_per_ore;
     }
@@ -82,20 +86,21 @@ class Ores extends dbClass
         $this->baseGameRefinerySpeed = (is_null($refinery->baseRefinerySpeed)) ? 0 : $refinery->baseRefinerySpeed;
     }
 
-    public function setBaseValue() {
+    private function setBaseValue() {
         //Ore gather and process markup * $this->getBaseCostToGatherOre
         $refineryCostPerHour        = $this->baseRefineryKilowattPerHourUsage*$this->costPerKilowattHour;
         $drillingCostPerHour        = $this->magicData->base_drill_per_kw_hour*$this->costPerKilowattHour;
         $laborCostPerHour           = $this->magicData->base_labor_per_hour;
         $perHourCosts               = $refineryCostPerHour+$drillingCostPerHour+$laborCostPerHour;
         $this->baseValue            = 0;
-        $baseValuesArray = ($perHourCosts * $this->baseCostToGatherAnOre)/60/60;
-        $this->baseValue = $baseValuesArray;
+        if($this->id != 10) {
+            $this->baseValue = array_sum($this->orePerIngot) * 2;
+        }
         $oresBaseProcessingTime   = $this->data->base_processing_time_per_ore;
         $this->refiningTimePerOre = $this->baseGameRefinerySpeed/$oresBaseProcessingTime;
     }
 
-    public function setBaseCostToGather() {
+    private function setBaseCostToGather() {
         $orePerIngot = 0;
         foreach ($this->orePerIngot as $required) {
             $orePerIngot+=(double)$required;
@@ -104,6 +109,26 @@ class Ores extends dbClass
         $scalingModifier    = (double)$this->clusterData->scaling_modifier;
 
         $this->baseCostToGatherAnOre = ($orePerIngot/$baseOrePerIngot)*$scalingModifier;
+    }
+
+    private function setTotalPlanetsAsteroidsOn() {
+        $serversWithOre = $this->findPivots('ore', 'server', $this->id);
+        foreach($serversWithOre as $server) {
+            if(in_array($server, $this->planetIds)) {
+                $this->totalPlanetsOn++;
+            } elseif(in_array($server, $this->asteroidIds)) {
+                $this->totalAsteroidsOn++;
+            }
+        }
+    }
+
+    private function setScarcityAdjustment() {
+        $totalServersWithOre = $this->totalPlanetsOn+$this->totalAsteroidsOn;
+        if($totalServersWithOre === $this->totalServers) {
+            $this->scarcityAdjustment = $this->totalServers*10;
+        } else {
+            $this->scarcityAdjustment = ($this->totalPlanetsOn * 10) + ($this->totalAsteroidsOn * 5);
+        }
     }
 
     public function getData() {
@@ -134,7 +159,8 @@ class Ores extends dbClass
             if($modules === 0) {
                 return $this->orePerIngot[$ingotIds[0]];
             } else {
-                return $this->orePerIngot[$ingotIds[0]] * $this->moduleEfficiencyModifier * $modules;
+
+                return $this->orePerIngot[$ingotIds[0]] - ($this->moduleEfficiencyModifier*$modules);
             }
         }
 
@@ -151,6 +177,10 @@ class Ores extends dbClass
 
     public function getScarcityAdjustedValue() {
         return $this->scarcityAdjustedValue;
+    }
+
+    public function getScarcityAdjustment() {
+        return $this->scarcityAdjustment;
     }
     
     public function getKeenCrapFix() {
@@ -173,6 +203,10 @@ class Ores extends dbClass
         $modifer = $modules*$this->moduleEfficiencyModifier;
 
         return $this->baseConversionEfficiency + $modifer;
+    }
+
+    public function getServerCount() {
+        return$this->serverCount;
     }
 
     public function getSystemStock() {

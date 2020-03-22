@@ -130,6 +130,7 @@ $corePhp        = new CorePHP();
                 <th>Store Adjusted</th>
                 <th>Scarcity Adjusted Value</th>
                 <th>Keen crap fix</th>
+                <th>Scarcity Adjustment</th>
                 <th>Base cost to gather 1 ore</th>
           </tr>
           </thead>
@@ -142,9 +143,10 @@ $corePhp        = new CorePHP();
               <td><?=round($ore->getOreRequiredPerIngot(),2);?></td>
               <td><?=$ore->getOreRequiredPerIngot(4);?></td>
               <td><?=$ore->getBaseValue();?></td>
-              <td><?=$ore->getStoreAdjustedValue();?></td>
-              <td><?=$ore->getScarcityAdjustedValue();?></td>
+              <td><?=round($ore->getStoreAdjustedValue());?></td>
+              <td><?=round($ore->getScarcityAdjustedValue());?></td>
               <td><?=$ore->getKeenCrapFix();?></td>
+              <td><?=$ore->getScarcityAdjustment();?></td>
               <td><?=$ore->getBaseCostToGatherOre(1);?></td>
             </tr>
           <?php endforeach ?>
@@ -152,7 +154,38 @@ $corePhp        = new CorePHP();
         </table>
       </div>
     </section>
-    <?php foreach(['ingots','components'] as $table) :
+    <section id="ingots" class="simpleDisplay">
+        <h2><a class="headerTitle" href="#ingots">Ingots</a></h2>
+        <div class="tab-content">
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>base effeciency * conversion efficiency * Ore processed per second</th>
+                    <th>Base Value</th>
+                    <th>Value with maximum eff modules</th>
+                    <th>Store Adjusted Min</th>
+                    <th>Videshee Value</th>
+                    <th>KEEEN!!!</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($cluster->getIngots() as $ingot) : ?>
+                    <tr>
+                        <td><?= $ingot->getName();?></td>
+                        <td><?=$ingot->getEfficiencyPerSecond()  ;?></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                <?php endforeach ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <?php foreach(['components'] as $table) :
         $$table = $corePhp->readTable($table);
         ?>
         <section id="<?=$table;?>" class="simpleDisplay">
