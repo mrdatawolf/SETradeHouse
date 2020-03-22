@@ -5,6 +5,7 @@ use DB\dbClass;
 class Clusters extends dbClass
 {
     public $id;
+    public $clusterId;
     public $totalServers = 0;
     public $totalPlanets = 0;
     public $totalAsteroids = 0;
@@ -21,41 +22,60 @@ class Clusters extends dbClass
     protected $componentIds;
     protected $components;
 
+
+
+    public $foundationalOreId;
+    public $foundationalIngotId;
+    public $foundationOreData;
+    public $foundationIngotData;
+    public $foundationOrePerIngot;
+    public $planetIds = [];
+    public $asteroidIds = [];
+
     private $table = 'clusters';
 
-    public function __construct()
+    public function __construct($clusterId)
     {
         parent::__construct();
-        $this->id   = $this->clusterId;
+        $this->id           = $clusterId;
+        $this->clusterId    = $clusterId;
         $this->gatherData();
 
         $this->gatherServers();
-        $this->scalingModifier = $this->clusterData->scaling_modifier;
+        $this->scalingModifier = $this->data->scaling_modifier;
         $this->magicNumbersClass = new MagicNumbers();
         $this->gatherOres();
         $this->gatherIngots();
         $this->gatherComponents();
+        $this->gatherFoundationOre();
+        $this->gatherFoundationIngot();
     }
 
     private function gatherData() {
-        $this->data = $this->clusterData;
+        $this->data = $this->find($this->table, $this->clusterId);
+
+        $serverIds = $this->findPivots('cluster','server', $this->id);
+        foreach($serverIds as $serverId) {
+            $this->totalServers++;
+            $serverTypes = $this->findPivots('server', 'systemtype', $serverId);
+            if(!empty($serverTypes)) {
+                foreach($serverTypes as $serverType) {
+                    if((int)$serverType === 1) {
+                        $this->planetIds[] = $serverId;
+                        $this->totalPlanets++;
+                    } else {
+                        $this->asteroidIds[] = $serverId;
+                        $this->totalAsteroids++;
+                    }
+                }
+            }
+        }
+        $this->foundationalOreId    = $this->data->economy_ore;
     }
 
     private function gatherServers() {
         $this->serverIds = $this->findPivots('cluster','server', $this->clusterId);
         foreach($this->serverIds as $serverId) {
-            $this->totalServers++;
-            $serverTypes = $this->findPivots('server', 'systemtype', $serverId);
-            if(!empty($serverTypes)) {
-                foreach($serverTypes as $serverType) {
-                    if($serverType === 1) {
-                        $this->totalPlanets++;
-                    } else {
-                        $this->totalAsteroids++;
-                    }
-                }
-
-            }
             $this->servers[$serverId] = new Servers($serverId);
         }
     }
@@ -91,6 +111,10 @@ class Clusters extends dbClass
         return $this->servers;
     }
 
+    public function getServerIds() {
+        return array_flip($this->servers);
+    }
+
     public function getTotalServers() {
         return $this->totalServers;
     }
@@ -104,30 +128,56 @@ class Clusters extends dbClass
     }
 
     public function getStoneModifier() {
-        return $this->clusterData->economy_stone_modifier;
+        return $this->data->economy_stone_modifier;
     }
 
     public function getAsteroidScarcityModifier() {
-        return $this->clusterData->asteroid_scarcity_modifier;
+        return $this->daata->asteroid_scarcity_modifier;
     }
 
     public function getPlanetScarcityModifier() {
-        return $this->clusterData->planet_scarcity_modifier;
+        return $this->data->planet_scarcity_modifier;
     }
 
     public function getBaseModifier() {
-        return $this->clusterData->base_modifier;
+        return $this->data->base_modifier;
     }
 
-    public function getOres() {
+    public function getOres($id = null) {
+        if(!empty($id)) {
+            return $this->ores[$id];
+        }
         return $this->ores;
     }
 
-    public function getIngots() {
-        return $this->ingots;
+    public function getIngots($id) {
+        if(!empty($id)) {
+            return $this->ingots[$id];
+        }
+        return $this->ingots[$id];
     }
 
-    public function getComponents() {
-        return $this->components;
+    public function getComponents($id) {
+        if(!empty($id)) {
+            return $this->components[$id];
+        }
+        return $this->components[$id];
     }
+
+    public function getClusterId() {
+        return $this->id;
+    }
+
+
+    private function gatherFoundationOre() {
+        $this->foundationOreData = $this->find('ores',  $this->foundationalOreId);
+    }
+
+    private function gatherFoundationIngot() {
+        $this->foundationalIngotId = $this->findPivots('ore','ingot', $this->foundationalOreId)[0];
+
+        $this->foundationIngotData      = $this->find('ingots', $this->foundationalIngotId);
+        $this->foundationOrePerIngot    = $this->foundationIngotData->ore_required;
+    }
+
 }

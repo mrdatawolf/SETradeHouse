@@ -12,40 +12,24 @@ class dbClass
     public $dbase;
     public $headers;
     public $rows;
-	public $clusterId;
-    public $clusterData;
     public $magicData;
-    public $baseGameRefinerySpeed;
     public $baseRefineryKilowattPerHourUsage;
     public $baseRefineryCostPerHour;
     public $baseDrillCostPerHour;
     public $costPerKilowattHour;
-    public $foundationalOreId;
-    public $foundationalIngotId;
-    public $foundationOreData;
-    public $foundationIngotData;
-    public $foundationOrePerIngot;
-    public $totalServers;
-    public $totalPlanets;
-    public $totalAsteroids;
-    public $planetIds = [];
-    public $asteroidIds = [];
-    
+
+
     public function __construct()
     {
-		$this->clusterId = 2;
-
         $dsn = 'sqlite:'.getcwd().'/db/core.sqlite';
 
         $this->dbase = new PDO($dsn);
         $this->dbase->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		$this->gatherMagicData();
-        $this->gatherClusterData();
-        $this->gatherFoundationOre();
-        $this->gatherFoundationIngot();
     }
-    
+
+
     public function gatherFromTable($table) {
         return $this->dbase->query("SELECT * FROM " . $table)->fetchAll(PDO::FETCH_OBJ);
     }
@@ -106,6 +90,7 @@ class dbClass
         return $pivotedIds;
     }
 
+
 	private function gatherMagicData() {
         $this->magicData                        = $this->gatherFromTable('magic_numbers')[0];
         $this->baseRefineryKilowattPerHourUsage = $this->magicData->base_refinery_kwh;
@@ -115,38 +100,7 @@ class dbClass
 
     }
 
-    private function gatherClusterData() {
-        $this->clusterData          = $this->find('clusters', $this->clusterId);
-        $serverIds = $this->findPivots('cluster','server', $this->clusterId);
-        foreach($serverIds as $serverId) {
-            $this->totalServers++;
-            $serverTypes = $this->findPivots('server', 'systemtype', $serverId);
-            if(!empty($serverTypes)) {
-                foreach($serverTypes as $serverType) {
-                    if((int)$serverType === 1) {
-                        $this->planetIds[] = $serverId;
-                        $this->totalPlanets++;
-                    } else {
-                        $this->asteroidIds[] = $serverId;
-                        $this->totalAsteroids++;
-                    }
-                }
-            }
-        }
-        $this->foundationalOreId    = $this->clusterData->economy_ore;
-    }
 
-    private function gatherFoundationOre() {
-        $this->foundationOreData = $this->find('ores',  $this->foundationalOreId);
-    }
-
-    private function gatherFoundationIngot() {
-        $this->foundationalIngotId = $this->findPivots('ore','ingot', $this->foundationalOreId)[0];
-
-        $this->foundationIngotData      = $this->find('ingots', $this->foundationalIngotId);
-        $this->foundationOrePerIngot    = $this->foundationIngotData->ore_required;
-    }
-    
     public function create($insertArray, $table) {
         $prepareColumns = "";
         $executeArray = [];
@@ -241,10 +195,6 @@ class dbClass
         }
 
             return $row;
-    }
-
-    public function getClusterId() {
-        return $this->clusterId;
     }
 
 

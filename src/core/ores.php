@@ -12,15 +12,16 @@ class Ores extends dbClass
 {
     public $id;
     protected $title;
+    protected $cluster;
     protected $data;
     protected $serversData;
-    protected $ingotsData;
     protected $baseConversionEfficiency;
     protected $baseProcessingTimePerOre;
     protected $moduleEfficiencyModifier;
     protected $serverCount;
     protected $totalPlanetsOn = 0;
     protected $totalAsteroidsOn = 0;
+    protected $baseGameRefinerySpeed;
 
     private $baseValue;
     private $refiningTimePerOre;
@@ -30,7 +31,6 @@ class Ores extends dbClass
     private $scarcityAdjustedValue;
     private $keenCrapFix;
     private $baseCostToGatherAnOre;
-    private $scalingModifier;
 
     private $table = 'ores';
     
@@ -41,11 +41,10 @@ class Ores extends dbClass
     public function __construct($id)
     {
         parent::__construct();
+        $this->cluster = new Clusters(2);
         $this->id = (int) $id;
         $this->gatherData();
-        $this->gatherIngotsData();
         $this->gatherRefineryData();
-        $this->gatherServersData();
 
         $this->setBaseCostToGather();
         $this->setBaseValue();
@@ -53,32 +52,16 @@ class Ores extends dbClass
         $this->setScarcityAdjustment();
 
         $this->storeAdjustedValue       = (empty($this->baseValue) || empty($this->keenCrapFix)) ? 0 : $this->baseValue*$this->keenCrapFix;
-        $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/($this->totalServers*10)));
+        $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/($this->cluster->totalServers*10)));
         $this->baseConversionEfficiency = $this->data->base_conversion_efficiency;
         $this->baseProcessingTimePerOre = $this->data->base_processing_time_per_ore;
     }
 
     private function gatherData() {
-        $this->data               = $this->find($this->table, $this->id);
-        $this->title              = $this->data->title;
-        $this->keenCrapFix        = $this->data->keen_crap_fix;
-        $this->moduleEfficiencyModifier  = $this->data->module_efficiency_modifier;
-    }
-    
-    private function gatherIngotsData() {
-        $ingotIds           = $this->findPivots('ore', 'ingot', $this->id);
-        $this->ingotsData   = $this->findIn('ingots', $ingotIds);
-        foreach($this->ingotsData as $ingotData) {
-            $this->orePerIngot[$ingotData->base_ore] = $ingotData->ore_required;
-        }
-    }
-
-    private function gatherServersData() {
-        $serverIds              = $this->findPivots('ore','server', $this->id);
-        $clusterServers         = $this->findPivots('cluster','server', $this->clusterId);
-        $this->serversData      = $this->findIn('servers', array_intersect($clusterServers, $serverIds));
-        $this->serverCount      = count($this->serversData);
-        $this->scalingModifier  = $this->clusterData->scaling_modifier;
+        $this->data                     = $this->find($this->table, $this->id);
+        $this->title                    = $this->data->title;
+        $this->keenCrapFix              = $this->data->keen_crap_fix;
+        $this->moduleEfficiencyModifier = $this->data->module_efficiency_modifier;
     }
 
     private function gatherRefineryData() {
@@ -88,11 +71,11 @@ class Ores extends dbClass
 
     private function setBaseValue() {
         //Ore gather and process markup * $this->getBaseCostToGatherOre
-        $refineryCostPerHour        = $this->baseRefineryKilowattPerHourUsage*$this->costPerKilowattHour;
+        /*$refineryCostPerHour        = $this->baseRefineryKilowattPerHourUsage*$this->costPerKilowattHour;
         $drillingCostPerHour        = $this->magicData->base_drill_per_kw_hour*$this->costPerKilowattHour;
         $laborCostPerHour           = $this->magicData->base_labor_per_hour;
         $perHourCosts               = $refineryCostPerHour+$drillingCostPerHour+$laborCostPerHour;
-        $this->baseValue            = 0;
+        $this->baseValue            = 0;*/
         if($this->id != 10) {
             $this->baseValue = array_sum($this->orePerIngot) * 2;
         }
@@ -105,8 +88,8 @@ class Ores extends dbClass
         foreach ($this->orePerIngot as $required) {
             $orePerIngot+=(double)$required;
         }
-        $baseOrePerIngot    = (double)$this->foundationOrePerIngot;
-        $scalingModifier    = (double)$this->clusterData->scaling_modifier;
+        $baseOrePerIngot    = (double)$this->cluster->foundationOrePerIngot;
+        $scalingModifier    = (double)$this->cluster->getScalingModifier();
 
         $this->baseCostToGatherAnOre = ($orePerIngot/$baseOrePerIngot)*$scalingModifier;
     }
@@ -114,9 +97,9 @@ class Ores extends dbClass
     private function setTotalPlanetsAsteroidsOn() {
         $serversWithOre = $this->findPivots('ore', 'server', $this->id);
         foreach($serversWithOre as $server) {
-            if(in_array($server, $this->planetIds)) {
+            if(in_array($server, $this->cluster->planetIds)) {
                 $this->totalPlanetsOn++;
-            } elseif(in_array($server, $this->asteroidIds)) {
+            } elseif(in_array($server, $this->cluster->asteroidIds)) {
                 $this->totalAsteroidsOn++;
             }
         }
@@ -124,8 +107,8 @@ class Ores extends dbClass
 
     private function setScarcityAdjustment() {
         $totalServersWithOre = $this->totalPlanetsOn+$this->totalAsteroidsOn;
-        if($totalServersWithOre === $this->totalServers) {
-            $this->scarcityAdjustment = $this->totalServers*10;
+        if($totalServersWithOre === $this->cluster->totalServers) {
+            $this->scarcityAdjustment = $this->cluster->totalServers*10;
         } else {
             $this->scarcityAdjustment = ($this->totalPlanetsOn * 10) + ($this->totalAsteroidsOn * 5);
         }

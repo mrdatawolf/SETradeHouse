@@ -7,6 +7,7 @@ class Servers extends dbClass
     public $id;
     protected $title;
     protected $data;
+    protected $cluster;
     protected $oreIds;
     protected $ores;
 
@@ -15,6 +16,7 @@ class Servers extends dbClass
     public function __construct($id)
     {
         parent::__construct();
+        $this->cluster = new Clusters(2);
         $this->id = $id;
         $this->data = $this->gatherData();
         $this->ores = $this->gatherOres();

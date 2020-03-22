@@ -6,7 +6,7 @@ use Core\MagicNumbers;
 use Core\Clusters;
 
 $magicNumbers   = new MagicNumbers();
-$cluster        = new Clusters();
+$cluster        = new Clusters(2);
 $corePhp        = new CorePHP();
 ?>
 <!DOCTYPE html>
@@ -165,7 +165,6 @@ $corePhp        = new CorePHP();
                     <th>Base Value</th>
                     <th>Value with maximum eff modules</th>
                     <th>Store Adjusted Min</th>
-                    <th>Videshee Value</th>
                     <th>KEEEN!!!</th>
                 </tr>
                 </thead>
@@ -173,12 +172,11 @@ $corePhp        = new CorePHP();
                 <?php foreach($cluster->getIngots() as $ingot) : ?>
                     <tr>
                         <td><?= $ingot->getName();?></td>
-                        <td><?=$ingot->getEfficiencyPerSecond()  ;?></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td><?=$ingot->getEfficiencyPerSecond();?></td>
+                        <td><?=$ingot->getBaseValue();?></td>
+                        <td><?=$ingot->getBaseValueWithEfficiency(4);?></td>
+                        <td><?=$ingot->getStoreAdjustedMinimum();?></td>
+                        <td><?=$ingot->getKeenCrapFix();?></td>
                     </tr>
                 <?php endforeach ?>
                 </tbody>
@@ -220,16 +218,16 @@ $corePhp        = new CorePHP();
                 <tr><th colspan="3">Ore</th> </tr>
                 <tr>
                     <th>Name</th>
-                    <th>Base Value</th>
-                    <th>Base Value + Scarcity</th>
+                    <th>Store Adjusted</th>
+                    <th>Store Adjusted  Scarcity</th>
                 </tr>
                 </thead>
                 <tbody>
                     <?php foreach($cluster->getOres() as $ore) : ?>
                     <tr>
                         <td><?=$ore->getName();?></td>
-                        <td><?=$ore->getBaseValue();?></td>
-                        <td><?=$ore->getScarcityAdjustedValue();?></td>
+                        <td><?=round($ore->getStoreAdjustedValue());?></td>
+                        <td><?=round($ore->getScarcityAdjustedValue());?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -237,16 +235,16 @@ $corePhp        = new CorePHP();
                 <tr><th colspan="3">Ingots</th> </tr>
                 <tr>
                     <th>Name</th>
-                    <th>Base Value</th>
-                    <th>Base Value + Scarcity</th>
+                    <th>Store Adjusted</th>
+                    <th>Store Adjusted with Scarcity</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach($cluster->getIngots() as $ingot) : ?>
                     <tr>
                         <td><?=$ingot->getName();?></td>
-                        <td><?=$ingot->getBaseValue();?></td>
-                        <td><?=$ingot->getScarcityAdjustedValue();?></td>
+                        <td><?=round($ingot->getStoreAdjustedMinimum());?></td>
+                        <td><?=round($ingot->getScarcityAdjustedValue());?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -255,16 +253,16 @@ $corePhp        = new CorePHP();
                     <tr><th colspan="3">Components</th> </tr>
                     <tr>
                         <th>Name</th>
-                        <th>Base Value</th>
-                        <th>Base Value + Scarcity</th>
+                        <th>Store Adjusted</th>
+                        <th>Store Adjusted with Scarcity</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($cluster->getComponents() as $component) : ?>
                     <tr>
                         <td><?=$component->getName();?></td>
-                        <td><?=$component->getBaseValue();?></td>
-                        <td><?=$component->getScarcityAdjustedValue();?></td>
+                        <td><?=round($component->getStoreAdjustedMinimum());?></td>
+                        <td><?=round($component->getScarcityAdjustedValue());?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

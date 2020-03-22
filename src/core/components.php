@@ -9,6 +9,7 @@ class Components extends dbClass
     public $title;
 
     protected $data;
+    protected $cluster;
     protected $ingotData;
     protected $baseValue;
     protected $scarcityAdjustedValue;
@@ -17,9 +18,10 @@ class Components extends dbClass
     public function __construct($id)
     {
         parent::__construct();
-
+        $this->cluster = new Clusters(2);
         $this->id      = $id;
         $this->gatherData();
+        $this->setBaseValue();
         $this->scarcityAdjustedValue = 1;
         $this->keenCrapFix = 1;
 
@@ -27,8 +29,21 @@ class Components extends dbClass
 
     private function gatherData() {
         $this->data = $this->find('components', $this->id);
-        $this->setBaseValue();
         $this->title = $this->data->title;
+    }
+
+
+    private function setBaseValue() {
+        $systemOres = [];
+
+        foreach($this->cluster->getOres() as $ores) {
+            $oreName = $ores->getName();
+            $systemOres[$oreName] = $this->data->$$oreName;
+        }
+        //todo::get the real base value;
+        $this->ddng($systemOres);
+        //$this->baseValue = $this->data['oreRequired']*$this->oreClass->getStoreAdjustedValue();
+        $this->baseValue = 1;
     }
 
     public function getName() {
@@ -43,14 +58,8 @@ class Components extends dbClass
         return $this->baseValue;
     }
 
-    public function setBaseValue() {
-        //note: this is going to need to pull the storeAdjusted value of each ingot*the amount needed to make this comp. and add all of them together.
-        //$this->baseValue = $this->data['oreRequired']*$this->oreClass->getStoreAdjustedValue();
-        $this->baseValue = 1;
-    }
-
     public function getStoreAdjustedMinimum() {
-        return $this->baseValue*$this->data['keen_crap_fix'];
+        return $this->baseValue*$this->keenCrapFix;
     }
 
     public function getScarcityAdjustedValue() {
@@ -63,19 +72,19 @@ class Components extends dbClass
 
     public function getIngotAmountNeeded($ingotId) {
         $this->ingotData = $this->find('ingots', $ingotId);
-        $ingotTitle = $this->ingotData['title'];
+        $ingotTitle = $this->ingotData->title;
         return $this->data[$ingotTitle];
     }
 
     public function getComponentMass() {
-        return $this->data['mass'];
+        return $this->data->mass;
     }
 
     public function getComponentVolume() {
-        return $this->data['volume'];
+        return $this->data->volume;
     }
 
     public function getDensity() {
-        return (empty($this->data['mass'])) ? 0 : $this->data['mass']/$this->data['volume'];
+        return (empty($this->data->mass)) ? 0 : $this->data->mass/$this->data->volume;
     }
 }
