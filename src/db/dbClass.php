@@ -3,6 +3,7 @@
 use \PDO;
 use \PDOException;
 use \Exception;
+use Core\MagicNumbers;
 
 class dbClass
 {
@@ -13,6 +14,10 @@ class dbClass
     public $headers;
     public $rows;
     public $magicData;
+    /**
+     * MagicNumbers @var
+     */
+    public $magic;
     public $baseRefineryKilowattPerHourUsage;
     public $baseRefineryCostPerHour;
     public $baseDrillCostPerHour;
@@ -25,7 +30,6 @@ class dbClass
 
         $this->dbase = new PDO($dsn);
         $this->dbase->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 		$this->gatherMagicData();
     }
 
@@ -97,7 +101,7 @@ class dbClass
         $this->costPerKilowattHour              = $this->magicData->cost_kw_hour;
         $this->baseRefineryCostPerHour          = $this->magicData->base_refinery_kwh*$this->magicData->cost_kw_hour;
         $this->baseDrillCostPerHour             = $this->magicData->base_drill_per_kw_hour*$this->magicData->cost_kw_hour;
-
+        $this->magic =  new MagicNumbers();
     }
 
 

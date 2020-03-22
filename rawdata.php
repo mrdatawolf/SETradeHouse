@@ -2,7 +2,7 @@
 require __DIR__ .'/vendor/autoload.php';
 
 use Colonization\CorePHP;
-$tablesRequired = ['ores','ingots','components','servers', 'stations', 'tradeZones', 'clusters', 'cluster_servers', 'magicNumbers', 'systemTypes', 'ingotOres', 'oresServers', 'oresStations', 'serversLinks', 'serversSystemTypes'];
+$tablesRequired = ['ores','ingots','components','servers', 'stations', 'tradeZones', 'clusters', 'cluster_servers', 'magicNumbers', 'systemTypes', 'ingotsOres', 'oresServers', 'oresStations', 'serversLinks', 'serversSystemTypes'];
 $corePHP = new CorePHP();
 ?>
 <!DOCTYPE html>

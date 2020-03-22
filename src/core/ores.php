@@ -41,7 +41,6 @@ class Ores extends dbClass
     public function __construct($id)
     {
         parent::__construct();
-        $this->cluster = new Clusters(2);
         $this->id = (int) $id;
         $this->gatherData();
         $this->gatherRefineryData();
@@ -50,6 +49,7 @@ class Ores extends dbClass
         $this->setBaseValue();
         $this->setTotalPlanetsAsteroidsOn();
         $this->setScarcityAdjustment();
+        $this->setClusterData(0,0,0, [],[]);
 
         $this->storeAdjustedValue       = (empty($this->baseValue) || empty($this->keenCrapFix)) ? 0 : $this->baseValue*$this->keenCrapFix;
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/($this->cluster->totalServers*10)));
@@ -67,6 +67,24 @@ class Ores extends dbClass
     private function gatherRefineryData() {
         $refinery = new Refinery();
         $this->baseGameRefinerySpeed = (is_null($refinery->baseRefinerySpeed)) ? 0 : $refinery->baseRefinerySpeed;
+    }
+
+
+    /**
+     * @param $scalingModifier
+     * @param $foundationOrePerIngot
+     * @param $totalServers
+     * @param $planetIdArray
+     * @param $asteroidIdArray
+     *
+     * note: this is used to bring in data about the cluster that we need in this class.  Because this class is called inside the cluster class this stops infinite loops.
+     */
+    public function setClusterData($scalingModifier, $foundationOrePerIngot, $totalServers, $planetIdArray, $asteroidIdArray) {
+        $this->cluster->scalingModifier = (double)$scalingModifier;
+        $this->cluster->foundationOrePerIngot = (double)$foundationOrePerIngot;
+        $this->cluster->planetIds = $planetIdArray;
+        $this->cluster->asteroidIds = $asteroidIdArray;
+        $this->cluster->totalServers = $totalServers;
     }
 
     private function setBaseValue() {
@@ -88,10 +106,8 @@ class Ores extends dbClass
         foreach ($this->orePerIngot as $required) {
             $orePerIngot+=(double)$required;
         }
-        $baseOrePerIngot    = (double)$this->cluster->foundationOrePerIngot;
-        $scalingModifier    = (double)$this->cluster->getScalingModifier();
 
-        $this->baseCostToGatherAnOre = ($orePerIngot/$baseOrePerIngot)*$scalingModifier;
+        $this->baseCostToGatherAnOre = ($orePerIngot/$this->cluster->foundationOrePerIngot)*$this->cluster->scalingModifier;
     }
 
     private function setTotalPlanetsAsteroidsOn() {

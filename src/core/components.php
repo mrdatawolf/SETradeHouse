@@ -14,11 +14,12 @@ class Components extends dbClass
     protected $baseValue;
     protected $scarcityAdjustedValue;
     protected $keenCrapFix;
+    protected $clusterOres;
 
     public function __construct($id)
     {
         parent::__construct();
-        $this->cluster = new Clusters(2);
+
         $this->id      = $id;
         $this->gatherData();
         $this->setBaseValue();
@@ -32,11 +33,14 @@ class Components extends dbClass
         $this->title = $this->data->title;
     }
 
+    public function setOres($oreClasses) {
+        $this->cluster->ores = $oreClasses;
+    }
 
     private function setBaseValue() {
         $systemOres = [];
 
-        foreach($this->cluster->getOres() as $ores) {
+        foreach($this->cluster->ores as $ores) {
             $oreName = $ores->getName();
             $systemOres[$oreName] = $this->data->$$oreName;
         }

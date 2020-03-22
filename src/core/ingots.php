@@ -28,12 +28,11 @@ class Ingots extends dbClass
     {
         parent::__construct();
         $this->id      = $id;
-        $this->cluster = new Clusters(2);
 
         $this->gatherData();
         $this->gatherBaseOreData();
         $this->setBaseValue();
-        $this->oreClass                 = $this->cluster->getOre($this->oreId);
+
         $this->storeAdjustedValue       = (empty($this->baseValue) || empty($this->keenCrapFix)) ? 0 : $this->baseValue/$this->keenCrapFix;
         $this->scarcityAdjustment       = ($this->cluster->totalPlanets*10)+($this->cluster->totalAsteroids*5);
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/$this->cluster->totalServers));
@@ -48,6 +47,11 @@ class Ingots extends dbClass
         $this->oreId        = $this->data->base_ore;
         $this->title        = $this->data->title;
         $this->keenCrapFix  = $this->data->keen_crap_fix;
+    }
+
+    public function setOreClass($oreClass) {
+        //$this->oreClass                 = $this->cluster->getOre($this->oreId);
+        $this->oreClass = $oreClass;
     }
 
     private function setBaseValue() {

@@ -51,8 +51,11 @@ class CorePHP
             case 'serversSystemTypes' :
                 $table = 'servers_systemtypes';
                 break;
-            default :
+            case 'magic_numbers' :
                 $table = 'magic_numbers';
+                break;
+            default :
+                die('Invalid table name: ' . $title);
         }
         $dbClass = new dbClass();
 

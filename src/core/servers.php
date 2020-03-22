@@ -16,7 +16,6 @@ class Servers extends dbClass
     public function __construct($id)
     {
         parent::__construct();
-        $this->cluster = new Clusters(2);
         $this->id = $id;
         $this->data = $this->gatherData();
         $this->ores = $this->gatherOres();

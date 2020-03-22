@@ -14,7 +14,6 @@ class Clusters extends dbClass
     protected $servers;
     protected $scalingModifier;
     protected $serverIds;
-    protected $magicNumbersClass;
     protected $oreIds;
     protected $ores;
     protected $ingotIds;
@@ -43,7 +42,6 @@ class Clusters extends dbClass
 
         $this->gatherServers();
         $this->scalingModifier = $this->data->scaling_modifier;
-        $this->magicNumbersClass = new MagicNumbers();
         $this->gatherOres();
         $this->gatherIngots();
         $this->gatherComponents();
@@ -124,7 +122,7 @@ class Clusters extends dbClass
     }
 
     public function getFoundationalOreValue() {
-        return $this->foundationOreData->base_cost_to_gather*$this->magicNumbersClass->getOreGatherCost();
+        return $this->foundationOreData->base_cost_to_gather*$this->magic->getOreGatherCost();
     }
 
     public function getStoneModifier() {
@@ -132,7 +130,7 @@ class Clusters extends dbClass
     }
 
     public function getAsteroidScarcityModifier() {
-        return $this->daata->asteroid_scarcity_modifier;
+        return $this->data->asteroid_scarcity_modifier;
     }
 
     public function getPlanetScarcityModifier() {
@@ -150,14 +148,14 @@ class Clusters extends dbClass
         return $this->ores;
     }
 
-    public function getIngots($id) {
+    public function getIngots($id = null) {
         if(!empty($id)) {
             return $this->ingots[$id];
         }
         return $this->ingots[$id];
     }
 
-    public function getComponents($id) {
+    public function getComponents($id = null) {
         if(!empty($id)) {
             return $this->components[$id];
         }
