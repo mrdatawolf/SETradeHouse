@@ -17,19 +17,19 @@ class Servers extends dbClass
     {
         parent::__construct();
         $this->id = $id;
-        $this->data = $this->gatherData();
-        $this->ores = $this->gatherOres();
+
+        $this->gatherData();
+        $this->gatherOreIds();
 
     }
 
     private function gatherData() {
-        $this->data              = $this->find($this->table, $this->id);
-        $this->title                = $this->data->title;
+        $this->data     = $this->find($this->table, $this->id);
+        $this->title    = $this->data->title;
     }
 
-    private function gatherOres() {
+    private function gatherOreIds() {
         $this->oreIds = $this->findPivots('server', 'ore', $this->id);
-        return $this->findIn('ores', $this->oreIds);
 
     }
 

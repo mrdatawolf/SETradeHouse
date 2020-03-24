@@ -9,12 +9,10 @@ class Components extends dbClass
     public $title;
 
     protected $data;
-    protected $cluster;
     protected $ingotData;
     protected $baseValue;
     protected $scarcityAdjustedValue;
     protected $keenCrapFix;
-    protected $clusterOres;
 
     public function __construct($id)
     {
@@ -33,17 +31,13 @@ class Components extends dbClass
         $this->title = $this->data->title;
     }
 
-    public function setOres($oreClasses) {
-        $this->cluster->ores = $oreClasses;
-    }
-
     private function setBaseValue() {
         $systemOres = [];
 
-        foreach($this->cluster->ores as $ores) {
+        /*foreach($this->cluster->ores as $ores) {
             $oreName = $ores->getName();
             $systemOres[$oreName] = $this->data->$$oreName;
-        }
+        }*/
         //todo::get the real base value;
         $this->ddng($systemOres);
         //$this->baseValue = $this->data['oreRequired']*$this->oreClass->getStoreAdjustedValue();

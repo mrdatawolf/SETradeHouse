@@ -11,10 +11,19 @@ use Production\Refinery;
 class Ores extends dbClass
 {
     public $id;
+    public $foundationalOreId;
+    public $foundationalIngotId;
+    public $foundationOreData;
+    public $foundationIngotData;
+    public $foundationOrePerIngot;
+    public $planetIds = [];
+    public $asteroidIds = [];
+
+
     protected $title;
     protected $cluster;
     protected $data;
-    protected $serversData;
+    protected $magicData;
     protected $baseConversionEfficiency;
     protected $baseProcessingTimePerOre;
     protected $moduleEfficiencyModifier;
@@ -43,6 +52,7 @@ class Ores extends dbClass
         parent::__construct();
         $this->id = (int) $id;
         $this->gatherData();
+        $this->gatherMagicData();
         $this->gatherRefineryData();
 
         $this->setBaseCostToGather();
@@ -55,6 +65,8 @@ class Ores extends dbClass
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/($this->cluster->totalServers*10)));
         $this->baseConversionEfficiency = $this->data->base_conversion_efficiency;
         $this->baseProcessingTimePerOre = $this->data->base_processing_time_per_ore;
+
+        //$this->foundationalOreId    = $this->data->economy_ore;
     }
 
     private function gatherData() {
@@ -62,6 +74,33 @@ class Ores extends dbClass
         $this->title                    = $this->data->title;
         $this->keenCrapFix              = $this->data->keen_crap_fix;
         $this->moduleEfficiencyModifier = $this->data->module_efficiency_modifier;
+    }
+
+    private function gatherMagicData() {
+        $this->magicData = $this->gatherFromTable('magic_numbers');
+    }
+
+    private function gatherFoundationOre() {
+        $this->foundationOreData = $this->find('ores',  $this->foundationalOreId);
+    }
+
+
+    private function gatherFoundationIngot() {
+        $this->foundationalIngotId = $this->findPivots('ore','ingot', $this->foundationalOreId)[0];
+
+        $this->foundationIngotData      = $this->find('ingots', $this->foundationalIngotId);
+        $this->foundationOrePerIngot    = $this->foundationIngotData->ore_required;
+    }
+
+
+
+    public function getFoundationalOreValue() {
+        //public function getOreGatherCost() {
+                $baseDrillCostPerHour = $this->magicData->base_drill_per_kw_hour*$this->magicData->cost_kw_hour;
+                $baseRefineryCostPerHour          = $this->magicData->base_refinery_kwh*$this->magicData->cost_kw_hour;
+        $oreGatherCost = $this->baseRefineryCostPerHour+$this->baseDrillCostPerHour+$this->data->base_labor_per_hour/60/60;
+        //    }
+        return $this->foundationOreData->base_cost_to_gather*$oreGatherCost;
     }
 
     private function gatherRefineryData() {
@@ -151,20 +190,6 @@ class Ores extends dbClass
 	public function getRefineryTime() {
 		return  (empty($this->data['base_processing_time_per_ore'])) ? null : $this->baseGameRefinerySpeed/$this->refiningTimePerOre;
 	}
-
-	public function getOreRequiredPerIngot($modules = 0) {
-        $ingotIds           = $this->findPivots('ore', 'ingot', $this->id);
-        if(! empty($ingotIds[0])) {
-            if($modules === 0) {
-                return $this->orePerIngot[$ingotIds[0]];
-            } else {
-
-                return $this->orePerIngot[$ingotIds[0]] - ($this->moduleEfficiencyModifier*$modules);
-            }
-        }
-
-        return null;
-    }
 
     public function getBaseValue() {
         return $this->baseValue;

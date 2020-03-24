@@ -4,46 +4,57 @@ use DB\dbClass;
 
 class MagicNumbers extends dbClass
 {
+    protected $data;
+
     public function __construct()
     {
         parent::__construct();
-        //we don't get magicData because dbClass already does that.
+        $this->gatherData();
+    }
+
+
+    private function gatherData() {
+        $this->data                        = $this->gatherFromTable('magic_numbers')[0];
+        $this->baseRefineryKilowattPerHourUsage = $this->data->base_refinery_kwh;
+        $this->costPerKilowattHour              = $this->data->cost_kw_hour;
+        $this->baseRefineryCostPerHour          = $this->data->base_refinery_kwh*$this->data->cost_kw_hour;
+        $this->baseDrillCostPerHour             = $this->data->base_drill_per_kw_hour*$this->data->cost_kw_hour;
     }
 
     public function getBaseEfficiency() {
-        return $this->magicData->receipt_base_efficiency;
+        return $this->data->receipt_base_efficiency;
     }
 
     public function getBaseMultiplierForBuyVsSell() {
-        return $this->magicData->base_multiplier_for_buy_vs_sell;
+        return $this->data->base_multiplier_for_buy_vs_sell;
     }
 
     public function getBaseRefineryKWh() {
-         return $this->magicData->base_refinery_kwh;
+         return $this->data->base_refinery_kwh;
     }
 
     public function getCostPerKWh() {
-        return $this->magicData->cost_kw_hour;
+        return $this->data->cost_kw_hour;
     }
 
     public function getBaseRefinerySpeed() {
-        return $this->magicData->base_refinery_speed;
+        return $this->data->base_refinery_speed;
     }
 
     public function getBaseLaborPerHour() {
-        return $this->magicData->base_labor_per_hour;
+        return $this->data->base_labor_per_hour;
     }
 
     public function getDrillKWPerHour() {
-        return $this->magicData->base_drill_per_kw_hour;
+        return $this->data->base_drill_per_kw_hour;
     }
 
     public function getOreGatherCost() {
-        return $this->baseRefineryCostPerHour+$this->baseDrillCostPerHour+$this->getBaseLaborPerHour()/60/60;
+        return $this->baseRefineryCostPerHour+$this->baseDrillCostPerHour+$this->data->base_labor_per_hour/60/60;
     }
 
     public function getWeightForSystemStock() {
-        return $this->magicData->base_weight_for_system_stock;
+        return $this->data->base_weight_for_system_stock;
     }
 
 

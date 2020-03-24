@@ -13,12 +13,15 @@ class Ingots extends dbClass
     protected $cluster;
     protected $oreId;
     protected $oreData;
+    protected $magicData;
+    protected $originOre;
     protected $storeAdjustedValue;
     protected $scarcityAdjustment;
     protected $scarcityAdjustedValue;
+    protected $moduleEfficiencyModifier;
     protected $keenCrapFix;
+    protected $oreRequired;
 
-    private $oreClass;
     private $baseValue;
     private $title;
 
@@ -30,6 +33,7 @@ class Ingots extends dbClass
         $this->id      = $id;
 
         $this->gatherData();
+        $this->gatherMagicData();
         $this->gatherBaseOreData();
         $this->setBaseValue();
 
@@ -37,25 +41,30 @@ class Ingots extends dbClass
         $this->scarcityAdjustment       = ($this->cluster->totalPlanets*10)+($this->cluster->totalAsteroids*5);
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/$this->cluster->totalServers));
     }
-    
-    private function gatherBaseOreData() {
-        $this->oreData = $this->find('ores', $this->oreId);
-    }
+
 
     private function gatherData() {
         $this->data         = $this->find($this->table, $this->id);
         $this->oreId        = $this->data->base_ore;
         $this->title        = $this->data->title;
         $this->keenCrapFix  = $this->data->keen_crap_fix;
+        $this->oreRequired  = $this->data->ore_required;
     }
 
-    public function setOreClass($oreClass) {
-        //$this->oreClass                 = $this->cluster->getOre($this->oreId);
-        $this->oreClass = $oreClass;
+
+    private function gatherMagicData() {
+        $this->magicData = $this->gatherFromTable('magic_numbers');
     }
+
+
+    private function gatherBaseOreData() {
+        $this->oreData = $this->find('ores', $this->originOre);
+        $this->moduleEfficiencyModifier = $this->oreData->module_efficiency_modifier;
+    }
+
 
     private function setBaseValue() {
-        $this->baseValue =$this->data->ore_required*$this->oreClass->getStoreAdjustedValue();
+        $this->baseValue =$this->oreRequired*$this->getStoreAdjustedMinimum();
     }
 
     public function getName() {
@@ -63,8 +72,8 @@ class Ingots extends dbClass
     }
     
     public function getEfficiencyPerSecond() {
-        $derivedEfficiency  = $this->magicData->base_multiplier_for_buy_vs_sell*$this->oreClass->getBaseConversionEfficiency();
-        $time               = ($this->magicData->base_labor_per_hour/$this->oreClass->getBaseProcessingTimePerOre());
+        $derivedEfficiency  = $this->magicData->base_multiplier_for_buy_vs_sell*$this->oreData->base_conversion_efficiency;
+        $time               = ($this->magicData->base_labor_per_hour/$this->oreData->base_processing_time_per_ore);
         
         return $derivedEfficiency*$time;
     }
@@ -86,6 +95,14 @@ class Ingots extends dbClass
     }
 
     public function getBaseValueWithEfficiency($modules) {
-        return $this->oreClass->getOreRequiredPerIngot($modules)*$this->oreClass->getScarcityAdjustedValue();
+        return $this->getOreRequiredPerIngot($modules)*$this->getScarcityAdjustedValue();
+    }
+
+    public function getOreRequiredPerIngot($modules = 0) {
+            if($modules === 0) {
+                return $this->oreRequired;
+            } else {
+                return $this->oreRequired - ($this->moduleEfficiencyModifier*$modules);
+            }
     }
 }
