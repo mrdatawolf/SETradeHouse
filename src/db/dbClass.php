@@ -11,8 +11,6 @@ class dbClass
      * @var PDO
      */
     public $dbase;
-    public $headers;
-    public $rows;
     public $baseRefineryKilowattPerHourUsage;
     public $baseRefineryCostPerHour;
     public $baseDrillCostPerHour;
@@ -102,37 +100,7 @@ class dbClass
     }
 
     public function read($table) {
-        if(empty($this->headers) && empty($this->rows)) {
-            try {
-                $stmt = $this->dbase->prepare("SELECT * FROM ".$table);
-                $stmt->execute();
 
-                $row = 0;
-                $lastRow = [];
-                foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $data) {
-                    $row++;
-                    foreach ($data as $key => $value) {
-                        if($key === 'base_cost_to_gather') {
-                            $value = sprintf('%f', $value);
-                            $key = $key . ' (rounded)';
-                        }
-                        if ($row === 1) {
-                            $this->headers[] = $key;
-
-                            $lastRow[$key] = $value;
-                        }
-                        $this->rows[$row][] = $value;
-                    }
-                }
-                $finalRowId = $row+1;
-                $this->rows[$finalRowId] = $this->addFinalRow($lastRow, $finalRowId, $table);
-            } catch (PDOException $ex) {
-                $this->headers[] = 'Error';
-                $this->rows[]    = "No valid data found!";
-            }
-        }
-
-        return ['headers' => $this->headers, 'rows' => $this->rows];
     }
 
 

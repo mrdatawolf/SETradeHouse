@@ -3,9 +3,24 @@ require "vendor/autoload.php";
 
 use Colonization\CorePHP;
 use Core\Clusters;
+use Core\MagicNumbers;
+use Core\Servers;
+use Core\Ores;
+use Core\Ingots;
 
-$cluster        = new Clusters(2);
-$corePhp        = new CorePHP();
+$cluster  = new Clusters(2);
+foreach($cluster->getServerIds() as $serverId) {
+    $servers[$serverId] = new Servers($serverId);
+}
+foreach($cluster->getOreIds() as $oreId){
+    $ores[$oreId] = new Ores($oreId);
+}
+foreach($cluster->getIngotIds() as $ingotId){
+    $ingots[$ingotId] = new Ingots($ingotId);
+}
+$corePhp    = new CorePHP();
+$magic      = new MagicNumbers();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +32,6 @@ $corePhp        = new CorePHP();
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link href="public/css/default.css" type="text/css" rel="stylesheet">
     <script src="public/js/default.js"></script>
-
 </head>
 <body>
 <?php require_once('menubar.php'); ?>
@@ -43,14 +57,14 @@ $corePhp        = new CorePHP();
                 </thead>
                 <tbody>
                 <tr>
-                    <td><?=$this->magic->getBaseEfficiency()*100;?>%</td>
-                    <td><?=$this->magic->getBaseMultiplierForBuyVsSell()*100;?>%</td>
-                    <td><?=$this->magic->getBaseRefineryKWh();?></td>
-                    <td><?=$this->magic->getCostPerKWh();?></td>
-                    <td><?=$this->magic->getBaseRefinerySpeed()*100;?>%</td>
-                    <td><?=$this->magic->getBaseLaborPerHour();?></td>
-                    <td><?=$this->magic->getDrillKWPerHour();?></td>
-                    <td><?=$this->magic->getOreGatherCost();?></td>
+                    <td><?=$magic->getBaseEfficiency()*100;?>%</td>
+                    <td><?=$magic->getBaseMultiplierForBuyVsSell()*100;?>%</td>
+                    <td><?=$magic->getBaseRefineryKWh();?></td>
+                    <td><?=$magic->getCostPerKWh();?></td>
+                    <td><?=$magic->getBaseRefinerySpeed()*100;?>%</td>
+                    <td><?=$magic->getBaseLaborPerHour();?></td>
+                    <td><?=$magic->getDrillKWPerHour();?></td>
+                    <td><?=$magic->getOreGatherCost();?></td>
                 </tr>
                 </tbody>
             </table>
@@ -61,7 +75,7 @@ $corePhp        = new CorePHP();
                     <th>How much weight does the system stock have?</th>
                     <th>Number of Systems in cluster * 10</th>
                     <th>Scaling Modifier</th>
-                    <th>Foundational (<?= $cluster->foundationOreData->title;?>) Ore base value</th>
+                    <th>Foundational (<?='platinum';?>) Ore base value</th>
                     <th>Modifier to Stone Value</th>
                     <th>Total Systems in Cluster</th>
                     <th>Base asteroid scarcity modifier</th>
@@ -71,10 +85,10 @@ $corePhp        = new CorePHP();
                 </thead>
                 <tbody>
                 <tr>
-                    <th><?=$this->magic->getWeightForSystemStock();?></th>
+                    <th><?=$magic->getWeightForSystemStock();?></th>
                     <th><?=$cluster->getTotalServers()*10;?></th>
                     <th><?=$cluster->getScalingModifier();?></th>
-                    <th><?=$cluster->getFoundationalOreValue();?></th>
+                    <th><?=$cluster->data->economy_ore;?></th>
                     <th><?=$cluster->getStoneModifier();?></th>
                     <th><?=$cluster->getTotalServers();?></th>
                     <th><?=$cluster->getAsteroidScarcityModifier();?></th>
@@ -91,19 +105,19 @@ $corePhp        = new CorePHP();
                     <th>Base processing time per ore</th>
                     <th>Base conversion efficiency</th>
                     <th>Max eff mods</th>
-                    <?php foreach($cluster->getServers() as $server) : ?>
+                    <?php foreach($servers as $server) : ?>
                         <th><?=$server->getName();?></th>
                     <?php endforeach; ?>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($cluster->getOres() as $ore) : ?>
+                <?php foreach($ores as $ore) : ?>
                     <tr>
                         <td><?=$ore->getName();?></td>
                         <td><?=$ore->getBaseProcessingTimePerOre();?></td>
                         <td><?=$ore->getMaxEfficiencyWithModules(0)*100;?>%</td>
                         <td><?=round($ore->getMaxEfficiencyWithModules(4)*100, 2);?>%</td>
-                        <?php foreach($cluster->getServers() as $server) : ?>
+                        <?php foreach($servers as $server) : ?>
                             <?php $hasOre = (in_array($ore->id, $server->getOreIds()));?>
                             <td class="<?=($hasOre) ? 'hasOre' : '';?>"><?= ($hasOre) ? "1" : "0"; ?></td>
                         <?php endforeach ?>
@@ -133,7 +147,7 @@ $corePhp        = new CorePHP();
           </tr>
           </thead>
           <tbody>
-          <?php foreach($cluster->getOres() as $ore) : ?>
+          <?php foreach($ores() as $ore) : ?>
             <tr>
               <td><?=$ore->getName();?></td>
               <td><?=$this->magic->getBaseRefinerySpeed()/$ore->getBaseProcessingTimePerOre();?></td>
@@ -167,7 +181,7 @@ $corePhp        = new CorePHP();
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($cluster->getIngots() as $ingot) : ?>
+                <?php foreach($ingots as $ingot) : ?>
                     <tr>
                         <td><?= $ingot->getName();?></td>
                         <td><?=$ingot->getEfficiencyPerSecond();?></td>

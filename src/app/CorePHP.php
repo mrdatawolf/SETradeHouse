@@ -5,7 +5,7 @@ use DB\dbClass;
 
 class CorePHP
 {
-    function readTable($title)
+    function getTableName($title)
     {
         switch ($title) {
             case 'tradeZones' :
@@ -14,8 +14,8 @@ class CorePHP
             case 'systemTypes' :
                 $table = 'system_types';
                 break;
-            case 'ingotOres' :
-                $table = 'ingot_ores';
+            case 'ingotsOres' :
+                $table = 'ingots_ores';
                 break;
             case 'oresServers' :
                 $table = 'ores_servers';
@@ -30,14 +30,14 @@ class CorePHP
                 $table = 'servers_systemtypes';
                 break;
             case 'magics' :
+            case 'magicNumbers' :
                 $table = 'magic_numbers';
                 break;
             default :
                 $table = $title;
         }
-        $dbClass = new dbClass();
 
-        return $dbClass->read($table);
+        return $table;
     }
     
 

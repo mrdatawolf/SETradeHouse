@@ -2,8 +2,58 @@
 require __DIR__ .'/vendor/autoload.php';
 
 use Colonization\CorePHP;
-$tablesRequired = ['ores','ingots','components','servers', 'stations', 'tradeZones', 'clusters', 'cluster_servers', 'magicNumbers', 'systemTypes', 'ingotsOres', 'oresServers', 'oresStations', 'serversLinks', 'serversSystemTypes'];
+use DB\dbClass;
+$tablesRequired = ['ores','ingots','components','servers', 'stations', 'tradeZones', 'clusters', 'clusters_servers', 'magicNumbers', 'systemTypes', 'ingotsOres', 'oresServers', 'oresStations', 'serversLinks', 'serversSystemTypes'];
 $corePHP = new CorePHP();
+$dbClass = new dbClass();
+
+function read($table) {
+    $dbClass = new dbClass();
+    $stmt = $dbClass->dbase->prepare("SELECT * FROM ".$table);
+    $stmt->execute();
+
+    $rowNumber = 0;
+    $lastRow = [];
+    $headers = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $data) {
+        $rowNumber++;
+        foreach ($data as $key => $value) {
+            if($key === 'base_cost_to_gather') {
+                $value = sprintf('%f', $value);
+                $key = $key . ' (rounded)';
+            }
+            if ($rowNumber === 1) {
+                $headers[] = $key;
+
+                $lastRow[$key] = $value;
+            }
+            $rows[$rowNumber][] = $value;
+        }
+    }
+    $finalRowId = $rowNumber+1;
+    $rows[$finalRowId] = addFinalRow($lastRow, $finalRowId, $table);
+
+    return ['headers' => $headers, 'rows' => $rows];
+}
+
+function addFinalRow($lastRow, $finalRowId, $table) {
+    $row = [];
+    foreach($lastRow as $key => $value) {
+        switch ($key) {
+            case 'id' :
+                $row[$key] = '<button id="addRow" class="addId" data-row_id="' . $finalRowId  . '" data-table="' . $table  . '" disabled><span class="fa fa-plus"></span></button>';
+                break;
+            case 'title' :
+                $row[$key] = '<input type=text value="" data-type="title" class="addTitle">';
+                break;
+            default:
+                $row[$key] = '<input type=text value="" data-type="general" class="addGeneral">';
+        }
+
+    }
+
+    return $row;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +71,8 @@ $corePHP = new CorePHP();
 <?php require_once('menubar.php'); ?>
 <article class="tabs">
     <?php foreach($tablesRequired as $table) :
-        $$table = $corePHP->readTable($table);
+        $tableName = $corePHP->getTableName($table);
+        $tableData = read($tableName);
         ?>
       <section id="<?=$table;?>" class="simpleDisplay">
         <h2><a class="headerTitle" href="#<?=$table;?>"><?=$table;?></a></h2>
@@ -29,13 +80,13 @@ $corePHP = new CorePHP();
           <table>
             <thead>
             <tr>
-                <?php foreach($$table['headers'] as $header) : ?>
+                <?php foreach($tableData['headers'] as $header) : ?>
                   <th><?=$header; ?></th>
                 <?php endforeach; ?>
             </tr>
             </thead>
             <tbody>
-            <?php foreach($$table['rows'] as $data) : ?>
+            <?php foreach($tableData['rows'] as $data) : ?>
               <tr>
                   <?php foreach($data as $row) : ?>
                     <td><?= $row; ?></td>
