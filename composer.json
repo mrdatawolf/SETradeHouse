@@ -1,11 +1,11 @@
 {
     "autoload": {
         "psr-4": {
-            "Colonization\\": "src/app/",
-            "DB\\": "src/db/",
-            "API\\": "src/api/",
-            "Core\\": "src/core/",
-            "Production\\": "src/production"
+            "Colonization\\": "src/App/",
+            "DB\\": "src/Db/",
+            "API\\": "src/Api/",
+            "Core\\": "src/Core/",
+            "Production\\": "src/Production"
         }
     },
     "require": {
