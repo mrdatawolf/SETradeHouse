@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c133a602ed8028bb6533f203446b5d50",
+    "content-hash": "dc053f440823fd0579405a1791f2107a",
     "packages": [
         {
             "name": "eftec/bladeone",
-            "version": "3.36.2",
+            "version": "3.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EFTEC/BladeOne.git",
-                "reference": "fcbd6e9e4c8885e8567c9109f66a93d0496f153e"
+                "reference": "88a571c4a2a9b4c8f53c2da98cc0499d0654155d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/fcbd6e9e4c8885e8567c9109f66a93d0496f153e",
-                "reference": "fcbd6e9e4c8885e8567c9109f66a93d0496f153e",
+                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/88a571c4a2a9b4c8f53c2da98cc0499d0654155d",
+                "reference": "88a571c4a2a9b4c8f53c2da98cc0499d0654155d",
                 "shasum": ""
             },
             "require": {
@@ -35,7 +35,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.36.2-dev"
+                    "dev-master": "3.37-dev"
                 }
             },
             "autoload": {
@@ -62,7 +62,7 @@
                 "templating",
                 "view"
             ],
-            "time": "2020-02-28T13:53:28+00:00"
+            "time": "2020-03-10T15:34:49+00:00"
         }
     ],
     "packages-dev": [],
@@ -71,6 +71,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-pdo": "*"
+    },
     "platform-dev": []
 }

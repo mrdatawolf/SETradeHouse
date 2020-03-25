@@ -1,5 +1,5 @@
 <?php
-require "vendor/autoload.php";
+require __DIR__ .'/vendor/autoload.php';
 
 use Colonization\CorePHP;
 use Core\Clusters;
@@ -45,7 +45,7 @@ $magic      = new MagicNumbers();
             <table>
                 <thead>
                 <tr>
-                    <th>Receipt base effeciency</th>
+                    <th>Receipt base efficiency</th>
                     <th>Base Multiplier for Buy vs Sell</th>
                     <th>base refinery kWh</th>
                     <th>Cost per kWh</th>
