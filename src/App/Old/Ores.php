@@ -1,23 +1,19 @@
-<?php namespace Core;
+<?php namespace Old;
 
-
-use DB\dbClass;
-use Production\Refinery;
+use Illuminate\Database\Eloquent\Model;
+use Models\Refinery;
 
 /**
  * Class Ores
  * @package Core
  */
-class Ores extends dbClass
+class Ores extends Model
 {
     public $id;
     public $foundationalOreId;
     public $foundationalIngotId;
     public $foundationOreData;
     public $foundationIngotData;
-    public $foundationOrePerIngot;
-    public $planetIds = [];
-    public $asteroidIds = [];
 
 
     protected $title;
@@ -33,7 +29,6 @@ class Ores extends dbClass
     protected $totalAsteroidsOn = 0;
     protected $baseGameRefinerySpeed;
 
-    private $clusterId;
     private $baseValue;
     private $refiningTimePerOre;
     private $orePerIngot;
@@ -43,7 +38,8 @@ class Ores extends dbClass
     private $keenCrapFix;
     private $baseCostToGatherAnOre;
 
-    private $table = 'ores';
+    protected $table = 'ores';
+    protected $fillable = ['title','base_cost_to_gather','base_processing_time_per_ore','base_conversion_efficiency','keen_crap_fix','module_efficiency_modifier'];
     
     /**
      * Ores constructor.
@@ -58,6 +54,7 @@ class Ores extends dbClass
         $this->gatherMagicData();
         $this->gatherRefineryData();
         $this->gatherIngotData();
+        $this->gatherFoundationOre();
 
         $this->setBaseCostToGather();
         $this->setBaseValue();
@@ -69,8 +66,6 @@ class Ores extends dbClass
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/($this->cluster->totalServers*10)));
         $this->baseConversionEfficiency = $this->data->base_conversion_efficiency;
         $this->baseProcessingTimePerOre = $this->data->base_processing_time_per_ore;
-
-        //$this->foundationalOreId    = $this->data->economy_ore;
     }
 
     private function gatherData() {
@@ -78,6 +73,11 @@ class Ores extends dbClass
         $this->title                    = $this->data->title;
         $this->keenCrapFix              = $this->data->keen_crap_fix;
         $this->moduleEfficiencyModifier = $this->data->module_efficiency_modifier;
+    }
+
+    private function gatherFoundationOreData() {
+        //$this->foundationalOreId    = $this->data->economy_ore;
+        $this->foundationOreData  = $this->find('ores',$this->foundationalOreId);
     }
 
     private function gatherMagicData() {
@@ -90,6 +90,7 @@ class Ores extends dbClass
 
     private function gatherClusterData($clusterId) {
         $this->clusterData = $this->find('clusters', $clusterId);
+        $this->foundationalOreId = $this->clusterData->economy_ore;
     }
 
     private function gatherFoundationOre() {

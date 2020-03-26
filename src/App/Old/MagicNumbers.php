@@ -1,8 +1,9 @@
-<?php namespace Core;
+<?php namespace Old;
 
-use DB\dbClass;
 
-class MagicNumbers extends dbClass
+use Illuminate\Database\Eloquent\Model;
+
+class MagicNumbers extends Model
 {
     protected $data;
 

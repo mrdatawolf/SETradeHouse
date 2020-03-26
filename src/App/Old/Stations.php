@@ -1,8 +1,8 @@
-<?php namespace Core;
+<?php namespace Old;
 
-use DB\dbClass;
+use Illuminate\Database\Eloquent\Model;
 
-class stations extends dbClass
+class Stations extends Model
 {
     public $id;
 

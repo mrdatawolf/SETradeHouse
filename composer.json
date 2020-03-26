@@ -1,15 +1,17 @@
 {
     "autoload": {
         "psr-4": {
-            "Colonization\\": "src/App/",
-            "DB\\": "src/Db/",
             "API\\": "src/Api/",
+            "Controllers\\": "src/App/Controllers/",
             "Core\\": "src/Core/",
-            "Production\\": "src/Production"
+            "DB\\": "src/Db/",
+            "Models\\": "src/App/Models/",
+            "Repositories\\": "src/App/Repositories"
         }
     },
     "require": {
-        "eftec/bladeone": "^3.34",
+        "eftec/bladeone": "*",
+        "illuminate/database": "*",
         "ext-pdo": "*",
         "ext-json": "*"
     }

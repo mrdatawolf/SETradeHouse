@@ -1,12 +1,14 @@
-<?php namespace Core;
+<?php namespace Old;
 
-use DB\dbClass;
+
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ingots
+ *
  * @package Core
  */
-class Ingots extends dbClass
+class Ingots extends Model
 {
     public $id;
     protected $data;

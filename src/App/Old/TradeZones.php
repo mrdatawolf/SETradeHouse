@@ -1,8 +1,9 @@
-<?php namespace Core;
+<?php namespace Old;
 
-use DB\dbClass;
 
-class tradeZones extends dbClass
+use Illuminate\Database\Eloquent\Model;
+
+class TradeZones extends Model
 {
     public $id;
 

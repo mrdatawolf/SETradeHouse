@@ -1,8 +1,8 @@
-<?php namespace Core;
+<?php namespace Old;
 
-use DB\dbClass;
+use Illuminate\Database\Eloquent\Model;
 
-class Components extends dbClass
+class Components extends Model
 {
 
     public $id;
@@ -16,7 +16,6 @@ class Components extends dbClass
 
     public function __construct($id)
     {
-        parent::__construct();
 
         $this->id      = $id;
         $this->gatherData();

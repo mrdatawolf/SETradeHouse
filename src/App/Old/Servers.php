@@ -1,8 +1,8 @@
-<?php namespace Core;
+<?php namespace Old;
 
-use DB\dbClass;
+use Illuminate\Database\Eloquent\Model;
 
-class Servers extends dbClass
+class Servers extends Model
 {
     public $id;
     protected $title;
