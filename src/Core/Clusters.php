@@ -10,13 +10,14 @@ class Clusters extends dbClass
     public $totalServers = 0;
     public $totalPlanets = 0;
     public $totalAsteroids = 0;
+    public $data;
 
-    protected $data;
     protected $scalingModifier;
-    protected $serverIds;
-    protected $planetIds;
-    protected $asteroidIds;
-    protected $ores;
+    protected $serverIds    = [];
+    protected $oreIds       = [];
+    protected $ingotIds     = [];
+    protected $planetIds    = [];
+    protected $asteroidIds  = [];
 
 
 
@@ -58,6 +59,16 @@ class Clusters extends dbClass
                     }
                 }
             }
+            foreach ($this->findPivots('server', 'ore', $serverId) as $oreId) {
+                if ( ! in_array($oreId, $this->oreIds)) {
+                    $this->oreIds[] = $oreId;
+                }
+                foreach ($this->findPivots('ore', 'ingot', $oreId) as $ingotId) {
+                    if ( ! in_array($ingotId, $this->ingotIds)) {
+                        $this->ingotIds[] = $ingotId;
+                    }
+                }
+            }
         }
     }
 
@@ -65,6 +76,15 @@ class Clusters extends dbClass
     public function getServerIds() {
         return $this->serverIds;
     }
+
+    public function getOreIds() {
+        return $this->oreIds;
+    }
+
+    public function getIngotIds() {
+        return $this->ingotIds;
+    }
+
 
     public function getTotalServers() {
         return $this->totalServers;

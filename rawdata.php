@@ -49,7 +49,6 @@ function addFinalRow($lastRow, $finalRowId, $table) {
             default:
                 $row[$key] = '<input type=text value="" data-type="general" class="addGeneral">';
         }
-
     }
 
     return $row;

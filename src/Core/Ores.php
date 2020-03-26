@@ -21,9 +21,10 @@ class Ores extends dbClass
 
 
     protected $title;
-    protected $cluster;
     protected $data;
     protected $magicData;
+    protected $ingotData;
+    protected $clusterData;
     protected $baseConversionEfficiency;
     protected $baseProcessingTimePerOre;
     protected $moduleEfficiencyModifier;
@@ -32,6 +33,7 @@ class Ores extends dbClass
     protected $totalAsteroidsOn = 0;
     protected $baseGameRefinerySpeed;
 
+    private $clusterId;
     private $baseValue;
     private $refiningTimePerOre;
     private $orePerIngot;
@@ -52,14 +54,16 @@ class Ores extends dbClass
         parent::__construct();
         $this->id = (int) $id;
         $this->gatherData();
+        $this->gatherClusterData(2);
         $this->gatherMagicData();
         $this->gatherRefineryData();
+        $this->gatherIngotData();
 
         $this->setBaseCostToGather();
         $this->setBaseValue();
         $this->setTotalPlanetsAsteroidsOn();
         $this->setScarcityAdjustment();
-        $this->setClusterData(0,0,0, [],[]);
+
 
         $this->storeAdjustedValue       = (empty($this->baseValue) || empty($this->keenCrapFix)) ? 0 : $this->baseValue*$this->keenCrapFix;
         $this->scarcityAdjustedValue    = $this->storeAdjustedValue*(2-($this->scarcityAdjustment/($this->cluster->totalServers*10)));
@@ -78,6 +82,14 @@ class Ores extends dbClass
 
     private function gatherMagicData() {
         $this->magicData = $this->gatherFromTable('magic_numbers');
+    }
+
+    private function gatherIngotData() {
+        $this->ingotData = $this->find('ingots',$this->id, 'base_ore');
+    }
+
+    private function gatherClusterData($clusterId) {
+        $this->clusterData = $this->find('clusters', $clusterId);
     }
 
     private function gatherFoundationOre() {
@@ -108,24 +120,6 @@ class Ores extends dbClass
         $this->baseGameRefinerySpeed = (is_null($refinery->baseRefinerySpeed)) ? 0 : $refinery->baseRefinerySpeed;
     }
 
-
-    /**
-     * @param $scalingModifier
-     * @param $foundationOrePerIngot
-     * @param $totalServers
-     * @param $planetIdArray
-     * @param $asteroidIdArray
-     *
-     * note: this is used to bring in data about the cluster that we need in this class.  Because this class is called inside the cluster class this stops infinite loops.
-     */
-    public function setClusterData($scalingModifier, $foundationOrePerIngot, $totalServers, $planetIdArray, $asteroidIdArray) {
-        $this->cluster->scalingModifier = (double)$scalingModifier;
-        $this->cluster->foundationOrePerIngot = (double)$foundationOrePerIngot;
-        $this->cluster->planetIds = $planetIdArray;
-        $this->cluster->asteroidIds = $asteroidIdArray;
-        $this->cluster->totalServers = $totalServers;
-    }
-
     private function setBaseValue() {
         //Ore gather and process markup * $this->getBaseCostToGatherOre
         /*$refineryCostPerHour        = $this->baseRefineryKilowattPerHourUsage*$this->costPerKilowattHour;
@@ -142,6 +136,7 @@ class Ores extends dbClass
 
     private function setBaseCostToGather() {
         $orePerIngot = 0;
+        $this->ddng($this->orePerIngot);
         foreach ($this->orePerIngot as $required) {
             $orePerIngot+=(double)$required;
         }

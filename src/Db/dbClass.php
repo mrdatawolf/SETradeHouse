@@ -31,13 +31,14 @@ class dbClass
 
 
     /**
-     * @param $table
-     * @param $id
+     * @param string $table
+     * @param string $id
+     * @param $column
      *
      * @return mixed
      */
-    public function find($table, $id) {
-        $stmt = $this->dbase->prepare("SELECT * FROM " . $table . " WHERE id= ?");
+    public function find($table, $id, $column = 'id') {
+        $stmt = $this->dbase->prepare("SELECT * FROM ".$table." WHERE ".$column."= ?");
         $stmt->execute([$id]);
 
         return $stmt->fetchObject();
@@ -99,7 +100,7 @@ class dbClass
     }
 
     public function read($table) {
-
+        return json_encode($this->gatherFromTable($table));
     }
 
 
@@ -133,26 +134,6 @@ class dbClass
     }
 
 
-    private function addFinalRow($lastRow, $finalRowId, $table) {
-        $row = [];
-        foreach($lastRow as $key => $value) {
-            switch ($key) {
-                case 'id' :
-                    $row[$key] = '<button id="addRow" class="addId" data-row_id="' . $finalRowId  . '" data-table="' . $table  . '" disabled><span class="fa fa-plus"></span></button>';
-                    break;
-                case 'title' :
-                    $row[$key] = '<input type=text value="" data-type="title" class="addTitle">';
-                    break;
-                default:
-                    $row[$key] = '<input type=text value="" data-type="general" class="addGeneral">';
-            }
-
-        }
-
-            return $row;
-    }
-
-
     function ddng($var)
     {
         ini_set("highlight.keyword", "#a50000;  font-weight: bolder");
@@ -163,7 +144,8 @@ class dbClass
         $highlighted_output = ob_get_clean();
 
         $highlighted_output = str_replace(["&lt;?php", "?&gt;"], '', $highlighted_output);
-
+        $dbgt=debug_backtrace();
+        echo "See {$dbgt[1]['file']} on line {$dbgt[1]['line']}";
         echo $highlighted_output;
         die();
     }
