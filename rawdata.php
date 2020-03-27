@@ -1,58 +1,16 @@
 <?php
-require __DIR__ .'/vendor/autoload.php';
+require 'start.php';
 
-use Colonization\CorePHP;
-use DB\dbClass;
-$tablesRequired = ['ores','ingots','components','servers', 'stations', 'tradeZones', 'clusters', 'clusters_servers', 'magicNumbers', 'systemTypes', 'ingotsOres', 'oresServers', 'oresStations', 'serversLinks', 'serversSystemTypes'];
-$corePHP = new CorePHP();
-$dbClass = new dbClass();
+use Controllers\Ores;
+
+//$tablesRequired = ['ores','ingots','components','servers', 'stations', 'trade_zones', 'clusters', 'clusters_servers', 'magic_numbers', 'system_types', 'servers_links'];
+$tables = ['Ores'];
 
 function read($table) {
-    $dbClass = new dbClass();
-    $stmt = $dbClass->dbase->prepare("SELECT * FROM ".$table);
-    $stmt->execute();
-
-    $rowNumber = 0;
-    $lastRow = [];
-    $headers = [];
-    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $data) {
-        $rowNumber++;
-        foreach ($data as $key => $value) {
-            if($key === 'base_cost_to_gather') {
-                $value = sprintf('%f', $value);
-                $key = $key . ' (rounded)';
-            }
-            if ($rowNumber === 1) {
-                $headers[] = $key;
-
-                $lastRow[$key] = $value;
-            }
-            $rows[$rowNumber][] = $value;
-        }
-    }
-    $finalRowId = $rowNumber+1;
-    $rows[$finalRowId] = addFinalRow($lastRow, $finalRowId, $table);
-
-    return ['headers' => $headers, 'rows' => $rows];
+  return ['headers' => Ores::headers(), 'rows' => Ores::rows()];
 }
 
-function addFinalRow($lastRow, $finalRowId, $table) {
-    $row = [];
-    foreach($lastRow as $key => $value) {
-        switch ($key) {
-            case 'id' :
-                $row[$key] = '<button id="addRow" class="addId" data-row_id="' . $finalRowId  . '" data-table="' . $table  . '" disabled><span class="fa fa-plus"></span></button>';
-                break;
-            case 'title' :
-                $row[$key] = '<input type=text value="" data-type="title" class="addTitle">';
-                break;
-            default:
-                $row[$key] = '<input type=text value="" data-type="general" class="addGeneral">';
-        }
-    }
 
-    return $row;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,9 +27,8 @@ function addFinalRow($lastRow, $finalRowId, $table) {
 <body>
 <?php require_once('menubar.php'); ?>
 <article class="tabs">
-    <?php foreach($tablesRequired as $table) :
-        $tableName = $corePHP->getTableName($table);
-        $tableData = read($tableName);
+    <?php foreach($tables as $table) :
+        $tableData = read($table);
         ?>
       <section id="<?=$table;?>" class="simpleDisplay">
         <h2><a class="headerTitle" href="#<?=$table;?>"><?=$table;?></a></h2>
