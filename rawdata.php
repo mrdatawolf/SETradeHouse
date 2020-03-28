@@ -2,14 +2,52 @@
 require 'start.php';
 
 use Controllers\Ores;
+use Controllers\Ingots;
+use Controllers\Components;
+use Controllers\Servers;
+use Controllers\Stations;
+use Controllers\TradeZones;
+use Controllers\Clusters;
+use Controllers\MagicNumbers;
+use Controllers\SystemTypes;
 
 //$tablesRequired = ['ores','ingots','components','servers', 'stations', 'trade_zones', 'clusters', 'clusters_servers', 'magic_numbers', 'system_types', 'servers_links'];
-$tables = ['Ores'];
+$tables = ['Ores', 'Ingots', 'Components', 'Servers', 'Stations', 'TradeZones', 'Clusters', 'MagicNumbers', 'SystemTypes'];
 
 function read($table) {
-  return ['headers' => Ores::headers(), 'rows' => Ores::rows()];
-}
+    $headers = null;
+    $rows = null;
+  if($table === 'Ores') {
+      $headers  = Ores::headers();
+      $rows     = Ores::rows();
+  } elseif($table === 'Ingots') {
+      $headers  = Ingots::headers();
+      $rows     = Ingots::rows();
+  } elseif($table === 'Components') {
+      $headers  = Components::headers();
+      $rows     = Components::rows();
+  } elseif($table === 'Servers') {
+      $headers  = Servers::headers();
+      $rows     = Servers::rows();
+  } elseif($table === 'Stations') {
+      $headers  = Stations::headers();
+      $rows     = Stations::rows();
+  } elseif($table === 'TradeZones') {
+      $headers  = TradeZones::headers();
+      $rows     = TradeZones::rows();
+  } elseif($table === 'Clusters') {
+      $headers  = Clusters::headers();
+      $rows     = Clusters::rows();
+  } elseif($table === 'MagicNumbers') {
+      $headers  = MagicNumbers::headers();
+      $rows     = MagicNumbers::rows();
+  } elseif($table === 'SystemTypes') {
+      $headers  = SystemTypes::headers();
+      $rows     = SystemTypes::rows();
+  }
 
+  return ['headers' => $headers, 'rows' => $rows];
+}
 
 ?>
 <!DOCTYPE html>

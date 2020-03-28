@@ -2,6 +2,11 @@
 
 use Models\Ores as Ore;
 
+/**
+ * Class Ores
+ *
+ * @package Controllers
+ */
 class Ores
 {
 
