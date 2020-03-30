@@ -26,9 +26,7 @@ class MagicNumbers extends Model
         return $this->data->receipt_base_efficiency;
     }
 
-    public function getBaseMultiplierForBuyVsSell() {
-        return $this->data->base_multiplier_for_buy_vs_sell;
-    }
+
 
     public function getBaseRefineryKWh() {
          return $this->data->base_refinery_kwh;

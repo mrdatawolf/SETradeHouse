@@ -1,66 +1,45 @@
 <?php namespace Controllers;
 
-use Models\MagicNumbers as MagicNumber;
+use Interfaces\Crud;
+use Models\MagicNumbers as DataSource;
 
 /**
  * Class MagicNumbers
  *
  * @package Controllers
  */
-class MagicNumbers
+class MagicNumbers extends BaseController implements Crud
 {
-    public function create($receiptBaseEfficiency, $baseMultiplierForBuyVsSell, $baseRefineryKwh, $baseRefinerySpeed, $baseDrillPerKwHour, $markupForEachLeg, $markupTotalChange, $baseWeightForSystemStock, $otherServerWeight, $distanceWeight, $serverId, $costKwHour, $baseLaborPerHour) {
-        $magicNumber = new MagicNumber();
-        $magicNumber->receipt_base_efficiency = $receiptBaseEfficiency;
-        $magicNumber->base_multiplier_for_buy_vs_sell = $baseMultiplierForBuyVsSell;
-        $magicNumber->base_refinery_kwh = $baseRefineryKwh;
-        $magicNumber->base_refinery_speed = $baseRefinerySpeed;
-        $magicNumber->base_drill_per_kw_hour = $baseDrillPerKwHour;
-        $magicNumber->markup_for_each_leg = $markupForEachLeg;
-        $magicNumber->markup_total_change = $markupTotalChange;
-        $magicNumber->base_weight_for_system_stock = $baseWeightForSystemStock;
-        $magicNumber->other_server_weight = $otherServerWeight;
-        $magicNumber->distance_weight = $distanceWeight;
-        $magicNumber->server_id = $serverId;
-        $magicNumber->cost_kw_hour = $costKwHour;
-        $magicNumber->base_labor_per_hour = $baseLaborPerHour;
+    public function __construct()
+    {
+        $this->clusterId = null;
+        $this->dataSource   = new DataSource();
+    }
+    public function create($data) {
+        //we shouldn't actually ever create a new row...
+        /*$magicNumber = new DataSource();
+        $magicNumber->receipt_base_efficiency           = $data->receiptBaseEfficiency;
+        $magicNumber->base_multiplier_for_buy_vs_sell   = $data->baseMultiplierForBuyVsSell;
+        $magicNumber->base_refinery_kwh                 = $data->baseRefineryKwh;
+        $magicNumber->base_refinery_speed               = $data->baseRefinerySpeed;
+        $magicNumber->base_drill_per_kw_hour            = $data->baseDrillPerKwHour;
+        $magicNumber->markup_for_each_leg               = $data->markupForEachLeg;
+        $magicNumber->markup_total_change               = $data->markupTotalChange;
+        $magicNumber->base_weight_for_system_stock      = $data->baseWeightForSystemStock;
+        $magicNumber->other_server_weight               = $data->otherServerWeight;
+        $magicNumber->distance_weight                   = $data->distanceWeight;
+        $magicNumber->server_id                         = $data->serverId;
+        $magicNumber->cost_kw_hour                      = $data->costKwHour;
+        $magicNumber->base_labor_per_hour               = $data->baseLaborPerHour;
         $magicNumber->save();
 
-
-        return 1;
+        return true;*/
     }
 
-    public static function headers() {
-        $headers = [];
-        $rowArray = MagicNumber::first()->toArray();
-        foreach (array_keys($rowArray) as $key) {
-            $headers[] = $key;
-        }
+    public function getOreGatherCost() {
+        $data = $this->dataSource->first();
 
-        return $headers;
-    }
-
-    public static function rows() {
-        $rows = [];
-        foreach (MagicNumber::get()->toArray() as $key => $value) {
-            foreach($value as $column => $columnValue) {
-                $rows[$key][] = $columnValue;
-            }
-        }
-
-        return $rows;
-    }
-
-    public static function read() {
-        return MagicNumber::all();
-    }
-
-    public static function update() {
-
-    }
-
-    public static function delete() {
-
+        return ($data->base_refinery_kwh + $data->base_drill_per_kw_hour + $data->base_labor_per_hour) /60 /60;
     }
 
 }

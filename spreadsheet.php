@@ -1,26 +1,25 @@
 <?php
-require __DIR__ .'/vendor/autoload.php';
+require 'start.php';
+use Controllers\MagicNumbers;
+use \Controllers\Clusters;
+use \Controllers\Servers;
+use \Controllers\Ores;
+use \Controllers\Ingots;
+use \Controllers\Components;
 
-use Colonization\CorePHP;
-use Core\Clusters;
-use Core\MagicNumbers;
-use Core\Servers;
-use Core\Ores;
-use Core\Ingots;
+$magic          = new MagicNumbers();
+$cluster        = new Clusters(2);
+$servers        = new Servers(2);
+$ores           = new Ores(2);
+$ingots         = new Ingots(2);
+$components     = new Components(2);
 
-$cluster  = new Clusters(2);
-foreach($cluster->getServerIds() as $serverId) {
-    $servers[$serverId] = new Servers($serverId);
-}
-foreach($cluster->getOreIds() as $oreId){
-    $ores[$oreId] = new Ores($oreId);
-}
-foreach($cluster->getIngotIds() as $ingotId){
-    $ingots[$ingotId] = new Ingots($ingotId);
-}
-$corePhp    = new CorePHP();
-$magic      = new MagicNumbers();
-
+$magicData      = $magic->basicData();
+$clusterData    = $cluster->basicData(2);
+$serversData    = $servers->read();
+$oresData       = $ores->read();
+$ingotsData     = $ingots->read();
+$componentsData = $components->read();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -57,13 +56,13 @@ $magic      = new MagicNumbers();
                 </thead>
                 <tbody>
                 <tr>
-                    <td><?=$magic->getBaseEfficiency()*100;?>%</td>
-                    <td><?=$magic->getBaseMultiplierForBuyVsSell()*100;?>%</td>
-                    <td><?=$magic->getBaseRefineryKWh();?></td>
-                    <td><?=$magic->getCostPerKWh();?></td>
-                    <td><?=$magic->getBaseRefinerySpeed()*100;?>%</td>
-                    <td><?=$magic->getBaseLaborPerHour();?></td>
-                    <td><?=$magic->getDrillKWPerHour();?></td>
+                    <td><?=$magicData->receipt_base_efficiency*100;?>%</td>
+                    <td><?=$magicData->base_multiplier_for_buy_vs_sell*100;?>%</td>
+                    <td><?=$magicData->base_refinery_kwh;?></td>
+                    <td><?=$magicData->cost_kw_hour;?></td>
+                    <td><?=$magicData->base_refinery_speed*100;?>%</td>
+                    <td><?=$magicData->base_labor_per_hour;?></td>
+                    <td><?=$magicData->base_drill_per_kw_hour;?></td>
                     <td><?=$magic->getOreGatherCost();?></td>
                 </tr>
                 </tbody>
@@ -85,15 +84,15 @@ $magic      = new MagicNumbers();
                 </thead>
                 <tbody>
                 <tr>
-                    <th><?=$magic->getWeightForSystemStock();?></th>
+                    <th><?=$magicData->base_weight_for_system_stock;?></th>
                     <th><?=$cluster->getTotalServers()*10;?></th>
-                    <th><?=$cluster->getScalingModifier();?></th>
-                    <th><?=$cluster->data->economy_ore;?></th>
-                    <th><?=$cluster->getStoneModifier();?></th>
+                    <th><?=$clusterData->scaling_modifier;?></th>
+                    <th><?=$clusterData->economy_ore;?></th>
+                    <th><?=$clusterData->economy_stone_modifier;?></th>
                     <th><?=$cluster->getTotalServers();?></th>
-                    <th><?=$cluster->getAsteroidScarcityModifier();?></th>
-                    <th><?=$cluster->getPlanetScarcityModifier();?></th>
-                    <th><?=$cluster->getBaseModifier();?></th>
+                    <th><?=$clusterData->asteroid_scarcity_modifier;?></th>
+                    <th><?=$clusterData->planet_scarcity_modifier;?></th>
+                    <th><?=$clusterData->base_modifier;?></th>
                 </tr>
                 </tbody>
             </table>
@@ -105,16 +104,16 @@ $magic      = new MagicNumbers();
                     <th>Base processing time per ore</th>
                     <th>Base conversion efficiency</th>
                     <th>Max eff mods</th>
-                    <?php foreach($servers as $server) : ?>
-                        <th><?=$server->getName();?></th>
+                    <?php foreach($serversData as $server) : ?>
+                        <th><?=$server->title;?></th>
                     <?php endforeach; ?>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ores as $ore) : ?>
+                <?php foreach($oresData as $ore) : ?>
                     <tr>
-                        <td><?=$ore->getName();?></td>
-                        <td><?=$ore->getBaseProcessingTimePerOre();?></td>
+                        <td><?=$ore->title;?></td>
+                        <td><?=$ore->base_processing_time_per_ore;?></td>
                         <td><?=$ore->getMaxEfficiencyWithModules(0)*100;?>%</td>
                         <td><?=round($ore->getMaxEfficiencyWithModules(4)*100, 2);?>%</td>
                         <?php foreach($servers as $server) : ?>
@@ -147,9 +146,9 @@ $magic      = new MagicNumbers();
           </tr>
           </thead>
           <tbody>
-          <?php foreach($ores() as $ore) : ?>
+          <?php foreach($oresData as $ore) : ?>
             <tr>
-              <td><?=$ore->getName();?></td>
+              <td><?=$ore->title;?></td>
               <td><?=$this->magic->getBaseRefinerySpeed()/$ore->getBaseProcessingTimePerOre();?></td>
               <td><?=round($ore->getRefineryKiloWattHour(),7);?></td>
               <td><?=round($ore->getOreRequiredPerIngot(),2);?></td>
@@ -181,9 +180,9 @@ $magic      = new MagicNumbers();
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ingots as $ingot) : ?>
+                <?php foreach($ingotsData as $ingot) : ?>
                     <tr>
-                        <td><?= $ingot->getName();?></td>
+                        <td><?= $ingot->title;?></td>
                         <td><?=$ingot->getEfficiencyPerSecond();?></td>
                         <td><?=$ingot->getBaseValue();?></td>
                         <td><?=$ingot->getBaseValueWithEfficiency(4);?></td>
@@ -195,22 +194,20 @@ $magic      = new MagicNumbers();
             </table>
         </div>
     </section>
-    <?php foreach(['components'] as $table) :
-        $$table = $corePhp->readTable($table);
-        ?>
-        <section id="<?=$table;?>" class="simpleDisplay">
-            <h2><a class="headerTitle" href="#<?=$table;?>"><?=$table;?></a></h2>
+    <?php foreach($componentsData as $component) : ?>
+        <section id="<?=$component->title;?>" class="simpleDisplay">
+            <h2><a class="headerTitle" href="#<?=$component->title;?>"><?=$component->title;?></a></h2>
             <div class="tab-content">
                 <table>
                     <thead>
                     <tr>
-                        <?php foreach($$table['headers'] as $header) : ?>
+                        <?php foreach($component as $header) : ?>
                             <th><?=$header; ?></th>
                         <?php endforeach; ?>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach($$table['rows'] as $data) : ?>
+                    <?php foreach($component->title['rows'] as $data) : ?>
                         <tr>
                             <?php foreach($data as $row) : ?>
                                 <td><?= $row; ?></td>
@@ -235,9 +232,9 @@ $magic      = new MagicNumbers();
                 </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($cluster->getOres() as $ore) : ?>
+                    <?php foreach($oresData as $ore) : ?>
                     <tr>
-                        <td><?=$ore->getName();?></td>
+                        <td><?=$ore->title;?></td>
                         <td><?=round($ore->getStoreAdjustedValue());?></td>
                         <td><?=round($ore->getScarcityAdjustedValue());?></td>
                     </tr>
@@ -252,9 +249,9 @@ $magic      = new MagicNumbers();
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($cluster->getIngots() as $ingot) : ?>
+                <?php foreach($ingotsData as $ingot) : ?>
                     <tr>
-                        <td><?=$ingot->getName();?></td>
+                        <td><?=$ingot->title;?></td>
                         <td><?=round($ingot->getStoreAdjustedMinimum());?></td>
                         <td><?=round($ingot->getScarcityAdjustedValue());?></td>
                     </tr>
@@ -270,9 +267,9 @@ $magic      = new MagicNumbers();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($cluster->getComponents() as $component) : ?>
+                    <?php foreach($componentsData as $component) : ?>
                     <tr>
-                        <td><?=$component->getName();?></td>
+                        <td><?=$component->title;?></td>
                         <td><?=round($component->getStoreAdjustedMinimum());?></td>
                         <td><?=round($component->getScarcityAdjustedValue());?></td>
                     </tr>
@@ -295,9 +292,9 @@ $magic      = new MagicNumbers();
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($cluster->getOres() as $thing) : ?>
+                <?php foreach($oresData as $thing) : ?>
                     <tr>
-                        <td><?= $thing->getName(); ?></td>
+                        <td><?= $thing->title; ?></td>
                         <td><?= $thing->getSystemStock(); ?></td>
                         <td><?= $thing->getSystemStockGoal(); ?></td>
                     </tr>
@@ -328,9 +325,9 @@ $magic      = new MagicNumbers();
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($cluster->getOres() as $thing) : ?>
+                <?php foreach($oresData as $thing) : ?>
                     <tr>
-                        <td><?=$thing->getName();?></td>
+                        <td><?=$thing->title;?></td>
                         <td>0</td>
                         <td>0</td>
                         <td>0</td>
@@ -362,9 +359,9 @@ $magic      = new MagicNumbers();
                     <th>System</th>
                     <th>Adjusted</th>
                 </tr>
-                <?php foreach($cluster->getIngots() as $thing) : ?>
+                <?php foreach($oresData as $thing) : ?>
                     <tr>
-                        <td><?=$thing->getName();?></td>
+                        <td><?=$thing->title;?></td>
                         <td>0</td>
                         <td>0</td>
                         <td>0</td>
@@ -396,9 +393,9 @@ $magic      = new MagicNumbers();
                     <th>System</th>
                     <th>Adjusted</th>
                 </tr>
-                <?php foreach($cluster->getComponents() as $thing) : ?>
+                <?php foreach($componentsData as $thing) : ?>
                     <tr>
-                        <td><?=$thing->getName();?></td>
+                        <td><?=$thing->title;?></td>
                         <td>0</td>
                         <td>0</td>
                         <td>0</td>

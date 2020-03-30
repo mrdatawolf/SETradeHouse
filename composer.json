@@ -6,7 +6,8 @@
             "Core\\": "src/Core/",
             "DB\\": "src/Db/",
             "Models\\": "src/App/Models/",
-            "Repositories\\": "src/App/Repositories"
+            "Repositories\\": "src/App/Repositories",
+            "Interfaces\\": "src/App/Interfaces"
         }
     },
     "require": {

@@ -1,65 +1,40 @@
 <?php namespace Controllers;
 
-use Models\Components as Component;
+use Interfaces\Crud;
+use Models\Components as DataSource;
 
 /**
  * Class Ingots
  *
  * @package Controllers
  */
-class Components
+class Components extends BaseController implements Crud
 {
+    public $dataSource;
 
-    public function create($title, $cobalt, $gold, $iron, $magnesium, $nickel, $platinum, $silicon, $silver, $gravel, $uranium, $mass, $volume) {
-        $component = new Component();
-        $component->title = $title;
-        $component->cobalt = $cobalt;
-        $component->gold = $gold;
-        $component->iron = $iron;
-        $component->magnesium = $magnesium;
-        $component->nickel = $nickel;
-        $component->platinum = $platinum;
-        $component->silicon = $silicon;
-        $component->silver = $silver;
-        $component->gravel = $gravel;
-        $component->mass = $mass;
-        $component->volume = $volume;
+    public function __construct($clusterId)
+    {
+        $this->clusterId    = $clusterId;
+        $this->dataSource   = new DataSource();
+    }
+
+    public function create($data) {
+        $component = $this->dataSource;
+        $component->title       = $data->title;
+        $component->cobalt      = $data->cobalt;
+        $component->gold        = $data->gold;
+        $component->iron        = $data->iron;
+        $component->magnesium   = $data->magnesium;
+        $component->nickel      = $data->nickel;
+        $component->platinum    = $data->platinum;
+        $component->silicon     = $data->silicon;
+        $component->silver      = $data->silver;
+        $component->uranium     = $data->uranium;
+        $component->gravel      = $data->gravel;
+        $component->mass        = $data->mass;
+        $component->volume      = $data->volume;
         $component->save();
 
         return $component->id;
     }
-
-    public static function headers() {
-        $headers = [];
-        $rowArray = Component::first()->toArray();
-        foreach (array_keys($rowArray) as $key) {
-            $headers[] = $key;
-        }
-
-        return $headers;
-    }
-
-    public static function rows() {
-        $rows = [];
-        foreach (Component::get()->toArray() as $key => $value) {
-            foreach($value as $column => $columnValue) {
-                $rows[$key][] = $columnValue;
-            }
-        }
-
-        return $rows;
-    }
-
-    public static function read() {
-        return Component::all();
-    }
-
-    public static function update() {
-
-    }
-
-    public static function delete() {
-
-    }
-
 }

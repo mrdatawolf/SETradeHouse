@@ -1,62 +1,41 @@
 <?php namespace Controllers;
 
-use Models\Clusters as Cluster;
+use Interfaces\Crud;
+use Models\Clusters as DataSource;
 
 /**
  * Class Clusters
  *
  * @package Controllers
  */
-class Clusters
+class Clusters extends BaseController implements Crud
 {
+    public $dataSource;
 
-    public function create($title, $economy_ore, $economy_stone_modifier, $scaling_modifier, $economy_ore_value, $asteroid_scarcity_modifier,$planet_scarcity_modifier, $base_modifier) {
-        $cluster = new Cluster();
-        $cluster->title = $title;
-        $cluster->economy_ore = $economy_ore;
-        $cluster->economy_stone_modifier = $economy_stone_modifier;
-        $cluster->scaling_modifier = $scaling_modifier;
-        $cluster->economy_ore_value = $economy_ore_value;
-        $cluster->asteroid_scarcity_modifier = $asteroid_scarcity_modifier;
-        $cluster->planet_scarcity_modifier = $planet_scarcity_modifier;
-        $cluster->base_modifier = $base_modifier;
+    public function __construct($clusterId)
+    {
+        $this->clusterId    = $clusterId;
+        $this->dataSource   = new DataSource();
+    }
+
+
+    public $totalServers = 10;
+    public function create($data) {
+        $cluster = $this->dataSource;
+        $cluster->title                         = $data->title;
+        $cluster->economy_ore                   = $data->economy_ore;
+        $cluster->economy_stone_modifier        = $data->economy_stone_modifier;
+        $cluster->scaling_modifier              = $data->scaling_modifier;
+        $cluster->economy_ore_value             = $data->economy_ore_value;
+        $cluster->asteroid_scarcity_modifier    = $data->asteroid_scarcity_modifier;
+        $cluster->planet_scarcity_modifier      = $data->planet_scarcity_modifier;
+        $cluster->base_modifier                 = $data->base_modifier;
         $cluster->save();
-
 
         return $cluster->id;
     }
 
-    public static function headers() {
-        $headers = [];
-        $rowArray = Cluster::first()->toArray();
-        foreach (array_keys($rowArray) as $key) {
-            $headers[] = $key;
-        }
-
-        return $headers;
+    public function getTotalServers() {
+        return $this->totalServers;
     }
-
-    public static function rows() {
-        $rows = [];
-        foreach (Cluster::get()->toArray() as $key => $value) {
-            foreach($value as $column => $columnValue) {
-                $rows[$key][] = $columnValue;
-            }
-        }
-
-        return $rows;
-    }
-
-    public static function read() {
-        return Cluster::all();
-    }
-
-    public static function update() {
-
-    }
-
-    public static function delete() {
-
-    }
-
 }

@@ -1,58 +1,31 @@
 <?php namespace Controllers;
 
-use Models\Ingots as Ingot;
+use Interfaces\Crud;
+use Models\Ingots as DataSource;
 
 /**
  * Class Ingots
  *
  * @package Controllers
  */
-class Ingots
+class Ingots extends BaseController implements Crud
 {
+    public $dataSource;
 
-    public function create($title, $oreRequired, $baseOre, $keenCrapFix) {
-        $ingot = new Ingot();
-        $ingot->title = $title;
-        $ingot->ore_required = $oreRequired;
-        $ingot->base_ore = $baseOre;
-        $ingot->keen_crap_fix = $keenCrapFix;
+    public function __construct($clusterId)
+    {
+        $this->clusterId    = $clusterId;
+        $this->dataSource   = new DataSource();
+    }
+    public function create($data) {
+        $ingot = $this->dataSource;
+        $ingot->title           = $data->title;
+        $ingot->ore_required    = $data->oreRequired;
+        $ingot->base_ore        = $data->baseOre;
+        $ingot->keen_crap_fix   = $data->keenCrapFix;
         $ingot->save();
 
-
         return $ingot->id;
-    }
-
-    public static function headers() {
-        $headers = [];
-        $rowArray = Ingot::first()->toArray();
-        foreach (array_keys($rowArray) as $key) {
-            $headers[] = $key;
-        }
-
-        return $headers;
-    }
-
-    public static function rows() {
-        $rows = [];
-        foreach (Ingot::get()->toArray() as $key => $value) {
-            foreach($value as $column => $columnValue) {
-                $rows[$key][] = $columnValue;
-            }
-        }
-
-        return $rows;
-    }
-
-    public static function read() {
-        return Ingot::all();
-    }
-
-    public static function update() {
-
-    }
-
-    public static function delete() {
-
     }
 
 }

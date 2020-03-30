@@ -11,7 +11,6 @@ use Controllers\Clusters;
 use Controllers\MagicNumbers;
 use Controllers\SystemTypes;
 
-//$tablesRequired = ['ores','ingots','components','servers', 'stations', 'trade_zones', 'clusters', 'clusters_servers', 'magic_numbers', 'system_types', 'servers_links'];
 $tables = ['Ores', 'Ingots', 'Components', 'Servers', 'Stations', 'TradeZones', 'Clusters', 'MagicNumbers', 'SystemTypes'];
 
 function read($table) {
