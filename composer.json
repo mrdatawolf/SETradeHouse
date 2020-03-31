@@ -15,5 +15,7 @@
         "illuminate/database": "*",
         "ext-pdo": "*",
         "ext-json": "*"
+    },
+    "require-dev": {
     }
 }

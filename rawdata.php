@@ -17,32 +17,41 @@ function read($table) {
     $headers = null;
     $rows = null;
   if($table === 'Ores') {
-      $headers  = Ores::headers();
-      $rows     = Ores::rows();
+      $ores     = new Ores(2);
+      $headers  = $ores->headers();
+      $rows     = $ores->rows();
   } elseif($table === 'Ingots') {
-      $headers  = Ingots::headers();
-      $rows     = Ingots::rows();
+      $ingots   = new Ingots(2);
+      $headers  = $ingots->headers();
+      $rows     = $ingots->rows();
   } elseif($table === 'Components') {
-      $headers  = Components::headers();
-      $rows     = Components::rows();
+      $components   = new Components(2);
+      $headers      = $components->headers();
+      $rows         = $components->rows();
   } elseif($table === 'Servers') {
-      $headers  = Servers::headers();
-      $rows     = Servers::rows();
+      $servers  = new Servers(2);
+      $headers  = $servers->headers();
+      $rows     = $servers->rows();
   } elseif($table === 'Stations') {
-      $headers  = Stations::headers();
-      $rows     = Stations::rows();
+      $stations = new Stations();
+      $headers  = $stations->headers();
+      $rows     = $stations->rows();
   } elseif($table === 'TradeZones') {
-      $headers  = TradeZones::headers();
-      $rows     = TradeZones::rows();
+      $tradeZones   = new TradeZones();
+      $headers      = $tradeZones->headers();
+      $rows         = $tradeZones->rows();
   } elseif($table === 'Clusters') {
-      $headers  = Clusters::headers();
-      $rows     = Clusters::rows();
+      $clusters = new Clusters(2);
+      $headers  = $clusters->headers();
+      $rows     = $clusters->rows();
   } elseif($table === 'MagicNumbers') {
-      $headers  = MagicNumbers::headers();
-      $rows     = MagicNumbers::rows();
+      $magicNumbers = new MagicNumbers();
+      $headers      = $magicNumbers->headers();
+      $rows         = $magicNumbers->rows();
   } elseif($table === 'SystemTypes') {
-      $headers  = SystemTypes::headers();
-      $rows     = SystemTypes::rows();
+      $systemTypes  = new SystemTypes();
+      $headers      = $systemTypes->headers();
+      $rows         = $systemTypes->rows();
   }
 
   return ['headers' => $headers, 'rows' => $rows];

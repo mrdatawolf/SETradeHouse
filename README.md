@@ -11,18 +11,20 @@ Your expecting to see something like
  Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies`
 2. You might have to edit the php.ini and uncomment `extension=php_pdo_sqlite.dll` to use the sqlite db.
 3. You need a copy of the code.  If you just want to check it out you can goto https://github.com/mrdatawolf/Colonization and use the "Clone or Download" button.  Otherwise you will need to clone it so you can begin working on it and make pull requests.
-4. To start the server for local development go into the folder you saved it to and run localWeb.bat (Windows).
-5. Open a web browser and goto `http://localhost:8282`.  You should see simple set of links at the top of the page.
+4. In the main directory you need to run "composer update" <-- this might mean you need to install composer.
+5. To start the server for local development go into the folder you saved it to and run localWeb.bat (Windows).
+6. Open a web browser and goto `http://localhost:8282`.  You should see simple set of links at the top of the page.
 
 ##Current Roadmap
 Road to 1.0 MVP
-1. Setup a sqlite database to be able to develop against.
-2. Populate the db with base values that are not built from other data.  This is the constants i the game like server refinery efficiency.
-3. Make a frontend for developers to see the current DB data.
-4. Make a clone of the spreadsheet we have been using.  Try to align all values to the current spreadsheet as a proof that the system is working.
+1. ~~Setup a sqlite database to be able to develop against.~~
+2. ~~Populate the db with base values that are not built from other data.  This is the constants i the game like server refinery efficiency.~~
+3. ~~Make a frontend for developers to see the current DB data.~~ see rawdata link
+4. ~~Make a clone of the spreadsheet we have been using.~~
 5. Create all the code needed to derive the numbers shown on the spreadsheet.
+6. Align all values to the current spreadsheet as a proof that the system is working.
 6. Get the spreadsheet page to allow the station amounts/values to be created/updated as needed.
-7. Make all the command used on the spreadsheet available in an API.  This API should be updated with any new base/derived values we add.
+7. Make all the commands used on the spreadsheet available in an API.  This API should be updated with any new base/derived values we add.
 8. Bring it up on a server so anyone can interact with the test system.
 
 ##Future Roadmap
