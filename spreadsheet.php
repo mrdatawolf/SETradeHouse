@@ -114,8 +114,8 @@ $componentsData = $components->read();
                     <tr>
                         <td><?=$ore->title;?></td>
                         <td><?=$ore->base_processing_time_per_ore;?></td>
-                        <td><?=$ore->getMaxEfficiencyWithModules(0)*100;?>%</td>
-                        <td><?=round($ore->getMaxEfficiencyWithModules(4)*100, 2);?>%</td>
+                        <td><?=$ore->getOreEfficiency(0)*100;?>%</td>
+                        <td><?=round($ore->getOreEfficiency(4)*100, 2);?>%</td>
                         <?php foreach($servers as $server) : ?>
                             <?php $hasOre = (in_array($ore->id, $server->getOreIds()));?>
                             <td class="<?=($hasOre) ? 'hasOre' : '';?>"><?= ($hasOre) ? "1" : "0"; ?></td>
@@ -147,13 +147,14 @@ $componentsData = $components->read();
           </thead>
           <tbody>
           <?php foreach($oresData as $ore) : ?>
+          <?php $baseOrePerIngot = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0); ?>
             <tr>
               <td><?=$ore->title;?></td>
-              <td><?=$this->magic->getBaseRefinerySpeed()/$ore->getBaseProcessingTimePerOre();?></td>
-              <td><?=round($ore->getRefineryKiloWattHour(),7);?></td>
-              <td><?=round($ore->getOreRequiredPerIngot(),2);?></td>
-              <td><?=$ore->getOreRequiredPerIngot(4);?></td>
-              <td><?=$ore->getBaseValue();?></td>
+              <td><?=$magicData->base_refinery_speed/$ore->base_processing_time_per_ore;?></td>
+              <td><?=round($ore->getRefineryKiloWattHour($magicData->base_refinery_speed),7);?></td>
+              <td><?=round($baseOrePerIngot, 2);?></td>
+              <td><?=$ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,4);?></td>
+              <td><?=$ore->getBaseValue($baseOrePerIngot);?></td>
               <td><?=round($ore->getStoreAdjustedValue());?></td>
               <td><?=round($ore->getScarcityAdjustedValue());?></td>
               <td><?=$ore->getKeenCrapFix();?></td>
