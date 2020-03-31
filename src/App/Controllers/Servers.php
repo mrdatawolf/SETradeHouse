@@ -24,4 +24,12 @@ class Servers extends BaseController implements Crud
 
         return $server->id;
     }
+
+    public function getSystemStock($type, $id) {
+        return $type . $id;
+    }
+
+    public function getSystemStockGoal($type, $id) {
+        return $type . $id;
+    }
 }

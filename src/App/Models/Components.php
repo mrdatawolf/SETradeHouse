@@ -25,4 +25,21 @@ class Components extends Model
 {
     protected $table = 'components';
     protected $fillable = ['title','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','mass','volume'];
+
+    public function getBaseValue() {
+
+        return 1;
+    }
+
+    public function getStoreAdjustedValue() {
+        return $this->getBaseValue();
+    }
+
+    public function getScarcityAdjustment() {
+        return 1;
+    }
+
+    public function getScarcityAdjustedValue() {
+        return 1;
+    }
 }

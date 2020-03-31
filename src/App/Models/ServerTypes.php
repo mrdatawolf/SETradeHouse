@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string                $title
  * @package Models
  */
-class SystemTypes extends Model
+class ServerTypes extends Model
 {
     protected $table = 'system_types';
     protected $fillable = ['title'];

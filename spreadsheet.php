@@ -22,6 +22,8 @@ $ingotsData     = $ingots->read();
 $componentsData = $components->read();
 
 $totalServers   = $cluster->getTotalServers();
+$asteroidServersWithOre = 6;
+$planetServersWithOre   = 4;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -148,12 +150,9 @@ $totalServers   = $cluster->getTotalServers();
           </tr>
           </thead>
           <tbody>
-          <?php foreach($oresData as $ore) : ?>
-          <?php
+          <?php foreach($oresData as $ore) :
               $baseOrePerIngot        = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
-              $asteroidServersWithOre = 6;
-              $planetServersWithOre   = 4;
-              ?>
+          ?>
             <tr>
               <td><?=$ore->title;?></td>
               <td><?=$magicData->base_refinery_speed/$ore->base_processing_time_per_ore;?></td>
@@ -193,7 +192,7 @@ $totalServers   = $cluster->getTotalServers();
                         <td><?=$ingot->getEfficiencyPerSecond($magicData->base_multiplier_for_buy_vs_sell, $magicData->base_labor_per_hour);?></td>
                         <td><?=$ingot->getBaseValue();?></td>
                         <td><?=$ingot->getBaseValue(4);?></td>
-                        <td><?=$ingot->getStoreAdjustedMinimum();?></td>
+                        <td><?=$ingot->getStoreAdjustedValue();?></td>
                         <td><?=$ingot->keen_crap_fix;?></td>
                     </tr>
                 <?php endforeach ?>
@@ -258,11 +257,13 @@ $totalServers   = $cluster->getTotalServers();
                 </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($oresData as $ore) : ?>
+                    <?php foreach($oresData as $ore) :
+                        $baseOrePerIngot = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
+                    ?>
                     <tr>
                         <td><?=$ore->title;?></td>
-                        <td><?=round($ore->getStoreAdjustedValue());?></td>
-                        <td><?=round($ore->getScarcityAdjustedValue());?></td>
+                        <td><?=round($ore->getStoreAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
+                        <td><?=round($ore->getScarcityAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -278,8 +279,8 @@ $totalServers   = $cluster->getTotalServers();
                 <?php foreach($ingotsData as $ingot) : ?>
                     <tr>
                         <td><?=$ingot->title;?></td>
-                        <td><?=round($ingot->getStoreAdjustedMinimum());?></td>
-                        <td><?=round($ingot->getScarcityAdjustedValue());?></td>
+                        <td><?=round($ingot->getStoreAdjustedValue());?></td>
+                        <td><?=round($ingot->getScarcityAdjustedValue($totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -296,7 +297,7 @@ $totalServers   = $cluster->getTotalServers();
                     <?php foreach($componentsData as $component) : ?>
                     <tr>
                         <td><?=$component->title;?></td>
-                        <td><?=round($component->getStoreAdjustedMinimum());?></td>
+                        <td><?=round($component->getStoreAdjustedValue());?></td>
                         <td><?=round($component->getScarcityAdjustedValue());?></td>
                     </tr>
                     <?php endforeach; ?>
@@ -304,9 +305,8 @@ $totalServers   = $cluster->getTotalServers();
             </table>
         </div>
     </section>
-    <section id="systemValues" class="simpleDisplay">
-        <h2><a class="headerTitle" href="#systemValues">System Values</a></h2>
-        <h3>ORE</h3>
+    <section id="serverValues" class="simpleDisplay">
+        <h2><a class="headerTitle" href="#serverValues">Server Values</a></h2>
         <div class="tab-content">
             <table>
                 <thead>
@@ -318,14 +318,54 @@ $totalServers   = $cluster->getTotalServers();
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($oresData as $thing) : ?>
+                <?php
+                  foreach($oresData as $ore) :
+                    ?>
                     <tr>
-                        <td><?= $thing->title; ?></td>
-                        <td><?= $thing->getSystemStock(); ?></td>
-                        <td><?= $thing->getSystemStockGoal(); ?></td>
+                        <td><?= $ore->title; ?></td>
+                        <td><?= $servers->getSystemStock('ore', $ore->id); ?></td>
+                        <td><?= $servers->getSystemStockGoal('ore', $ore->id); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
+                <thead>
+                <tr><th colspan="3">Ingot</th> </tr>
+                <tr>
+                  <th>Name</th>
+                  <th>Stock</th>
+                  <th>Goal</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach($ingotsData as $ingot) :
+                    ?>
+                  <tr>
+                    <td><?= $ingot->title; ?></td>
+                    <td><?= $servers->getSystemStock('ingot', $ingot->id); ?></td>
+                    <td><?= $servers->getSystemStockGoal('ingot', $ingot->id); ?></td>
+                  </tr>
+                <?php endforeach; ?>
+                </tbody>
+              <thead>
+              <tr><th colspan="3">Component</th> </tr>
+              <tr>
+                <th>Name</th>
+                <th>Stock</th>
+                <th>Goal</th>
+              </tr>
+              </thead>
+              <tbody>
+              <?php
+              foreach($componentsData as $component) :
+                  ?>
+                <tr>
+                  <td><?= $component->title; ?></td>
+                  <td><?= $servers->getSystemStock('component', $component->id); ?></td>
+                  <td><?= $servers->getSystemStockGoal('component', $component->id); ?></td>
+                </tr>
+              <?php endforeach; ?>
+              </tbody>
             </table>
         </div>
     </section>

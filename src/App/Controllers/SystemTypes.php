@@ -1,6 +1,6 @@
 <?php namespace Controllers;
 
-use Models\SystemTypes as SystemType;
+use Models\ServerTypes as SystemType;
 
 /**
  * Class SystemTypes

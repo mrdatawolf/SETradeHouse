@@ -34,9 +34,22 @@ class Ingots extends Model
         return $ores->getBaseValue($oreRequired)*$ores->getStoreAdjustedValue($oreRequired);
     }
 
-    public function getStoreAdjustedMinimum() {
+    public function getStoreAdjustedValue() {
         $ore = Ores::find($this->base_ore);
         return $this->getBaseValue($ore->module_efficiency_modifier)*$this->keen_crap_fix;
+    }
+
+    public function getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith) {
+        $totalServersWithOre = $planetsWith+$asteroidsWith;
+
+        return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
+    }
+
+    public function getScarcityAdjustedValue($totalServers, $planetsWith, $asteroidsWith) {
+        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith);
+        $storeAdjustedValue = $this->getStoreAdjustedValue();
+
+        return $storeAdjustedValue*(2-($scarcityAdjustment/$totalServers));
     }
 
     public function getOreRequiredPerIngot($moduleEfficiencyModifier, $modules = 0) {
