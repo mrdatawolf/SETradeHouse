@@ -37,4 +37,27 @@ class Ores extends Model
     public function getBaseValue($orePerIngot) {
         return ($this->id == 10) ? 0 : $orePerIngot * 2;
     }
+
+    public function getStoreAdjustedValue($orePerIngot)
+    {
+        return (empty($this->getBaseValue($orePerIngot)) || empty($this->keen_crap_fix)) ? 0
+            : $this->getBaseValue($orePerIngot) * $this->keen_crap_fix;
+    }
+
+    public function getScarcityAdjustedValue($orePerIngot, $totalServers, $planetsWith, $asteroidsWith) {
+        $storeAdjustedValue = $this->getStoreAdjustedValue($orePerIngot);
+        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith);
+
+        return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
+    }
+
+    public function getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith) {
+        $totalServersWithOre = $planetsWith+$asteroidsWith;
+
+        return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
+    }
+
+    public function getBaseCostToGatherOre($total = 1) {
+        return $this->base_cost_to_gather*$total;
+    }
 }

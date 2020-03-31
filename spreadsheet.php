@@ -20,6 +20,8 @@ $serversData    = $servers->read();
 $oresData       = $ores->read();
 $ingotsData     = $ingots->read();
 $componentsData = $components->read();
+
+$totalServers   = $cluster->getTotalServers();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -147,7 +149,11 @@ $componentsData = $components->read();
           </thead>
           <tbody>
           <?php foreach($oresData as $ore) : ?>
-          <?php $baseOrePerIngot = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0); ?>
+          <?php
+              $baseOrePerIngot        = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
+              $asteroidServersWithOre = 6;
+              $planetServersWithOre   = 4;
+              ?>
             <tr>
               <td><?=$ore->title;?></td>
               <td><?=$magicData->base_refinery_speed/$ore->base_processing_time_per_ore;?></td>
@@ -155,10 +161,10 @@ $componentsData = $components->read();
               <td><?=round($baseOrePerIngot, 2);?></td>
               <td><?=$ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,4);?></td>
               <td><?=$ore->getBaseValue($baseOrePerIngot);?></td>
-              <td><?=round($ore->getStoreAdjustedValue());?></td>
-              <td><?=round($ore->getScarcityAdjustedValue());?></td>
-              <td><?=$ore->getKeenCrapFix();?></td>
-              <td><?=$ore->getScarcityAdjustment();?></td>
+              <td><?=round($ore->getStoreAdjustedValue($baseOrePerIngot));?></td>
+              <td><?=round($ore->getScarcityAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
+              <td><?=$ore->keen_crap_fix;?></td>
+              <td><?=$ore->getScarcityAdjustment($totalServers, $planetServersWithOre, $asteroidServersWithOre);?></td>
               <td><?=$ore->getBaseCostToGatherOre(1);?></td>
             </tr>
           <?php endforeach ?>
@@ -184,42 +190,61 @@ $componentsData = $components->read();
                 <?php foreach($ingotsData as $ingot) : ?>
                     <tr>
                         <td><?= $ingot->title;?></td>
-                        <td><?=$ingot->getEfficiencyPerSecond();?></td>
+                        <td><?=$ingot->getEfficiencyPerSecond($magicData->base_multiplier_for_buy_vs_sell, $magicData->base_labor_per_hour);?></td>
                         <td><?=$ingot->getBaseValue();?></td>
-                        <td><?=$ingot->getBaseValueWithEfficiency(4);?></td>
+                        <td><?=$ingot->getBaseValue(4);?></td>
                         <td><?=$ingot->getStoreAdjustedMinimum();?></td>
-                        <td><?=$ingot->getKeenCrapFix();?></td>
+                        <td><?=$ingot->keen_crap_fix;?></td>
                     </tr>
                 <?php endforeach ?>
                 </tbody>
             </table>
         </div>
     </section>
-    <?php foreach($componentsData as $component) : ?>
-        <section id="<?=$component->title;?>" class="simpleDisplay">
-            <h2><a class="headerTitle" href="#<?=$component->title;?>"><?=$component->title;?></a></h2>
-            <div class="tab-content">
-                <table>
-                    <thead>
+    <section id="components" class="simpleDisplay">
+        <h2><a class="headerTitle" href="#components">components</a></h2>
+        <div class="tab-content">
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Cobalt Ingot</th>
+                    <th>Gold Ingot</th>
+                    <th>Iron Ingot</th>
+                    <th>Magnesium Ingot</th>
+                    <th>Nickel Ingot</th>
+                    <th>Platinum Ingot</th>
+                    <th>silicon Ingot</th>
+                    <th>silver Ingot</th>
+                    <th>gravel Ingot</th>
+                    <th>uranium Ingot</th>
+                    <th>Mass</th>
+                    <th>Volume Ingot</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php foreach($componentsData as $row) : ?>
                     <tr>
-                        <?php foreach($component as $header) : ?>
-                            <th><?=$header; ?></th>
-                        <?php endforeach; ?>
+                        <td><?= $row->title; ?></td>
+                        <td><?= $row->cobalt; ?></td>
+                        <td><?= $row->gold; ?></td>
+                        <td><?= $row->iron; ?></td>
+                        <td><?= $row->magnesium; ?></td>
+                        <td><?= $row->nickel; ?></td>
+                        <td><?= $row->platinum; ?></td>
+                        <td><?= $row->silicon; ?></td>
+                        <td><?= $row->silver; ?></td>
+                        <td><?= $row->gravel; ?></td>
+                        <td><?= $row->uranium; ?></td>
+                        <td><?= $row->mass; ?></td>
+                        <td><?= $row->volume; ?></td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach($component->title['rows'] as $data) : ?>
-                        <tr>
-                            <?php foreach($data as $row) : ?>
-                                <td><?= $row; ?></td>
-                            <?php endforeach; ?>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    <?php endforeach; ?>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
     <section id="generalValues" class="simpleDisplay">
         <h2><a class="headerTitle" href="#generalValues">General Values</a></h2>
         <div class="tab-content">
