@@ -1,7 +1,6 @@
 <?php namespace Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Controllers\Ores as Ore;
 
 /**
  * Class Ingots
@@ -31,11 +30,13 @@ class Ingots extends Model
         $ore = Ores::find($this->base_ore);
         $oreRequired = $this->getOreRequiredPerIngot($ore->module_efficiency_modifier, $modules);
 
-        return $ores->getBaseValue($oreRequired)*$ores->getStoreAdjustedValue($oreRequired);
+
+        return $ores->getBaseValue($oreRequired)*$oreRequired;
     }
 
     public function getStoreAdjustedValue() {
         $ore = Ores::find($this->base_ore);
+
         return $this->getBaseValue($ore->module_efficiency_modifier)*$this->keen_crap_fix;
     }
 
