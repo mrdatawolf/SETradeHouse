@@ -21,7 +21,7 @@ Road to 1.0 MVP
 2. ~~Populate the db with base values that are not built from other data.  This is the constants i the game like server refinery efficiency.~~
 3. ~~Make a frontend for developers to see the current DB data.~~ see rawdata link
 4. ~~Make a clone of the spreadsheet we have been using.~~
-5. Create all the code needed to derive the numbers shown on the spreadsheet.
+5. Create all the code needed to derive the numbers shown on the spreadsheet. ~90%
 6. Align all values to the current spreadsheet as a proof that the system is working.
 6. Get the spreadsheet page to allow the station amounts/values to be created/updated as needed.
 7. Make all the commands used on the spreadsheet available in an API.  This API should be updated with any new base/derived values we add.
@@ -54,3 +54,7 @@ Revised +1.0 goals.
 4. 3.0 goals
     1. add more tasks to the bots (ai and player) such as interdiction or patrol.
     2. add api to allow players to add orders to their bots via other inputs (such as phone).
+
+
+Notes on the foundational logic we are shooting for...
+![Clusters Example](https://raw.githubusercontent.com/mrdatawolf/Colonization/master/clusters_example.png.png)
