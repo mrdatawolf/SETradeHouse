@@ -57,4 +57,4 @@ Revised +1.0 goals.
 
 
 Notes on the foundational logic we are shooting for...
-![Clusters Example](https://raw.githubusercontent.com/mrdatawolf/Colonization/master/clusters_example.png.png)
+![Clusters Example](https://raw.githubusercontent.com/mrdatawolf/Colonization/master/clusters_example.png)
