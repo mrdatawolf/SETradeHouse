@@ -61,6 +61,9 @@ Revised +1.0 goals.
 #How a given item gets it's value for a trade-zone:
 note: We will use gold ore for a simple example (when figuring out a value, ores, do not care how many ingots or components using the ingot, version of the ore, there are).  We will also start in the Nebulon Cluster on the server NUR4 as a simple example.
 note2: Keen has weird minimum prices for items.  We call this the store minimum value.  supply/demand prices need to be based off that rather then the more accurate ones we have... KEEEN!!!!!!  
-2. Example 1: Assuming TradeZone3 has 100 gold ore in stock and desires to have 100 gold ore in stock.  This means the trade-zone if happy with it's current levels.  So it will buy more gold ore at the "worst" price it can as there is no demand.  The desire of this station bubbles up to the nur4 server. As there is only one trade-zone and it has no demand the server has no demand.  This bubbles up to the cluster and as there is oly 1 server and it has no demand the cluster has no demand.
+2. Example 1: Assuming TradeZone3 has 100 gold ore in stock and desires to have 100 gold ore in stock.  This means the trade-zone if happy with it's current levels.  So it will buy more gold ore at the "worst" (store minimum value) price it can as there is no demand. It will also sell at store minimum value.  The desire of this station bubbles up to the nur4 server. As there is only one trade-zone and it has no demand the server has no demand.  This bubbles up to the cluster and as there is oly 1 server and it has no demand the cluster has no demand.
 3. Example 2: Now lets Assume TradeZone3 has 100 platinum ore but desires 400.  Therefore they will pay 75%  (1 - 100/400) more then the store minimum value.  But they really don't want to sell it so they will only sell at 25% (100/400) more then the store minimum value. 
+4. Example 3: 
+
+ 
 A trade zone influences and is influenced by all the other trade-stations in the cluster (as long as there is any path to and/or from the other trade-stations. But the amount of influence another trade-station has on another station is expressed as a "weight".

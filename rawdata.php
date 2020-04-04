@@ -10,8 +10,10 @@ use Controllers\TradeZones;
 use Controllers\Clusters;
 use Controllers\MagicNumbers;
 use Controllers\SystemTypes;
+use Controllers\ActiveTransactions;
+use Controllers\InactiveTransactions;
 
-$tables = ['Ores', 'Ingots', 'Components', 'Servers', 'Stations', 'TradeZones', 'Clusters', 'MagicNumbers', 'SystemTypes'];
+$tables = ['Ores', 'Ingots', 'Components', 'Servers', 'Stations', 'TradeZones', 'Clusters', 'MagicNumbers', 'SystemTypes', 'ActiveTransactions', 'InactiveTransactions'];
 
 function read($table) {
     $headers = null;
@@ -50,6 +52,14 @@ function read($table) {
       $rows         = $magicNumbers->rows();
   } elseif($table === 'SystemTypes') {
       $systemTypes  = new SystemTypes();
+      $headers      = $systemTypes->headers();
+      $rows         = $systemTypes->rows();
+  } elseif($table === 'ActiveTransactions') {
+      $systemTypes  = new ActiveTransactions();
+      $headers      = $systemTypes->headers();
+      $rows         = $systemTypes->rows();
+  } elseif($table === 'InactiveTransactions') {
+      $systemTypes  = new InactiveTransactions();
       $headers      = $systemTypes->headers();
       $rows         = $systemTypes->rows();
   }
