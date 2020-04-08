@@ -38,8 +38,11 @@ class MagicNumbers extends BaseController implements Crud
 
     public function getOreGatherCost() {
         $data = $this->dataSource->first();
+        $baseRefineryCost = $data->base_refinery_kwh*$data->cost_kw_hour;
+        $baaseCostForRunning = $data->base_refinery_speed*$data->cost_kw_hour;
+        $laborPerSecond = $data->base_labor_per_hour /60 /60;
 
-        return ($data->base_refinery_kwh + $data->base_drill_per_kw_hour + $data->base_labor_per_hour) /60 /60;
+        return $baseRefineryCost + $baaseCostForRunning + $laborPerSecond;
     }
 
 }

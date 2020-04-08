@@ -18,17 +18,18 @@ class Ores extends Model
 {
     protected $table = 'ores';
     protected $fillable = ['title','base_cost_to_gather','base_processing_time_per_ore','base_conversion_efficiency','keen_crap_fix','module_efficiency_modifier'];
-
+    
     public function getOreEfficiency($modules = 0) {
         $modifer = $modules*$this->module_efficiency_modifier;
 
         return $this->base_conversion_efficiency + $modifer;
     }
 
-    public function getRefineryKiloWattHour($refineryKWH) {
+    public function getRefineryKiloWattHour($refinerySpeed, $refineryKWH) {
+       $speedPerOre = $refinerySpeed/$this->base_processing_time_per_ore;
         $return = 0;
         if(!empty($refineryKWH) && !empty($this->base_processing_time_per_ore)) {
-            $return = $refineryKWH / ($this->base_processing_time_per_ore) / 60 / 60;
+            $return = $refineryKWH / $speedPerOre / 60 / 60;
         }
 
         return $return;
@@ -54,7 +55,7 @@ class Ores extends Model
     public function getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith) {
         $totalServersWithOre = $planetsWith+$asteroidsWith;
 
-        return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
+        return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 15);
     }
 
     public function getBaseCostToGatherOre($total = 1) {

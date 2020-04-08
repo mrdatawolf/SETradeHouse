@@ -54,6 +54,7 @@ class Ingots extends Model
     }
 
     public function getOreRequiredPerIngot($moduleEfficiencyModifier, $modules = 0) {
+
         $modifer = $modules*$moduleEfficiencyModifier;
 
         return $this->ore_required - $modifer;

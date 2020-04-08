@@ -28,9 +28,8 @@ class Ingots extends BaseController implements Crud
         return $ingot->id;
     }
 
-    public function getOreRequiredPerIngot($oreId, $moduleEfficiencyModifier, $modules = 0) {
+    public function getOreRequiredPerIngot($oreId, $moduleEfficiencyModifier, $modules) {
         $ingot = $this->dataSource->where('base_ore', $oreId)->first();
-
         $modifer = $modules*$moduleEfficiencyModifier;
 
         return $ingot->ore_required - $modifer;

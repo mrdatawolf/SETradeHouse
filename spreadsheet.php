@@ -1,4 +1,5 @@
 <?php
+$title = 'Spreadsheet';
 require 'start.php';
 use Controllers\MagicNumbers;
 use \Controllers\Clusters;
@@ -22,22 +23,7 @@ $ingotsData     = $ingots->read();
 $componentsData = $components->read();
 
 $totalServers   = $cluster->getTotalServers();
-$asteroidServersWithOre = 6;
-$planetServersWithOre   = 4;
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Spreadsheet</title>
-    <script src="https://kit.fontawesome.com/b61a9642d4.js" crossorigin="anonymous"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <link href="public/css/default.css" type="text/css" rel="stylesheet">
-    <script src="public/js/default.js"></script>
-</head>
-<body>
-<?php require_once('menubar.php'); ?>
 <article class="tabs">
     <section id="magicNumbers" class="simpleDisplay">
         <h2><a class="headerTitle" href="#magicNumbers">Magic Numbers</a></h2>
@@ -107,10 +93,6 @@ $planetServersWithOre   = 4;
                     <th>Thing</th>
                     <th>Base processing time per ore</th>
                     <th>Base conversion efficiency</th>
-                    <th>Max eff mods</th>
-                    <?php foreach($serversData as $server) : ?>
-                        <th><?=$server->title;?></th>
-                    <?php endforeach; ?>
                 </tr>
                 </thead>
                 <tbody>
@@ -119,11 +101,6 @@ $planetServersWithOre   = 4;
                         <td><?=$ore->title;?></td>
                         <td><?=$ore->base_processing_time_per_ore;?></td>
                         <td><?=$ore->getOreEfficiency(0)*100;?>%</td>
-                        <td><?=round($ore->getOreEfficiency(4)*100, 2);?>%</td>
-                        <?php foreach($servers as $server) : ?>
-                            <?php $hasOre = (in_array($ore->id, $server->getOreIds()));?>
-                            <td class="<?=($hasOre) ? 'hasOre' : '';?>"><?= ($hasOre) ? "1" : "0"; ?></td>
-                        <?php endforeach ?>
                     </tr>
                 <?php endforeach ?>
                 </tbody>
@@ -151,12 +128,14 @@ $planetServersWithOre   = 4;
           </thead>
           <tbody>
           <?php foreach($oresData as $ore) :
-              $baseOrePerIngot        = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
+              $baseOrePerIngot = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
+              $asteroidServersWithOre = 0;
+              $planetServersWithOre   = 4;
           ?>
             <tr>
               <td><?=$ore->title;?></td>
               <td><?=$magicData->base_refinery_speed/$ore->base_processing_time_per_ore;?></td>
-              <td><?=round($ore->getRefineryKiloWattHour($magicData->base_refinery_speed),7);?></td>
+              <td><?=round($ore->getRefineryKiloWattHour($magicData->base_refinery_speed, $magicData->base_refinery_kwh),7);?></td>
               <td><?=round($baseOrePerIngot, 2);?></td>
               <td><?=$ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,4);?></td>
               <td><?=$ore->getBaseValue($baseOrePerIngot);?></td>
