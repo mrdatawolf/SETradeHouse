@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Ores
+ * Class Clusters
  *
  * @property int                   $id
  * @property string                $title
@@ -20,4 +20,8 @@ class Clusters extends Model
 {
     protected $table = 'clusters';
     protected $fillable = ['title','economy_ore', 'economy_stone_modifier','scaling_modifier','economy_ore_value','asteroid_scarcity_modifier', 'planet_scarcity_modifier', 'base_modifier'];
+
+    public function clusters() {
+        return $this->belongsToMany('Models\Clusters');
+    }
 }

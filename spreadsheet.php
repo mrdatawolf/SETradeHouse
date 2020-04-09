@@ -7,6 +7,7 @@ use \Controllers\Servers;
 use \Controllers\Ores;
 use \Controllers\Ingots;
 use \Controllers\Components;
+use Models\Ores as OreModel;
 
 $magic          = new MagicNumbers();
 $cluster        = new Clusters(2);
@@ -129,6 +130,7 @@ $totalServers   = $cluster->getTotalServers();
           <tbody>
           <?php foreach($oresData as $ore) :
               $baseOrePerIngot = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
+              $countOfOreOnServers = OreModel::with('servers')->find($ore->id);
               $asteroidServersWithOre = 0;
               $planetServersWithOre   = 4;
           ?>

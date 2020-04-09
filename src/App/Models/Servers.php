@@ -14,4 +14,9 @@ class Servers extends Model
 {
     protected $table = 'servers';
     protected $fillable = ['title','system_stock_weight'];
+
+
+    public function cluster() {
+        return $this->belongsTo('Models\Clusters');
+    }
 }

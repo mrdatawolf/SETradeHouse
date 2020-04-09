@@ -18,7 +18,11 @@ class Ores extends Model
 {
     protected $table = 'ores';
     protected $fillable = ['title','base_cost_to_gather','base_processing_time_per_ore','base_conversion_efficiency','keen_crap_fix','module_efficiency_modifier'];
-    
+
+    public function servers() {
+        return $this->belongsToMany('Models\Servers');
+    }
+
     public function getOreEfficiency($modules = 0) {
         $modifer = $modules*$this->module_efficiency_modifier;
 
