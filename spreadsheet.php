@@ -76,11 +76,11 @@ $totalServers   = $cluster->getTotalServers();
                 <tbody>
                 <tr>
                     <th><?=$magicData->base_weight_for_system_stock;?></th>
-                    <th><?=$cluster->getTotalServers()*10;?></th>
+                    <th><?=$totalServers*10;?></th>
                     <th><?=$clusterData->scaling_modifier;?></th>
                     <th><?=$clusterData->economy_ore;?></th>
                     <th><?=$clusterData->economy_stone_modifier;?></th>
-                    <th><?=$cluster->getTotalServers();?></th>
+                    <th><?=$totalServers;?></th>
                     <th><?=$clusterData->asteroid_scarcity_modifier;?></th>
                     <th><?=$clusterData->planet_scarcity_modifier;?></th>
                     <th><?=$clusterData->base_modifier;?></th>

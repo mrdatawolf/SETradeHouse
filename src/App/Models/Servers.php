@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                   $id
  * @property string                $title
  * @property                       $system_stock_weight
+ * @property int                   $cluster_id
  * @package Models
  */
 class Servers extends Model
 {
     protected $table = 'servers';
-    protected $fillable = ['title','system_stock_weight'];
+    protected $fillable = ['title','system_stock_weight', 'cluster_id'];
 
-
-    public function cluster() {
-        return $this->belongsTo('Models\Clusters');
+    public function ores() {
+        $this->belongsToMany('Models\Ores');
     }
 }

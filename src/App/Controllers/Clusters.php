@@ -19,7 +19,7 @@ class Clusters extends BaseController implements Crud
     }
 
 
-    public $totalServers = 10;
+    public $totalServers = 0;
     public function create($data) {
         $cluster = $this->dataSource;
         $cluster->title                         = $data->title;
@@ -36,6 +36,10 @@ class Clusters extends BaseController implements Crud
     }
 
     public function getTotalServers() {
-        return $this->totalServers;
+        $totalServers = \Models\Servers::where('cluster_id', $this->clusterId)->count();
+        if(empty($this->totalServers)) {
+            $this->totalServers = $totalServers;
+        }
+        return $totalServers;
     }
 }
