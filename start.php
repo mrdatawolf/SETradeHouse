@@ -15,10 +15,13 @@ function ddng($var)
 
     $highlighted_output = str_replace(["&lt;?php", "?&gt;"], '', $highlighted_output);
     $dbgt=debug_backtrace();
+    echo '<div id="debugBox">';
+    echo '<h4>Debug Info</h4>';
     if(!empty($dbgt[1])) {
         echo "See {$dbgt[1]['file']} on line {$dbgt[1]['line']}";
     }
     echo $highlighted_output;
+    echo '</div>';
     die();
 }
 
@@ -37,5 +40,3 @@ new Database();
 
 </head>
 <body>
-<?php
-require_once('menubar.php');

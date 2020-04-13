@@ -1,7 +1,14 @@
 <?php
 require 'start.php';
 ?>
-
+<style>
+  #tradetestLink {
+    background-color: #DDE9FF;
+  }
+</style>
+<div class="headerSpacer">
+  &nbsp;
+</div>
 Setup tests for trades here.
 <?php
 $ore = \Models\Ores::with('Servers')->find(1);

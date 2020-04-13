@@ -1,4 +1,18 @@
 /* general table styling */
+body {
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    min-height: 100vh;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.headerSpacer {
+    margin: 2em;
+}
 .simpleDisplay table {
     border: 2px solid #CCCCCC;
     width: 97em;
@@ -22,6 +36,19 @@
 }
 .simpleDisplay table td {
     font-size: 8pt;
+}
+
+#debugBox {
+    position: fixed;
+    z-index: 1000;
+    left: 5%;
+    top: 5%;
+    background-color: #FAA;
+    min-width: 20em;
+    max-width: 60em;
+    min-height: 10em;
+    max-height: 50em;
+    overflow: scroll;
 }
 
 #components table td:nth-of-type(1), #components table th:nth-of-type(1) {
@@ -51,7 +78,7 @@ article.tabs {
 article.tabs section {
     position: absolute;
     display: block;
-    top: 1.8em;
+    top: 3em;
     left: 0;
     right: 0;
     height: 48em;
@@ -149,13 +176,87 @@ article.tabs section:target ~ section:last-child .tab-content {
     background-color: green;
 }
 
-#menubar .a{
-    float:right;
-    min-width: 8em;
-    background-color: #ddd;
 
-    z-index: 0;
-    color: black;
+/*menubar stuff */
+.header {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    padding-top: .15em;
+    padding-bottom: .15em;
+    border: 1px solid #a2a2a2;
+    background-color: #ECF7FF;
+    -webkit-box-shadow: 0 0 14px 0 rgba(0,0,0,0.75);
+    -moz-box-shadow: 0 0 14px 0 rgba(0,0,0,0.75);
+    box-shadow: 0 0 14px 0 rgba(0,0,0,0.75);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+
+.header ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.header h2,
+.header h3,
+.header a {
+    color: #34495e;
+    text-decoration: none;
+}
+
+.header .logo {
+    margin: 0;
+    font-size: 1.25em;
+}
+
+.header .main-nav {
+    margin-top: 5px;
 
 }
-#menubar .first{float:left}
+.header .logo a,
+.header .main-nav a {
+    padding: .25em .37em;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+}
+
+.header .main-nav a {
+    color: #34495e;
+    font-size: .95em;
+}
+
+.header .main-nav a:hover {
+    color: #718daa;
+}
+
+
+/* =================================
+  Media Queries
+==================================== */
+
+@media (min-width: 769px) {
+    .header,
+    .main-nav {
+        display: flex;
+    }
+    .header {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1025px) {
+    .header {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+}

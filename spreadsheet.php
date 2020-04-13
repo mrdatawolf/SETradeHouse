@@ -3,28 +3,46 @@ $title = 'Spreadsheet';
 require 'start.php';
 use Controllers\MagicNumbers;
 use \Controllers\Clusters;
-use \Controllers\Servers;
 use \Controllers\Ores;
 use \Controllers\Ingots;
 use \Controllers\Components;
 use Models\Ores as OreModel;
+use Models\Clusters as ClusterModel;
 
-$magic          = new MagicNumbers();
-$cluster        = new Clusters(2);
-$servers        = new Servers(2);
-$ores           = new Ores(2);
-$ingots         = new Ingots(2);
-$components     = new Components(2);
+$clusterId              = 2;
+$magic                  = new MagicNumbers();
+$cluster                = new Clusters($clusterId);
+$clusterModel           = ClusterModel::with('servers')->find($clusterId);
+$servers                = $clusterModel->servers;
+$ores                   = new Ores($clusterId);
+$ingots                 = new Ingots($clusterId);
+$components             = new Components($clusterId);
+$magicData              = $magic->basicData();
+$clusterData            = $cluster->basicData($clusterId);
+//$serversData    = $servers->read();
+$oresData               = $ores->read();
+$ingotsData             = $ingots->read();
+$componentsData         = $components->read();
+$totalServers           = $servers->count();
 
-$magicData      = $magic->basicData();
-$clusterData    = $cluster->basicData(2);
-$serversData    = $servers->read();
-$oresData       = $ores->read();
-$ingotsData     = $ingots->read();
-$componentsData = $components->read();
+function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
+    $totalWithOre = 0;
+    foreach($serversWithOre->servers as $server) {
+        if($server->clusters_id == $clusterId) {
+            if ($server->types_id == $typeId) {
+                $totalWithOre++;
+            }
+        }
+    }
 
-$totalServers   = $cluster->getTotalServers();
+    return $totalWithOre;
+}
 ?>
+<style>
+  #spreadsheetLink {
+    background-color: #DDE9FF;
+  }
+</style>
 <article class="tabs">
     <section id="magicNumbers" class="simpleDisplay">
         <h2><a class="headerTitle" href="#magicNumbers">Magic Numbers</a></h2>
@@ -129,10 +147,10 @@ $totalServers   = $cluster->getTotalServers();
           </thead>
           <tbody>
           <?php foreach($oresData as $ore) :
-              $baseOrePerIngot = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
-              $countOfOreOnServers = OreModel::with('servers')->find($ore->id);
-              $asteroidServersWithOre = 0;
-              $planetServersWithOre   = 4;
+              $baseOrePerIngot          = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
+              $serversWithOre           = OreModel::with('servers')->find($ore->id);
+              $planetServersWithOre     = getTotalTypeWithOre($serversWithOre, $clusterId, 1);
+              $asteroidServersWithOre   = getTotalTypeWithOre($serversWithOre, $clusterId, 2);
           ?>
             <tr>
               <td><?=$ore->title;?></td>
@@ -304,8 +322,8 @@ $totalServers   = $cluster->getTotalServers();
                     ?>
                     <tr>
                         <td><?= $ore->title; ?></td>
-                        <td><?= $servers->getSystemStock('ore', $ore->id); ?></td>
-                        <td><?= $servers->getSystemStockGoal('ore', $ore->id); ?></td>
+                        <td>fix me</td>
+                        <td>fix me</td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -323,8 +341,8 @@ $totalServers   = $cluster->getTotalServers();
                     ?>
                   <tr>
                     <td><?= $ingot->title; ?></td>
-                    <td><?= $servers->getSystemStock('ingot', $ingot->id); ?></td>
-                    <td><?= $servers->getSystemStockGoal('ingot', $ingot->id); ?></td>
+                    <td>fix me</td>
+                    <td>fix me</td>
                   </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -342,8 +360,8 @@ $totalServers   = $cluster->getTotalServers();
                   ?>
                 <tr>
                   <td><?= $component->title; ?></td>
-                  <td><?= $servers->getSystemStock('component', $component->id); ?></td>
-                  <td><?= $servers->getSystemStockGoal('component', $component->id); ?></td>
+                  <td>fix me</td>
+                  <td>fix me</td>
                 </tr>
               <?php endforeach; ?>
               </tbody>
@@ -460,5 +478,9 @@ $totalServers   = $cluster->getTotalServers();
         </div>
     </section>
 </article>
+<?php
+require_once ('end.php');
+
+?>
 </body>
 </html>

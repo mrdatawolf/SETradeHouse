@@ -68,6 +68,11 @@ function read($table) {
   return ['headers' => $headers, 'rows' => $rows];
 }
 ?>
+<style>
+  #rawdataLink {
+    background-color: #DDE9FF;
+  }
+</style>
 <article class="tabs">
     <?php foreach($tables as $table) :
         $tableData = read($table);

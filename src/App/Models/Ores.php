@@ -62,7 +62,9 @@ class Ores extends Model
         return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 15);
     }
 
+
     public function getBaseCostToGatherOre($total = 1) {
+        
         return $this->base_cost_to_gather*$total;
     }
 }

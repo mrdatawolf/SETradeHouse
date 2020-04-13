@@ -1,10 +1,8 @@
-<div id="menubar">
-  <ul>
-    <li class="first"><a href="index.php">Home</a></li>
-    <li class="a"><a href="spreadsheet.php">Spreadsheet</a></li>
-    <li class="a"><a href="rawdata.php">Raw Data</a></li>
-    <li class="a"><a href="trade_tests.php">Trade Tests</a></li>
+<header class="header">
+  <h1 class="logo"><a href="index.php">Commodity Market</a></h1>
+  <ul class="main-nav">
+    <li id="spreadsheetLink"><a href="spreadsheet.php">Spreadsheet</a></li>
+    <li id="rawdataLink"><a href="rawdata.php">Raw Data</a></li>
+    <li id="tradetestLink"><a href="trade_tests.php">Trade Tests</a></li>
   </ul>
-</div>
-<br>
-<br>
+</header>

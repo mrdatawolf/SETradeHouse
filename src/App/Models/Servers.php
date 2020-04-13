@@ -19,4 +19,12 @@ class Servers extends Model
     public function ores() {
         $this->belongsToMany('Models\Ores');
     }
+
+    public function types() {
+        $this->hasMany('Models\ServerTypes');
+    }
+
+    public function clusters() {
+        return $this->belongsTo('Models\Clusters');
+    }
 }
