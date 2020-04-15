@@ -19,8 +19,16 @@ class Ores extends Model
     protected $table = 'ores';
     protected $fillable = ['title','base_cost_to_gather','base_processing_time_per_ore','base_conversion_efficiency','keen_crap_fix','module_efficiency_modifier'];
 
+    public function ingots() {
+        return $this->hasOne('Models\Ingots');
+    }
+
     public function servers() {
         return $this->belongsToMany('Models\Servers');
+    }
+
+    public function clusters() {
+        return $this->belongsToMany('Models\Clusters', 'ores_id', 'clusters_ores', 'clusters_id');
     }
 
     public function getOreEfficiency($modules = 0) {
@@ -63,8 +71,9 @@ class Ores extends Model
     }
 
 
-    public function getBaseCostToGatherOre($total = 1) {
-        
+    public function getBaseCostToGatherOre($economyOre, $total = 1) {
+        ddng($economyOre->toArray());
+        $econOrePerIngot = $economyOre;
         return $this->base_cost_to_gather*$total;
     }
 }

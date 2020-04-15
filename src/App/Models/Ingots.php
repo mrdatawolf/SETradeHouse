@@ -17,6 +17,10 @@ class Ingots extends Model
     protected $table = 'ingots';
     protected $fillable = ['title','ore_required','base_ore','keen_crap_fix'];
 
+    public function ores() {
+        return $this->hasOne('Models\Ores');
+    }
+
     public function getEfficiencyPerSecond($baseMultiplierForBuyVsSell, $baseLaborPerHour) {
         $ore = Ores::find($this->base_ore);
         $derivedEfficiency  = $baseMultiplierForBuyVsSell*$ore->base_conversion_efficiency;

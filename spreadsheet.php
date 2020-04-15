@@ -12,18 +12,20 @@ use Models\Clusters as ClusterModel;
 $clusterId              = 2;
 $magic                  = new MagicNumbers();
 $cluster                = new Clusters($clusterId);
-$clusterModel           = ClusterModel::with('servers')->find($clusterId);
-$servers                = $clusterModel->servers;
+$clusterModel           = ClusterModel::with('servers', 'ores', 'economyOre')->find($clusterId);
+$oreModels              = $clusterModel->ores;
+$serverModels           = $clusterModel->servers;
 $ores                   = new Ores($clusterId);
 $ingots                 = new Ingots($clusterId);
 $components             = new Components($clusterId);
 $magicData              = $magic->basicData();
 $clusterData            = $cluster->basicData($clusterId);
-//$serversData    = $servers->read();
+$economyOre             = $clusterModel->economyOre;
+//$serversData            = $servers->read();
 $oresData               = $ores->read();
 $ingotsData             = $ingots->read();
 $componentsData         = $components->read();
-$totalServers           = $servers->count();
+$totalServers           = $serverModels->count();
 
 function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
     $totalWithOre = 0;
@@ -157,13 +159,13 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
               <td><?=$magicData->base_refinery_speed/$ore->base_processing_time_per_ore;?></td>
               <td><?=round($ore->getRefineryKiloWattHour($magicData->base_refinery_speed, $magicData->base_refinery_kwh),7);?></td>
               <td><?=round($baseOrePerIngot, 2);?></td>
-              <td><?=$ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,4);?></td>
+              <td><?=$ingots->getOreRequiredPerIngot($ore,4);?></td>
               <td><?=$ore->getBaseValue($baseOrePerIngot);?></td>
               <td><?=round($ore->getStoreAdjustedValue($baseOrePerIngot));?></td>
               <td><?=round($ore->getScarcityAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
               <td><?=$ore->keen_crap_fix;?></td>
               <td><?=$ore->getScarcityAdjustment($totalServers, $planetServersWithOre, $asteroidServersWithOre);?></td>
-              <td><?=$ore->getBaseCostToGatherOre(1);?></td>
+              <td><?=$ore->getBaseCostToGatherOre($economyOre, 1);?></td>
             </tr>
           <?php endforeach ?>
           </tbody>

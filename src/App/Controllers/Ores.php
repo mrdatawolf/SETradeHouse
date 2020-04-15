@@ -28,7 +28,6 @@ class Ores extends BaseController implements Crud
         $ore->module_efficiency_modifier    = $data->moduleEfficiencyModifier;
         $ore->save();
 
-
         return $ore->id;
     }
 }

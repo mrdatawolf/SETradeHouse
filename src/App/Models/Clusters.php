@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $asteroid_scarcity_modifier
  * @property                       $planet_scarcity_modifier
  * @property                       $base_modifier
+ * @property                       $economyOre
+ * @property                       $ores
+ * @property                       $servers
  * @package Models
  */
 class Clusters extends Model
@@ -21,6 +24,12 @@ class Clusters extends Model
     protected $table = 'clusters';
     protected $fillable = ['title','economy_ore', 'economy_stone_modifier','scaling_modifier','economy_ore_value','asteroid_scarcity_modifier', 'planet_scarcity_modifier', 'base_modifier'];
 
+    public function economyOre() {
+        return$this->hasOne('Models\Ores', 'id', 'economy_ore_id');
+    }
+    public function ores() {
+        return $this->belongsToMany('Models\Ores', 'clusters_ores', 'ores_id', 'clusters_id');
+    }
     public function servers() {
         return $this->hasMany('Models\Servers');
     }
