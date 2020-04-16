@@ -20,11 +20,15 @@ class Servers extends Model
         $this->belongsToMany('Models\Ores');
     }
 
-    public function types() {
-        $this->hasMany('Models\ServerTypes');
+    public function ingots() {
+        return $this->belongsToMany('Models\Ingots');
     }
 
     public function clusters() {
         return $this->belongsTo('Models\Clusters');
+    }
+
+    public function types() {
+        $this->hasMany('Models\ServerTypes');
     }
 }

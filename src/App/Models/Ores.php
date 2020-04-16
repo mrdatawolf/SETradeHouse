@@ -52,13 +52,12 @@ class Ores extends Model
         return ($this->id == 10) ? 0 : $this->ore_per_ingot * 2;
     }
 
-    public function getStoreAdjustedValue()
-    {
+    public function getStoreAdjustedValue() {
         return (empty($this->getBaseValue()) || empty($this->keen_crap_fix)) ? 0
             : $this->getBaseValue() * $this->keen_crap_fix;
     }
 
-    public function getScarcityAdjustedValue($orePerIngot, $totalServers, $planetsWith, $asteroidsWith) {
+    public function getScarcityAdjustedValue($totalServers, $planetsWith, $asteroidsWith) {
         $storeAdjustedValue = $this->getStoreAdjustedValue();
         $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith);
 
@@ -66,11 +65,11 @@ class Ores extends Model
     }
 
     public function getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith) {
+
         $totalServersWithOre = $planetsWith+$asteroidsWith;
 
-        return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 15);
+        return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
     }
-
 
     public function getBaseCostToGatherOre($economyOre, $scalingModifier, $total = 1) {
         $econOrePerIngot = $economyOre->ore_per_ingot;

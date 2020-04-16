@@ -139,7 +139,6 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
           </thead>
           <tbody>
           <?php foreach($ores as $ore) :
-              $ingot = $ore->ingots->first();
               $baseOrePerIngot          = $ore->getOreRequiredPerIngot(0);
               $serversWithOre           = $ore::with('servers')->find($ore->id);
               $planetServersWithOre     = getTotalTypeWithOre($serversWithOre, $clusterId, 1);
@@ -153,7 +152,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
               <td><?=$ore->getOreRequiredPerIngot(4);?></td>
               <td><?=$ore->getBaseValue();?></td>
               <td><?=round($ore->getStoreAdjustedValue());?></td>
-              <td><?=round($ore->getScarcityAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
+              <td><?=round($ore->getScarcityAdjustedValue($totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
               <td><?=$ore->keen_crap_fix;?></td>
               <td><?=$ore->getScarcityAdjustment($totalServers, $planetServersWithOre, $asteroidServersWithOre);?></td>
               <td><?=$ore->getBaseCostToGatherOre($economyOre, $cluster->scaling_modifier,1);?></td>
@@ -181,7 +180,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 <?php foreach($ingots as $ingot) : ?>
                     <tr>
                         <td><?= $ingot->title;?></td>
-                        <td><?=$ingot->getEfficiencyPerSecond($magicData->base_multiplier_for_buy_vs_sell, $magicData->base_labor_per_hour);?></td>
+                        <td><?=$ingot->getEfficiencyPerSecond($magicData->module_base_efficiency, $magicData->base_refinery_speed);?></td>
                         <td><?=$ingot->getBaseValue();?></td>
                         <td><?=$ingot->getBaseValue(4);?></td>
                         <td><?=$ingot->getStoreAdjustedValue();?></td>
@@ -218,16 +217,16 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 <?php foreach($components as $row) : ?>
                     <tr>
                         <td><?= $row->title; ?></td>
-                        <td><?= $row->cobalt; ?></td>
-                        <td><?= $row->gold; ?></td>
-                        <td><?= $row->iron; ?></td>
-                        <td><?= $row->magnesium; ?></td>
-                        <td><?= $row->nickel; ?></td>
-                        <td><?= $row->platinum; ?></td>
-                        <td><?= $row->silicon; ?></td>
-                        <td><?= $row->silver; ?></td>
-                        <td><?= $row->gravel; ?></td>
-                        <td><?= $row->uranium; ?></td>
+                        <td><?= $row->cobalt/$cluster->base_modifier; ?></td>
+                        <td><?= $row->gold/$cluster->base_modifier; ?></td>
+                        <td><?= $row->iron/$cluster->base_modifier; ?></td>
+                        <td><?= $row->magnesium/$cluster->base_modifier; ?></td>
+                        <td><?= $row->nickel/$cluster->base_modifier; ?></td>
+                        <td><?= $row->platinum/$cluster->base_modifier; ?></td>
+                        <td><?= $row->silicon/$cluster->base_modifier; ?></td>
+                        <td><?= $row->silver/$cluster->base_modifier; ?></td>
+                        <td><?= $row->gravel/$cluster->base_modifier; ?></td>
+                        <td><?= $row->uranium/$cluster->base_modifier; ?></td>
                         <td><?= $row->mass; ?></td>
                         <td><?= $row->volume; ?></td>
                     </tr>
@@ -250,12 +249,15 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </thead>
                 <tbody>
                     <?php foreach($ores as $ore) :
-                        $baseOrePerIngot = $ore->ore_per_ingot;
+                        $baseOrePerIngot          = $ore->getOreRequiredPerIngot(0);
+                        $serversWithOre           = $ore::with('servers')->find($ore->id);
+                        $planetServersWithOre     = getTotalTypeWithOre($serversWithOre, $clusterId, 1);
+                        $asteroidServersWithOre   = getTotalTypeWithOre($serversWithOre, $clusterId, 2);
                     ?>
                     <tr>
                         <td><?=$ore->title;?></td>
                         <td><?=round($ore->getStoreAdjustedValue());?></td>
-                        <td><?=round($ore->getScarcityAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
+                        <td><?=round($ore->getScarcityAdjustedValue($totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -268,11 +270,17 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ingots as $ingot) : ?>
+                <?php foreach($ingots as $ingot) :
+                    $baseOrePerIngot        = $ingot->getOreRequiredPerIngot(0);
+                    $serversWithOre         = $ingot::with('servers')->find($ingot->id);
+
+                    $planetServersWithOre   = getTotalTypeWithOre($serversWithOre, $clusterId, 1);
+                    $asteroidServersWithOre = getTotalTypeWithOre($serversWithOre, $clusterId, 2);
+                ?>
                     <tr>
                         <td><?=$ingot->title;?></td>
                         <td><?=round($ingot->getStoreAdjustedValue());?></td>
-                        <td><?=round($ingot->getScarcityAdjustedValue($totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
+                        <td><?=round($ingot->getScarcityAdjustedValue($serversWithOre->count(), $planetServersWithOre, $asteroidServersWithOre));?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

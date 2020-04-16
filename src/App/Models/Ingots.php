@@ -21,45 +21,40 @@ class Ingots extends Model
         return $this->belongsToMany('Models\Ores');
     }
 
-    public function getEfficiencyPerSecond($baseMultiplierForBuyVsSell, $baseLaborPerHour) {
-        $ore = $this->ores()->first();
-        $derivedEfficiency  = $baseMultiplierForBuyVsSell*$ore->base_conversion_efficiency;
-        $time               = ($baseLaborPerHour/$ore->base_processing_time_per_ore);
+    public function servers() {
+        return $this->belongsToMany('Models\Servers');
+    }
 
-        return $derivedEfficiency*$time;
+    public function getEfficiencyPerSecond($moduleBaseEffeciency, $baseRefinerySpeed) {
+        $ore = $this->ores()->first();
+
+        return ($moduleBaseEffeciency*$ore->base_conversion_efficiency)*($baseRefinerySpeed/$ore->base_processing_time_per_ore);
     }
 
     public function getBaseValue($modules = 0) {
         $ore = $this->ores()->first();
-        $oreRequired = $this->getOreRequiredPerIngot($ore, $modules);
+        $oreRequired = $ore->getOreRequiredPerIngot($modules);
 
-        return $ore->getBaseValue()*$oreRequired;
+        return $oreRequired*$ore->getStoreAdjustedValue();
     }
 
     public function getStoreAdjustedValue() {
-        $ore = $this->ores()->first();
-
-        return $this->getBaseValue($ore->module_efficiency_modifier)*$this->keen_crap_fix;
+        return $this->getBaseValue()*$this->keen_crap_fix;
     }
 
     public function getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith) {
-        $totalServersWithOre = $planetsWith+$asteroidsWith;
+        $totalServersWithIngot = $planetsWith+$asteroidsWith;
 
-        return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
+        return ($totalServersWithIngot === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
     }
 
     public function getScarcityAdjustedValue($totalServers, $planetsWith, $asteroidsWith) {
-        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith);
-        $storeAdjustedValue = $this->getStoreAdjustedValue();
-
-        return $storeAdjustedValue*(2-($scarcityAdjustment/$totalServers));
+        return $this->getStoreAdjustedValue();
     }
 
-    public function getOreRequiredPerIngot($ore, $modules = 0) {
-        $orePerIngot                = $ore->ore_per_ingot;
-        $moduleEfficiencyModifier   = $ore->module_efficiency_modifier;
-        $modifer                    = $modules*$moduleEfficiencyModifier;
+    public function getOreRequiredPerIngot($modules = 0) {
+        $ore = $this->ores()->first();
 
-        return $orePerIngot - $modifer;
+        return $ore->getOreRequiredPerIngot($modules);
     }
 }
