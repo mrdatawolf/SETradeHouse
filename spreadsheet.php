@@ -2,20 +2,20 @@
 $title = 'Spreadsheet';
 require 'start.php';
 use Controllers\MagicNumbers;
-use Controllers\Clusters;
 use Models\Clusters as ClusterModel;
+use Models\Components;
 
 $clusterId  = 2;
 $magic      = new MagicNumbers();
 $magicData  = $magic->basicData();
 
-$clusters   = new Clusters($clusterId);
-$cluster    = ClusterModel::with('servers', 'ores', 'economyOre', 'ingots')->find($clusterId);
-$ores       = $cluster->ores();
-$ingots     = $cluster->ingots();
-$servers    = $cluster->servers();
-$economyOre = $cluster->economyOre;
-$totalServers = $servers->count();
+$cluster        = ClusterModel::with('servers', 'ores', 'economyOre', 'ingots')->find($clusterId);
+$ores           = $cluster->ores()->get();
+$ingots         = $cluster->ingots()->get();
+$servers        = $cluster->servers()->get();
+$economyOre     = $cluster->economyOre;
+$totalServers   = $servers->count();
+$components     = Components::all();
 
 function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
     $totalWithOre = 0;
@@ -107,7 +107,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ores->get() as $ore) : ?>
+                <?php foreach($ores as $ore) : ?>
                     <tr>
                         <td><?=$ore->title;?></td>
                         <td><?=$ore->base_processing_time_per_ore;?></td>
@@ -138,7 +138,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
           </tr>
           </thead>
           <tbody>
-          <?php foreach($ores->get() as $ore) :
+          <?php foreach($ores as $ore) :
               $ingot = $ore->ingots->first();
               $baseOrePerIngot          = $ore->getOreRequiredPerIngot(0);
               $serversWithOre           = $ore::with('servers')->find($ore->id);
@@ -151,8 +151,8 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
               <td><?=round($ore->getRefineryKiloWattHour($magicData->base_refinery_speed, $magicData->base_refinery_kwh),7);?></td>
               <td><?=round($baseOrePerIngot, 2);?></td>
               <td><?=$ore->getOreRequiredPerIngot(4);?></td>
-              <td><?=$ore->getBaseValue($baseOrePerIngot);?></td>
-              <td><?=round($ore->getStoreAdjustedValue($baseOrePerIngot));?></td>
+              <td><?=$ore->getBaseValue();?></td>
+              <td><?=round($ore->getStoreAdjustedValue());?></td>
               <td><?=round($ore->getScarcityAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
               <td><?=$ore->keen_crap_fix;?></td>
               <td><?=$ore->getScarcityAdjustment($totalServers, $planetServersWithOre, $asteroidServersWithOre);?></td>
@@ -178,7 +178,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ingots->get() as $ingot) : ?>
+                <?php foreach($ingots as $ingot) : ?>
                     <tr>
                         <td><?= $ingot->title;?></td>
                         <td><?=$ingot->getEfficiencyPerSecond($magicData->base_multiplier_for_buy_vs_sell, $magicData->base_labor_per_hour);?></td>
@@ -215,7 +215,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </thead>
                 <tbody>
 
-                <?php foreach($componentsData as $row) : ?>
+                <?php foreach($components as $row) : ?>
                     <tr>
                         <td><?= $row->title; ?></td>
                         <td><?= $row->cobalt; ?></td>
@@ -249,12 +249,12 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($oresData as $ore) :
-                        $baseOrePerIngot = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
+                    <?php foreach($ores as $ore) :
+                        $baseOrePerIngot = $ore->ore_per_ingot;
                     ?>
                     <tr>
                         <td><?=$ore->title;?></td>
-                        <td><?=round($ore->getStoreAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
+                        <td><?=round($ore->getStoreAdjustedValue());?></td>
                         <td><?=round($ore->getScarcityAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
                     </tr>
                     <?php endforeach; ?>
@@ -268,7 +268,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ingotsData as $ingot) : ?>
+                <?php foreach($ingots as $ingot) : ?>
                     <tr>
                         <td><?=$ingot->title;?></td>
                         <td><?=round($ingot->getStoreAdjustedValue());?></td>
@@ -286,7 +286,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($componentsData as $component) : ?>
+                    <?php foreach($components as $component) : ?>
                     <tr>
                         <td><?=$component->title;?></td>
                         <td><?=round($component->getStoreAdjustedValue());?></td>
@@ -311,7 +311,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </thead>
                 <tbody>
                 <?php
-                  foreach($oresData as $ore) :
+                  foreach($ores as $ore) :
                     ?>
                     <tr>
                         <td><?= $ore->title; ?></td>
@@ -330,7 +330,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </thead>
                 <tbody>
                 <?php
-                foreach($ingotsData as $ingot) :
+                foreach($ingots as $ingot) :
                     ?>
                   <tr>
                     <td><?= $ingot->title; ?></td>
@@ -349,7 +349,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
               </thead>
               <tbody>
               <?php
-              foreach($componentsData as $component) :
+              foreach($components as $component) :
                   ?>
                 <tr>
                   <td><?= $component->title; ?></td>
@@ -383,7 +383,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($oresData as $thing) : ?>
+                <?php foreach($ores as $thing) : ?>
                     <tr>
                         <td><?=$thing->title;?></td>
                         <td>0</td>
@@ -417,7 +417,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                     <th>System</th>
                     <th>Adjusted</th>
                 </tr>
-                <?php foreach($oresData as $thing) : ?>
+                <?php foreach($ores as $thing) : ?>
                     <tr>
                         <td><?=$thing->title;?></td>
                         <td>0</td>
@@ -451,7 +451,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                     <th>System</th>
                     <th>Adjusted</th>
                 </tr>
-                <?php foreach($componentsData as $thing) : ?>
+                <?php foreach($components as $thing) : ?>
                     <tr>
                         <td><?=$thing->title;?></td>
                         <td>0</td>
