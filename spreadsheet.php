@@ -12,11 +12,9 @@ $magicData  = $magic->basicData();
 $clusters   = new Clusters($clusterId);
 $cluster    = ClusterModel::with('servers', 'ores', 'economyOre', 'ingots')->find($clusterId);
 $ores       = $cluster->ores();
-$ingots     = $cluster->ingots;
-$servers    = $cluster->servers;
+$ingots     = $cluster->ingots();
+$servers    = $cluster->servers();
 $economyOre = $cluster->economyOre;
-ddng($ores->toArray());
-
 $totalServers = $servers->count();
 
 function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
@@ -90,7 +88,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                     <th><?=$magicData->base_weight_for_system_stock;?></th>
                     <th><?=$totalServers*10;?></th>
                     <th><?=$cluster->scaling_modifier;?></th>
-                    <th><?=$cluster->economy_ore;?></th>
+                    <th><?=$economyOre->getBaseValue();?></th>
                     <th><?=$cluster->economy_stone_modifier;?></th>
                     <th><?=$totalServers;?></th>
                     <th><?=$cluster->asteroid_scarcity_modifier;?></th>
@@ -109,7 +107,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ores as $ore) : ?>
+                <?php foreach($ores->get() as $ore) : ?>
                     <tr>
                         <td><?=$ore->title;?></td>
                         <td><?=$ore->base_processing_time_per_ore;?></td>
@@ -140,7 +138,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
           </tr>
           </thead>
           <tbody>
-          <?php foreach($ores as $ore) :
+          <?php foreach($ores->get() as $ore) :
               $ingot = $ore->ingots->first();
               $baseOrePerIngot          = $ore->getOreRequiredPerIngot(0);
               $serversWithOre           = $ore::with('servers')->find($ore->id);
@@ -180,7 +178,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ingotsData as $ingot) : ?>
+                <?php foreach($ingots->get() as $ingot) : ?>
                     <tr>
                         <td><?= $ingot->title;?></td>
                         <td><?=$ingot->getEfficiencyPerSecond($magicData->base_multiplier_for_buy_vs_sell, $magicData->base_labor_per_hour);?></td>

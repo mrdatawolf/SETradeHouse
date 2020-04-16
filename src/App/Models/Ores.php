@@ -48,18 +48,18 @@ class Ores extends Model
         return $return;
     }
 
-    public function getBaseValue($orePerIngot) {
-        return ($this->id == 10) ? 0 : $orePerIngot * 2;
+    public function getBaseValue() {
+        return ($this->id == 10) ? 0 : $this->ore_per_ingot * 2;
     }
 
-    public function getStoreAdjustedValue($orePerIngot)
+    public function getStoreAdjustedValue()
     {
-        return (empty($this->getBaseValue($orePerIngot)) || empty($this->keen_crap_fix)) ? 0
-            : $this->getBaseValue($orePerIngot) * $this->keen_crap_fix;
+        return (empty($this->getBaseValue()) || empty($this->keen_crap_fix)) ? 0
+            : $this->getBaseValue() * $this->keen_crap_fix;
     }
 
     public function getScarcityAdjustedValue($orePerIngot, $totalServers, $planetsWith, $asteroidsWith) {
-        $storeAdjustedValue = $this->getStoreAdjustedValue($orePerIngot);
+        $storeAdjustedValue = $this->getStoreAdjustedValue();
         $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith);
 
         return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));

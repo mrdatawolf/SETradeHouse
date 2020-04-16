@@ -18,11 +18,11 @@ class Ingots extends Model
     protected $fillable = ['title','keen_crap_fix'];
 
     public function ores() {
-        return $this->hasOne('Models\Ores');
+        return $this->belongsToMany('Models\Ores');
     }
 
     public function getEfficiencyPerSecond($baseMultiplierForBuyVsSell, $baseLaborPerHour) {
-        $ore = Ores::find($this->base_ore);
+        $ore = $this->ores()->first();
         $derivedEfficiency  = $baseMultiplierForBuyVsSell*$ore->base_conversion_efficiency;
         $time               = ($baseLaborPerHour/$ore->base_processing_time_per_ore);
 
@@ -30,16 +30,14 @@ class Ingots extends Model
     }
 
     public function getBaseValue($modules = 0) {
-        $ores = new Ores();
-        $ore = Ores::find($this->base_ore);
-        $oreRequired = $this->getOreRequiredPerIngot($ore->module_efficiency_modifier, $modules);
+        $ore = $this->ores()->first();
+        $oreRequired = $this->getOreRequiredPerIngot($ore, $modules);
 
-
-        return $ores->getBaseValue($oreRequired)*$oreRequired;
+        return $ore->getBaseValue()*$oreRequired;
     }
 
     public function getStoreAdjustedValue() {
-        $ore = Ores::find($this->base_ore);
+        $ore = $this->ores()->first();
 
         return $this->getBaseValue($ore->module_efficiency_modifier)*$this->keen_crap_fix;
     }
