@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ingots extends Model
 {
     protected $table = 'ingots';
-    protected $fillable = ['title','ore_required','base_ore','keen_crap_fix'];
+    protected $fillable = ['title','keen_crap_fix'];
 
     public function ores() {
         return $this->hasOne('Models\Ores');
@@ -57,10 +57,11 @@ class Ingots extends Model
         return $storeAdjustedValue*(2-($scarcityAdjustment/$totalServers));
     }
 
-    public function getOreRequiredPerIngot($moduleEfficiencyModifier, $modules = 0) {
+    public function getOreRequiredPerIngot($ore, $modules = 0) {
+        $orePerIngot                = $ore->ore_per_ingot;
+        $moduleEfficiencyModifier   = $ore->module_efficiency_modifier;
+        $modifer                    = $modules*$moduleEfficiencyModifier;
 
-        $modifer = $modules*$moduleEfficiencyModifier;
-
-        return $this->ore_required - $modifer;
+        return $orePerIngot - $modifer;
     }
 }

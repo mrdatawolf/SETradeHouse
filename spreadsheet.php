@@ -2,30 +2,22 @@
 $title = 'Spreadsheet';
 require 'start.php';
 use Controllers\MagicNumbers;
-use \Controllers\Clusters;
-use \Controllers\Ores;
-use \Controllers\Ingots;
-use \Controllers\Components;
-use Models\Ores as OreModel;
+use Controllers\Clusters;
 use Models\Clusters as ClusterModel;
 
-$clusterId              = 2;
-$magic                  = new MagicNumbers();
-$cluster                = new Clusters($clusterId);
-$clusterModel           = ClusterModel::with('servers', 'ores', 'economyOre')->find($clusterId);
-$oreModels              = $clusterModel->ores;
-$serverModels           = $clusterModel->servers;
-$ores                   = new Ores($clusterId);
-$ingots                 = new Ingots($clusterId);
-$components             = new Components($clusterId);
-$magicData              = $magic->basicData();
-$clusterData            = $cluster->basicData($clusterId);
-$economyOre             = $clusterModel->economyOre;
-//$serversData            = $servers->read();
-$oresData               = $ores->read();
-$ingotsData             = $ingots->read();
-$componentsData         = $components->read();
-$totalServers           = $serverModels->count();
+$clusterId  = 2;
+$magic      = new MagicNumbers();
+$magicData  = $magic->basicData();
+
+$clusters   = new Clusters($clusterId);
+$cluster    = ClusterModel::with('servers', 'ores', 'economyOre', 'ingots')->find($clusterId);
+$ores       = $cluster->ores();
+$ingots     = $cluster->ingots;
+$servers    = $cluster->servers;
+$economyOre = $cluster->economyOre;
+ddng($ores->toArray());
+
+$totalServers = $servers->count();
 
 function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
     $totalWithOre = 0;
@@ -67,7 +59,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </thead>
                 <tbody>
                 <tr>
-                    <td><?=$magicData->receipt_base_efficiency*100;?>%</td>
+                    <td><?=$magicData->module_base_efficiency*100;?>%</td>
                     <td><?=$magicData->base_multiplier_for_buy_vs_sell*100;?>%</td>
                     <td><?=$magicData->base_refinery_kwh;?></td>
                     <td><?=$magicData->cost_kw_hour;?></td>
@@ -97,13 +89,13 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 <tr>
                     <th><?=$magicData->base_weight_for_system_stock;?></th>
                     <th><?=$totalServers*10;?></th>
-                    <th><?=$clusterData->scaling_modifier;?></th>
-                    <th><?=$clusterData->economy_ore;?></th>
-                    <th><?=$clusterData->economy_stone_modifier;?></th>
+                    <th><?=$cluster->scaling_modifier;?></th>
+                    <th><?=$cluster->economy_ore;?></th>
+                    <th><?=$cluster->economy_stone_modifier;?></th>
                     <th><?=$totalServers;?></th>
-                    <th><?=$clusterData->asteroid_scarcity_modifier;?></th>
-                    <th><?=$clusterData->planet_scarcity_modifier;?></th>
-                    <th><?=$clusterData->base_modifier;?></th>
+                    <th><?=$cluster->asteroid_scarcity_modifier;?></th>
+                    <th><?=$cluster->planet_scarcity_modifier;?></th>
+                    <th><?=$cluster->base_modifier;?></th>
                 </tr>
                 </tbody>
             </table>
@@ -117,7 +109,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($oresData as $ore) : ?>
+                <?php foreach($ores as $ore) : ?>
                     <tr>
                         <td><?=$ore->title;?></td>
                         <td><?=$ore->base_processing_time_per_ore;?></td>
@@ -148,9 +140,10 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
           </tr>
           </thead>
           <tbody>
-          <?php foreach($oresData as $ore) :
-              $baseOrePerIngot          = $ingots->getOreRequiredPerIngot($ore->id, $ore->module_efficiency_modifier,0);
-              $serversWithOre           = OreModel::with('servers')->find($ore->id);
+          <?php foreach($ores as $ore) :
+              $ingot = $ore->ingots->first();
+              $baseOrePerIngot          = $ore->getOreRequiredPerIngot(0);
+              $serversWithOre           = $ore::with('servers')->find($ore->id);
               $planetServersWithOre     = getTotalTypeWithOre($serversWithOre, $clusterId, 1);
               $asteroidServersWithOre   = getTotalTypeWithOre($serversWithOre, $clusterId, 2);
           ?>
@@ -159,13 +152,13 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
               <td><?=$magicData->base_refinery_speed/$ore->base_processing_time_per_ore;?></td>
               <td><?=round($ore->getRefineryKiloWattHour($magicData->base_refinery_speed, $magicData->base_refinery_kwh),7);?></td>
               <td><?=round($baseOrePerIngot, 2);?></td>
-              <td><?=$ingots->getOreRequiredPerIngot($ore,4);?></td>
+              <td><?=$ore->getOreRequiredPerIngot(4);?></td>
               <td><?=$ore->getBaseValue($baseOrePerIngot);?></td>
               <td><?=round($ore->getStoreAdjustedValue($baseOrePerIngot));?></td>
               <td><?=round($ore->getScarcityAdjustedValue($baseOrePerIngot, $totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
               <td><?=$ore->keen_crap_fix;?></td>
               <td><?=$ore->getScarcityAdjustment($totalServers, $planetServersWithOre, $asteroidServersWithOre);?></td>
-              <td><?=$ore->getBaseCostToGatherOre($economyOre, 1);?></td>
+              <td><?=$ore->getBaseCostToGatherOre($economyOre, $cluster->scaling_modifier,1);?></td>
             </tr>
           <?php endforeach ?>
           </tbody>

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $base_modifier
  * @property                       $economyOre
  * @property                       $ores
+ * @property                       $ingots
  * @property                       $servers
  * @package Models
  */
@@ -27,9 +28,15 @@ class Clusters extends Model
     public function economyOre() {
         return$this->hasOne('Models\Ores', 'id', 'economy_ore_id');
     }
+
     public function ores() {
-        return $this->belongsToMany('Models\Ores', 'clusters_ores', 'ores_id', 'clusters_id');
+        return $this->belongsToMany('Models\Ores');
     }
+
+    public function ingots() {
+        return $this->belongsToMany('Models\Ingots');
+    }
+
     public function servers() {
         return $this->hasMany('Models\Servers');
     }

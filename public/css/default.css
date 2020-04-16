@@ -41,13 +41,13 @@ body {
 #debugBox {
     position: fixed;
     z-index: 1000;
-    left: 5%;
-    top: 5%;
+    left: 2%;
+    top: 2%;
     background-color: #FAA;
-    min-width: 20em;
+    min-width: 40em;
     max-width: 60em;
-    min-height: 10em;
-    max-height: 50em;
+    min-height: 20em;
+    max-height: 40em;
     overflow: scroll;
 }
 

@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int                   $id
  * @property string                $title
- * @property                       $base_cost_to_gather
  * @property                       $base_processing_time_per_ore
  * @property                       $base_conversion_efficiency
  * @property                       $keen_crap_fix
  * @property                       $module_efficiency_modifier
+ * @property                       $ore_per_ingot
  * @package Models
  */
 class Ores extends Model
@@ -19,8 +19,9 @@ class Ores extends Model
     protected $table = 'ores';
     protected $fillable = ['title','base_cost_to_gather','base_processing_time_per_ore','base_conversion_efficiency','keen_crap_fix','module_efficiency_modifier'];
 
+
     public function ingots() {
-        return $this->hasOne('Models\Ingots');
+        return $this->belongsToMany('Models\Ingots');
     }
 
     public function servers() {
@@ -28,7 +29,7 @@ class Ores extends Model
     }
 
     public function clusters() {
-        return $this->belongsToMany('Models\Clusters', 'ores_id', 'clusters_ores', 'clusters_id');
+        return $this->belongsToMany('Models\Clusters');
     }
 
     public function getOreEfficiency($modules = 0) {
@@ -71,9 +72,17 @@ class Ores extends Model
     }
 
 
-    public function getBaseCostToGatherOre($economyOre, $total = 1) {
-        ddng($economyOre->toArray());
-        $econOrePerIngot = $economyOre;
-        return $this->base_cost_to_gather*$total;
+    public function getBaseCostToGatherOre($economyOre, $scalingModifier, $total = 1) {
+        $econOrePerIngot = $economyOre->ore_per_ingot;
+        $orePerIngot = $this->ore_per_ingot;
+        return (($orePerIngot/$econOrePerIngot)*$scalingModifier)*$total;
+    }
+
+    public function getOreRequiredPerIngot($modules = 0) {
+        $orePerIngot                = $this->ore_per_ingot;
+        $moduleEfficiencyModifier   = $this->module_efficiency_modifier;
+        $modifer                    = $modules*$moduleEfficiencyModifier;
+
+        return $orePerIngot - $modifer;
     }
 }
