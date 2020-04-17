@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $keen_crap_fix
  * @property                       $module_efficiency_modifier
  * @property                       $ore_per_ingot
+ * @property                       $ingots
+ * @property                       $servers
+ * @property                       $clusters
  * @package Models
  */
 class Ores extends Model
@@ -57,15 +60,16 @@ class Ores extends Model
             : $this->getBaseValue() * $this->keen_crap_fix;
     }
 
-    public function getScarcityAdjustedValue($totalServers, $planetsWith, $asteroidsWith) {
+    public function getScarcityAdjustedValue($totalServers, $clusterId) {
         $storeAdjustedValue = $this->getStoreAdjustedValue();
-        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith);
+        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $clusterId);
 
         return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
     }
 
-    public function getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith) {
-
+    public function getScarcityAdjustment($totalServers, $clusterId) {
+        $planetsWith = $this->getPlanetsWith($clusterId);
+        $asteroidsWith = $this->getAsteroidsWith($clusterId);
         $totalServersWithOre = $planetsWith+$asteroidsWith;
 
         return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
@@ -83,5 +87,26 @@ class Ores extends Model
         $modifer                    = $modules*$moduleEfficiencyModifier;
 
         return $orePerIngot - $modifer;
+    }
+
+    public function getPlanetsWith($clusterId) {
+        return $this->getServerOfTypeWith(1, $clusterId);
+    }
+
+    public function getAsteroidsWith($clusterId) {
+        return $this->getServerOfTypeWith(2, $clusterId);
+    }
+
+    private function getServerOfTypeWith($type, $clusterId) {
+        $totalWith = 0;
+        foreach($this->servers as $server) {
+            if($server->clusters_id == $clusterId) {
+                if ($server->types_id == $type) {
+                    $totalWith++;
+                }
+            }
+        }
+
+        return $totalWith;
     }
 }

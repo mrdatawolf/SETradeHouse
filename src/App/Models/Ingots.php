@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $ore_required
  * @property                       $base_ore
  * @property                       $keen_crap_fix
+ * @property                       $ores
+ * @property                       $servers
+ * @property                       $clusters
  * @package Models
  */
 class Ingots extends Model
@@ -23,6 +26,10 @@ class Ingots extends Model
 
     public function servers() {
         return $this->belongsToMany('Models\Servers');
+    }
+
+    public function clusters() {
+        return $this->belongsToMany('Models\Clusters');
     }
 
     public function getEfficiencyPerSecond($moduleBaseEffeciency, $baseRefinerySpeed) {
@@ -39,22 +46,48 @@ class Ingots extends Model
     }
 
     public function getStoreAdjustedValue() {
-        return $this->getBaseValue()*$this->keen_crap_fix;
+        return (empty($this->getBaseValue()) || empty($this->keen_crap_fix)) ? 0
+            : $this->getBaseValue() * $this->keen_crap_fix;
     }
 
-    public function getScarcityAdjustment($totalServers, $planetsWith, $asteroidsWith) {
+    public function getScarcityAdjustment($totalServers,$clusterId) {
+        $planetsWith = $this->getPlanetsWith($clusterId);
+        $asteroidsWith = $this->getAsteroidsWith($clusterId);
         $totalServersWithIngot = $planetsWith+$asteroidsWith;
-
         return ($totalServersWithIngot === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
     }
 
-    public function getScarcityAdjustedValue($totalServers, $planetsWith, $asteroidsWith) {
-        return $this->getStoreAdjustedValue();
+    public function getScarcityAdjustedValue($totalServers, $clusterId) {
+        $storeAdjustedValue = $this->getStoreAdjustedValue();
+        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $clusterId);
+
+        return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
     }
 
     public function getOreRequiredPerIngot($modules = 0) {
         $ore = $this->ores()->first();
 
         return $ore->getOreRequiredPerIngot($modules);
+    }
+
+    public function getPlanetsWith($clusterId) {
+        return $this->getServerOfTypeWith(1, $clusterId);
+    }
+
+    public function getAsteroidsWith($clusterId) {
+        return $this->getServerOfTypeWith(2, $clusterId);
+    }
+
+    private function getServerOfTypeWith($type, $clusterId) {
+        $totalWith = 0;
+        foreach($this->servers as $server) {
+            if($server->clusters_id == $clusterId) {
+                if ($server->types_id == $type) {
+                    $totalWith++;
+                }
+            }
+        }
+
+        return $totalWith;
     }
 }

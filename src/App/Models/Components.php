@@ -27,19 +27,45 @@ class Components extends Model
     protected $fillable = ['title','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','mass','volume'];
 
     public function getBaseValue() {
+        $value = 0;
+        $ingots = Ingots::all();
+        foreach ($ingots as $ingot) {
+            $title = $ingot->title;
+            $needed       = $this->$title;
+            if($needed > 0) {
+                $value += $ingot->getBaseValue() * $needed;
+            }
+        }
 
-        return 1;
+        return $value;
     }
 
     public function getStoreAdjustedValue() {
-        return $this->getBaseValue();
+        $value = 0;
+        $ingots = Ingots::all();
+        foreach ($ingots as $ingot) {
+            $title = $ingot->title;
+            $needed       = $this->$title;
+            if($needed > 0) {
+                $value += $ingot->getStoreAdjustedValue() * $needed;
+            }
+        }
+
+        return $value;
     }
 
-    public function getScarcityAdjustment() {
-        return 1;
-    }
 
-    public function getScarcityAdjustedValue() {
-        return 1;
+    public function getScarcityAdjustedValue($totalServers, $clusterId) {
+        $value = 0;
+        $ingots = Ingots::all();
+        foreach ($ingots as $ingot) {
+            $title = $ingot->title;
+            $needed       = $this->$title;
+            if($needed > 0) {
+                $value += $ingot->getScarcityAdjustedValue($totalServers, $clusterId) * $needed;
+            }
+        }
+
+        return $value;
     }
 }

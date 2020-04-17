@@ -140,9 +140,6 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
           <tbody>
           <?php foreach($ores as $ore) :
               $baseOrePerIngot          = $ore->getOreRequiredPerIngot(0);
-              $serversWithOre           = $ore::with('servers')->find($ore->id);
-              $planetServersWithOre     = getTotalTypeWithOre($serversWithOre, $clusterId, 1);
-              $asteroidServersWithOre   = getTotalTypeWithOre($serversWithOre, $clusterId, 2);
           ?>
             <tr>
               <td><?=$ore->title;?></td>
@@ -152,9 +149,9 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
               <td><?=$ore->getOreRequiredPerIngot(4);?></td>
               <td><?=$ore->getBaseValue();?></td>
               <td><?=round($ore->getStoreAdjustedValue());?></td>
-              <td><?=round($ore->getScarcityAdjustedValue($totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
+              <td><?=round($ore->getScarcityAdjustedValue($totalServers, $clusterId));?></td>
               <td><?=$ore->keen_crap_fix;?></td>
-              <td><?=$ore->getScarcityAdjustment($totalServers, $planetServersWithOre, $asteroidServersWithOre);?></td>
+              <td><?=$ore->getScarcityAdjustment($totalServers, $clusterId);?></td>
               <td><?=$ore->getBaseCostToGatherOre($economyOre, $cluster->scaling_modifier,1);?></td>
             </tr>
           <?php endforeach ?>
@@ -250,14 +247,11 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 <tbody>
                     <?php foreach($ores as $ore) :
                         $baseOrePerIngot          = $ore->getOreRequiredPerIngot(0);
-                        $serversWithOre           = $ore::with('servers')->find($ore->id);
-                        $planetServersWithOre     = getTotalTypeWithOre($serversWithOre, $clusterId, 1);
-                        $asteroidServersWithOre   = getTotalTypeWithOre($serversWithOre, $clusterId, 2);
                     ?>
                     <tr>
                         <td><?=$ore->title;?></td>
                         <td><?=round($ore->getStoreAdjustedValue());?></td>
-                        <td><?=round($ore->getScarcityAdjustedValue($totalServers, $planetServersWithOre, $asteroidServersWithOre));?></td>
+                        <td><?=round($ore->getScarcityAdjustedValue($totalServers, $clusterId));?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -271,16 +265,12 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </thead>
                 <tbody>
                 <?php foreach($ingots as $ingot) :
-                    $baseOrePerIngot        = $ingot->getOreRequiredPerIngot(0);
-                    $serversWithOre         = $ingot::with('servers')->find($ingot->id);
-
-                    $planetServersWithOre   = getTotalTypeWithOre($serversWithOre, $clusterId, 1);
-                    $asteroidServersWithOre = getTotalTypeWithOre($serversWithOre, $clusterId, 2);
+                    $baseOrePerIngot    = $ingot->getOreRequiredPerIngot(0);
                 ?>
                     <tr>
                         <td><?=$ingot->title;?></td>
                         <td><?=round($ingot->getStoreAdjustedValue());?></td>
-                        <td><?=round($ingot->getScarcityAdjustedValue($serversWithOre->count(), $planetServersWithOre, $asteroidServersWithOre));?></td>
+                        <td><?=round($ingot->getScarcityAdjustedValue($totalServers, $clusterId));?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -298,7 +288,7 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                     <tr>
                         <td><?=$component->title;?></td>
                         <td><?=round($component->getStoreAdjustedValue());?></td>
-                        <td><?=round($component->getScarcityAdjustedValue());?></td>
+                        <td><?=round($component->getScarcityAdjustedValue($totalServers, $clusterId));?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
