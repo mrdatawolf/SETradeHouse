@@ -4,6 +4,7 @@ require 'start.php';
 use Controllers\MagicNumbers;
 use Models\Clusters as ClusterModel;
 use Models\Components;
+use \Models\TradeZones;
 
 $clusterId  = 2;
 $magic      = new MagicNumbers();
@@ -361,14 +362,16 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
     </section>
     <?php //variables
     $specialHeaders = ["TZ Data" => 5,"System Data" => 3,"Goals" =>3];
-    $baseHeaders = ["Name","Buy","Sell","Stock","Goal","Base Value","Stock","Goal","TZ","System","Adjusted"];
+    $baseHeaders = ["Name","Buy","Sell","SC Value per","Total Value","Base Value","Stock","Goal","TZ","System","Adjusted"];
+    $tradezone = TradeZones::with('servers')->find(1);
+    //ddng($tradezone->servers);
     ?>
-    <section id="AlphaTrade" class="simpleDisplay">
-        <h2><a class="headerTitle" href="#AlphaTrade">Alpha Trade</a></h2>
+    <section id="<?=$tradezone->title;?>Trade" class="simpleDisplay">
+        <h2><a class="headerTitle" href="#<?=$tradezone->title;?>Trade"><?=$tradezone->title;?> Trade</a></h2>
         <div class="tab-content">
             <table>
                 <thead>
-                <tr><th colspan="11">Ore</th> </tr>
+                <tr><th colspan="12">Ore</th> </tr>
                 <tr>
                     <?php foreach ($specialHeaders as $header => $span) : ?>
                         <th colspan="<?=$span;?>"><?=$header;?></th>
@@ -381,13 +384,13 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($ores as $thing) : ?>
+                <?php foreach($ores as $ore) : ?>
                     <tr>
-                        <td><?=$thing->title;?></td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                        <td><?=$ore->title;?></td>
+                        <td><?=$tradezone->getTotalBuyOrders(1, $ore->id);?></td>
+                        <td><?=$tradezone->getTotalSellOrders(1, $ore->id);?></td>
+                        <td><?=round($ore->getScarcityAdjustedValue($totalServers,$clusterId),2);?></td>
+                        <td><?=round(($tradezone->getTotalBuyOrders(1, $ore->id)- $tradezone->getTotalSellOrders(1, $ore->id))*$ore->getScarcityAdjustedValue($totalServers,$clusterId));?></td>
                         <td>0</td>
                         <td>0</td>
                         <td>0</td>

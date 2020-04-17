@@ -40,4 +40,8 @@ class Clusters extends Model
     public function servers() {
         return $this->hasMany('Models\Servers');
     }
+
+    public function activeTransactions() {
+        return $this->hasMany('Models\ActiveTransactions');
+    }
 }
