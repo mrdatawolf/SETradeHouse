@@ -361,17 +361,17 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
         </div>
     </section>
     <?php //variables
-    $specialHeaders = ["TZ Data" => 5,"System Data" => 3,"Goals" =>3];
-    $baseHeaders = ["Name","Buy","Sell","SC Value per","Total Value","Base Value","Stock","Goal","TZ","System","Adjusted"];
-    $tradezone = TradeZones::with('servers')->find(1);
-    //ddng($tradezone->servers);
+    $specialHeaders = ["Name" => 1 ,"TZ Data" => 4,"Server Data" => 4];
+    $baseHeaders    = ["Name","Desire","Listed SC per","Scarcity SC Per","Total Value","Desire","SC Per","Total Value","TZ"];
+    $tradezone      = TradeZones::with('servers')->find(1);
+    $server         = $tradezone->servers;
     ?>
     <section id="<?=$tradezone->title;?>Trade" class="simpleDisplay">
         <h2><a class="headerTitle" href="#<?=$tradezone->title;?>Trade"><?=$tradezone->title;?> Trade</a></h2>
         <div class="tab-content">
             <table>
                 <thead>
-                <tr><th colspan="12">Ore</th> </tr>
+                <tr><th colspan="8">Ore</th> </tr>
                 <tr>
                     <?php foreach ($specialHeaders as $header => $span) : ?>
                         <th colspan="<?=$span;?>"><?=$header;?></th>
@@ -386,17 +386,15 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 <tbody>
                 <?php foreach($ores as $ore) : ?>
                     <tr>
-                        <td><?=$ore->title;?></td>
-                        <td><?=$tradezone->getTotalBuyOrders(1, $ore->id);?></td>
-                        <td><?=$tradezone->getTotalSellOrders(1, $ore->id);?></td>
-                        <td><?=round($ore->getScarcityAdjustedValue($totalServers,$clusterId),2);?></td>
-                        <td><?=round(($tradezone->getTotalBuyOrders(1, $ore->id)- $tradezone->getTotalSellOrders(1, $ore->id))*$ore->getScarcityAdjustedValue($totalServers,$clusterId));?></td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                      <td><?=$ore->title;?></td>
+                      <td><?=$tradezone->getDesire(1, $ore->id);?></td>
+                      <td><?=round($tradezone->listedValue(1, $ore->id));?></td>
+                      <td><?=round($ore->getScarcityAdjustedValue($totalServers,$clusterId),2);?></td>
+                      <td><?=round($tradezone->getDesire(1, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$clusterId));?></td>
+                      <td><?=$server->getTotalBuyOrders(1, $ore->id);?></td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
                     </tr>
                 <?php endforeach; ?>
                 <tr><th colspan="11">Ingot</th> </tr>

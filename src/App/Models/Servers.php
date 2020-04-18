@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string                $title
  * @property                       $system_stock_weight
  * @property int                   $cluster_id
+ * @property                       $activeTransactions
  * @package Models
  */
 class Servers extends Model
@@ -44,15 +45,14 @@ class Servers extends Model
         return $this->getOrdersTransactionType(2, $typeId, $id);
     }
 
-    private function getOrdersTransactionType($transactionId, $typeId, $id) {
+    private function getOrdersTransactionType($transactionTypeId, $typeId, $id) {
         $totalAmount = 0;
-        $transactions = $this->activeTransactions()
-                             ->where('transaction_type', $transactionId)
-                             ->where('good_type', $typeId)
-                             ->where('good_id', $id)
-                             ->get();
+        $transactions = $this->activeTransactions;
+
         foreach($transactions as $transaction) {
-            $totalAmount += $transaction->amount;
+            if($transaction->transaction_type ==  $transactionTypeId && $transaction->good_type == $typeId && $transaction->good_type == $id) {
+                $totalAmount += $transaction->amount;
+            }
         }
 
         return $totalAmount;
