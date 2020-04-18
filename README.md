@@ -21,8 +21,8 @@ Road to 1.0 MVP
 2. ~~Populate the db with base values that are not built from other data.  This is the constants i the game like server refinery efficiency.~~
 3. ~~Make a frontend for developers to see the current DB data.~~ see rawdata link
 4. ~~Make a clone of the spreadsheet we have been using.~~
-5. Create all the code needed to derive the numbers shown on the spreadsheet. ~90%
-6. Align all values to the current spreadsheet as a proof that the system is working.
+5. ~~Create all the code needed to derive the numbers shown on the spreadsheet.~~
+6. ~~Align all values to the current spreadsheet as a proof that the system is working.~~
 6. Get the spreadsheet page to allow the station amounts/values to be created/updated as needed.
 7. Make all the commands used on the spreadsheet available in an API.  This API should be updated with any new base/derived values we add.
 8. Bring it up on a server so anyone can interact with the test system.
@@ -60,7 +60,7 @@ Revised +1.0 goals.
 ![Clusters Example](https://raw.githubusercontent.com/mrdatawolf/Colonization/master/clusters_example.png)
 #How a given item gets it's value for a trade-zone:
 note: We will use gold ore for a simple example (when figuring out a value, ores, do not care how many ingots or components using the ingot, version of the ore, there are).  We will also start in the Nebulon Cluster on the server NUR4 as a simple example.
-note2: Keen has weird minimum prices for items.  We call this the store minimum value.  supply/demand prices need to be based off that rather then the more accurate ones we have... KEEEN!!!!!!  
+note2: Keen has weird minimum prices for items.  We call this the store minimum value.  supply/demand prices need to be based off that rather than the more accurate ones we have... KEEEN!!!!!!  
 2. Example 1: Assuming TradeZone3 has 100 gold ore in stock and desires to have 100 gold ore in stock.  This means the trade-zone if happy with it's current levels.  So it will buy more gold ore at the "worst" (store minimum value) price it can as there is no demand. It will also sell at store minimum value.  The desire of this station bubbles up to the nur4 server. As there is only one trade-zone and it has no demand the server has no demand.  This bubbles up to the cluster and as there is oly 1 server and it has no demand the cluster has no demand.
 3. Example 2: Now lets Assume TradeZone3 has 100 platinum ore but desires 400.  Therefore they will pay 75%  (1 - 100/400) more then the store minimum value.  But they really don't want to sell it so they will only sell at 25% (100/400) more then the store minimum value. 
 4. Example 3: 
