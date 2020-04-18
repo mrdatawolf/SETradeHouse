@@ -3,11 +3,11 @@
 use Models\ServerTypes as SystemType;
 
 /**
- * Class SystemTypes
+ * Class ServerTypes
  *
  * @package Controllers
  */
-class SystemTypes
+class ServerTypes
 {
 
     public function create($title, $oreRequired, $baseOre, $keenCrapFix) {

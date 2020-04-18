@@ -27,14 +27,14 @@ class TradeZones extends Model
         return $this->hasMany('Models\ActiveTransactions');
     }
 
-    public function listedValue($typeId, $id) {
+    public function listedValue($clusterId, $typeId, $id) {
         $avgValue = $totalValue = 0;
         $transactionsCount = 0;
         $transactions = $this->activeTransactions;
 
         foreach($transactions as $transaction) {
             $transactionsCount++;
-            if($transaction->good_type == $typeId && $transaction->good_type == $id) {
+            if($transaction->cluster_id == $clusterId && $transaction->goods_type_id == $typeId && $transaction->goods_id == $id) {
                 $totalValue += $transaction->value;
             }
         }
@@ -44,23 +44,25 @@ class TradeZones extends Model
 
         return $avgValue;
     }
-    public function getDesire($typeId, $id) {
-        return $this->getTotalBuyOrders($typeId, $id) - $this->getTotalSellOrders($typeId, $id);
+
+    public function getDesire($clusterId, $typeId, $id) {
+        return $this->getTotalBuyOrders($clusterId, $typeId, $id) - $this->getTotalSellOrders($clusterId, $typeId, $id);
     }
 
-    public function getTotalBuyOrders($typeId, $id) {
-        return $this->getOrdersTransactionType(1, $typeId, $id);
+    public function getTotalBuyOrders($clusterId, $typeId, $id) {
+        return $this->getOrdersTransactionType($clusterId, 1, $typeId, $id);
     }
 
-    public function getTotalSellOrders($typeId, $id) {
-        return $this->getOrdersTransactionType(2, $typeId, $id);
+    public function getTotalSellOrders($clusterId, $typeId, $id) {
+        return $this->getOrdersTransactionType($clusterId, 2, $typeId, $id);
     }
 
-    private function getOrdersTransactionType($transactionTypeId, $typeId, $id) {
+
+    private function getOrdersTransactionType($clusterId, $transactionTypeId, $typeId, $id) {
         $totalAmount = 0;
         $transactions = $this->activeTransactions;
         foreach($transactions as $transaction) {
-            if($transaction->transaction_type ==  $transactionTypeId && $transaction->good_type == $typeId && $transaction->good_type == $id) {
+            if($transaction->clusters_id == $clusterId && $transaction->transaction_type_id ==  $transactionTypeId && $transaction->goods_type_id == $typeId && $transaction->goods_id == $id) {
                 $totalAmount += $transaction->amount;
             }
         }

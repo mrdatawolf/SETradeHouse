@@ -15,5 +15,4 @@ require "start.php";
 </head>
 <body>
 <?php require_once('menubar.php'); ?>
-</body>
-</html>
+<?php require_once ('end.php'); ?>

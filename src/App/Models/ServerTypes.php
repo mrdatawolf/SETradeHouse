@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class SystemTypes
+ * Class ServerTypes
  *
  * @property int                   $id
  * @property string                $title
@@ -11,6 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ServerTypes extends Model
 {
-    protected $table = 'system_types';
+    protected $table = 'server_types';
     protected $fillable = ['title'];
 }

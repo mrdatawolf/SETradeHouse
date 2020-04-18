@@ -10,11 +10,11 @@ use Controllers\Stations;
 use Controllers\TradeZones;
 use Controllers\Clusters;
 use Controllers\MagicNumbers;
-use Controllers\SystemTypes;
+use Controllers\ServerTypes;
 use Controllers\ActiveTransactions;
 use Controllers\InactiveTransactions;
 
-$tables = ['Ores', 'Ingots', 'Components', 'Servers', 'Stations', 'TradeZones', 'Clusters', 'MagicNumbers', 'SystemTypes', 'ActiveTransactions', 'InactiveTransactions'];
+$tables = ['Ores', 'Ingots', 'Components', 'Servers', 'Stations', 'TradeZones', 'Clusters', 'MagicNumbers', 'ServerTypes', 'ActiveTransactions', 'InactiveTransactions'];
 
 function read($table) {
     $headers = null;
@@ -51,8 +51,8 @@ function read($table) {
       $magicNumbers = new MagicNumbers();
       $headers      = $magicNumbers->headers();
       $rows         = $magicNumbers->rows();
-  } elseif($table === 'SystemTypes') {
-      $systemTypes  = new SystemTypes();
+  } elseif($table === 'ServerTypes') {
+      $systemTypes  = new ServerTypes();
       $headers      = $systemTypes->headers();
       $rows         = $systemTypes->rows();
   } elseif($table === 'ActiveTransactions') {
@@ -78,7 +78,17 @@ function read($table) {
         $tableData = read($table);
         ?>
       <section id="<?=$table;?>" class="simpleDisplay">
-        <h2><a class="headerTitle" href="#<?=$table;?>"><?=$table;?></a></h2>
+          <?php
+          if($table === 'ActiveTransactions') {
+              $titletable = 'ActiveTrans';
+          } elseif($table === 'InactiveTransactions') {
+              $titletable = 'InactiveTrans';
+          }
+          else {
+              $titletable = $table;
+          }
+          ?>
+        <h2><a class="headerTitle" href="#<?=$table;?>"><?=$titletable;?></a></h2>
         <div class="tab-content">
           <table>
             <thead>
@@ -102,5 +112,6 @@ function read($table) {
       </section>
     <?php endforeach; ?>
 </article>
-</body>
-</html>
+<?php
+require_once ('end.php');
+?>

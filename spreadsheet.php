@@ -31,11 +31,6 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
     return $totalWithOre;
 }
 ?>
-<style>
-  #spreadsheetLink {
-    background-color: #DDE9FF;
-  }
-</style>
 <article class="tabs">
     <section id="magicNumbers" class="simpleDisplay">
         <h2><a class="headerTitle" href="#magicNumbers">Magic Numbers</a></h2>
@@ -297,63 +292,66 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
         </div>
     </section>
     <section id="serverValues" class="simpleDisplay">
-        <h2><a class="headerTitle" href="#serverValues">Server Values</a></h2>
+        <h2><a class="headerTitle" href="#serverValues">Cluster Values</a></h2>
         <div class="tab-content">
             <table>
                 <thead>
-                <tr><th colspan="3">Ore</th> </tr>
+                <tr><th colspan="3">Ores</th> </tr>
                 <tr>
                     <th>Name</th>
-                    <th>Stock</th>
-                    <th>Goal</th>
+                    <th>Stock (Sells)</th>
+                    <th>Goal (Buys)</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php
+                  $typeId = 1;
                   foreach($ores as $ore) :
                     ?>
                     <tr>
                         <td><?= $ore->title; ?></td>
-                        <td>fix me</td>
-                        <td>fix me</td>
+                        <td><?= $cluster->getTotalSellOrders($typeId, $ore->id) ;?></td>
+                        <td><?= $cluster->getTotalBuyOrders($typeId, $ore->id) ;?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
                 <thead>
-                <tr><th colspan="3">Ingot</th> </tr>
+                <tr><th colspan="3">Ingots</th> </tr>
                 <tr>
                   <th>Name</th>
-                  <th>Stock</th>
-                  <th>Goal</th>
+                  <th>Stock (Sells)</th>
+                  <th>Goal (Buys)</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php
+                $typeId = 2;
                 foreach($ingots as $ingot) :
                     ?>
                   <tr>
                     <td><?= $ingot->title; ?></td>
-                    <td>fix me</td>
-                    <td>fix me</td>
+                    <td><?= $cluster->getTotalSellOrders($typeId, $ingot->id) ;?></td>
+                    <td><?= $cluster->getTotalBuyOrders($typeId, $ingot->id) ;?></td>
                   </tr>
                 <?php endforeach; ?>
                 </tbody>
               <thead>
-              <tr><th colspan="3">Component</th> </tr>
+              <tr><th colspan="3">Components</th> </tr>
               <tr>
                 <th>Name</th>
-                <th>Stock</th>
-                <th>Goal</th>
+                <th>Stock (Sells)</th>
+                <th>Goal (Buys)</th>
               </tr>
               </thead>
               <tbody>
               <?php
+              $typeId = 3;
               foreach($components as $component) :
                   ?>
                 <tr>
                   <td><?= $component->title; ?></td>
-                  <td>fix me</td>
-                  <td>fix me</td>
+                  <td><?= $cluster->getTotalSellOrders($typeId, $component->id) ;?></td>
+                  <td><?= $cluster->getTotalBuyOrders($typeId, $component->id) ;?></td>
                 </tr>
               <?php endforeach; ?>
               </tbody>
@@ -361,17 +359,17 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
         </div>
     </section>
     <?php //variables
-    $specialHeaders = ["Name" => 1 ,"TZ Data" => 4,"Server Data" => 4];
-    $baseHeaders    = ["Name","Desire","Listed SC per","Scarcity SC Per","Total Value","Desire","SC Per","Total Value","TZ"];
+    $specialHeaders = ["Name" => 1 ,"Trade Zone Data" => 5,"Server Data" => 5,"Cluster Data" => 5];
+    $baseHeaders    = ["Name","Desire","Avg SC per Order","Orders Worth","Scarcity SC Per Order","Scarcity Worth","Desire","Avg SC per Order","Orders Worth","Scarcity SC Per Order","Scarcity Worth","Desire","Avg SC per Order","Orders Worth","Scarcity SC Per Order","Scarcity Worth"];
     $tradezone      = TradeZones::with('servers')->find(1);
     $server         = $tradezone->servers;
     ?>
     <section id="<?=$tradezone->title;?>Trade" class="simpleDisplay">
-        <h2><a class="headerTitle" href="#<?=$tradezone->title;?>Trade"><?=$tradezone->title;?> Trade</a></h2>
+        <h2><a class="headerTitle" href="#<?=$tradezone->title;?>Trade"><?=$tradezone->title;?> TZ</a></h2>
         <div class="tab-content">
             <table>
                 <thead>
-                <tr><th colspan="8">Ore</th> </tr>
+                <tr><th colspan="16">Ores</th> </tr>
                 <tr>
                     <?php foreach ($specialHeaders as $header => $span) : ?>
                         <th colspan="<?=$span;?>"><?=$header;?></th>
@@ -384,87 +382,97 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
                 </tr>
                 </thead>
                 <tbody>
+                <?php $typeId = 1;?>
                 <?php foreach($ores as $ore) : ?>
                     <tr>
                       <td><?=$ore->title;?></td>
-                      <td><?=$tradezone->getDesire(1, $ore->id);?></td>
-                      <td><?=round($tradezone->listedValue(1, $ore->id));?></td>
-                      <td><?=round($ore->getScarcityAdjustedValue($totalServers,$clusterId),2);?></td>
-                      <td><?=round($tradezone->getDesire(1, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$clusterId));?></td>
-                      <td><?=$server->getTotalBuyOrders(1, $ore->id);?></td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
+                      <td><?=number_format($tradezone->getDesire($clusterId, $typeId, $ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->listedValue($clusterId, $typeId, $ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($clusterId, $typeId, $ore->id)*$tradezone->listedValue($clusterId, $typeId,$ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ore->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($clusterId, $typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><?=number_format($server->getDesire($typeId, $ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->listedValue($typeId, $ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $ore->id)*$server->listedValue($typeId,$ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ore->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><?=number_format($cluster->getDesire($typeId, $ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->listedValue($typeId, $ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $ore->id)*$cluster->listedValue($typeId,$ore->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ore->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
                     </tr>
                 <?php endforeach; ?>
-                <tr><th colspan="11">Ingot</th> </tr>
-                <tr>
-                    <th colspan="5">TZ Data</th>
-                    <th colspan="3">System Data</th>
-                    <th colspan="3">Goals</th>
+                <thead>
+                <tr><th colspan="16">Ingots</th> </tr>
+                 <tr>
+                    <?php foreach ($specialHeaders as $header => $span) : ?>
+                        <th colspan="<?=$span;?>"><?=$header;?></th>
+                    <?php endforeach; ?>
                 </tr>
                 <tr>
-                    <th>Name</th>
-                    <th>Buy</th>
-                    <th>Sell</th>
-                    <th>Stock</th>
-                    <th>Goal</th>
-                    <th>Base Value</th>
-                    <th>Stock</th>
-                    <th>Goal</th>
-                    <th>TZ</th>
-                    <th>System</th>
-                    <th>Adjusted</th>
+                    <?php foreach ($baseHeaders as $header) : ?>
+                    <th><?=$header;?></th>
+                    <?php endforeach; ?>
                 </tr>
-                <?php foreach($ores as $thing) : ?>
+                </thead>
+                <tbody>
+                <?php $typeId = 2;?>
+                <?php foreach($ingots as $ingot) : ?>
                     <tr>
-                        <td><?=$thing->title;?></td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                      <td><?=$ingot->title;?></td>
+                      <td><?=number_format($tradezone->getDesire($clusterId, $typeId, $ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->listedValue($clusterId, $typeId, $ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($clusterId, $typeId, $ingot->id)*$tradezone->listedValue($clusterId, $typeId,$ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ingot->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($clusterId, $typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><?=number_format($server->getDesire($typeId, $ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->listedValue($typeId, $ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $ingot->id)*$server->listedValue($typeId,$ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ingot->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><?=number_format($cluster->getDesire($typeId, $ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->listedValue($typeId, $ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $ingot->id)*$cluster->listedValue($typeId,$ingot->id),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ingot->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
                     </tr>
                 <?php endforeach; ?>
-                <tr><th colspan="11">Component</th> </tr>
+                <thead>
+                <tr><th colspan="16">Components</th> </tr>
                 <tr>
-                    <th colspan="5">TZ Data</th>
-                    <th colspan="3">System Data</th>
-                    <th colspan="3">Goals</th>
+                    <?php foreach ($specialHeaders as $header => $span) : ?>
+                      <th colspan="<?=$span;?>"><?=$header;?></th>
+                    <?php endforeach; ?>
                 </tr>
                 <tr>
-                    <th>Name</th>
-                    <th>Buy</th>
-                    <th>Sell</th>
-                    <th>Stock</th>
-                    <th>Goal</th>
-                    <th>Base Value</th>
-                    <th>Stock</th>
-                    <th>Goal</th>
-                    <th>TZ</th>
-                    <th>System</th>
-                    <th>Adjusted</th>
+                    <?php foreach ($baseHeaders as $header) : ?>
+                      <th><?=$header;?></th>
+                    <?php endforeach; ?>
                 </tr>
-                <?php foreach($components as $thing) : ?>
-                    <tr>
-                        <td><?=$thing->title;?></td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                <?php endforeach; ?>
+              </thead>
+              <tbody>
+              <?php $typeId = 3;?>
+              <?php foreach($components as $component) : ?>
+                <tr>
+                  <td><?=$component->title;?></td>
+                  <td><?=number_format($tradezone->getDesire($clusterId, $typeId, $component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->listedValue($clusterId, $typeId, $component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($clusterId, $typeId, $component->id)*$tradezone->listedValue($clusterId, $typeId,$component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($component->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($clusterId, $typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                  <td><?=number_format($server->getDesire($typeId, $component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->listedValue($typeId, $component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $component->id)*$server->listedValue($typeId,$component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($component->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                  <td><?=number_format($cluster->getDesire($typeId, $component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->listedValue($typeId, $component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $component->id)*$cluster->listedValue($typeId,$component->id),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($component->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                  <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$clusterId),0);?></td>
+                </tr>
+              <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -472,7 +480,4 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
 </article>
 <?php
 require_once ('end.php');
-
 ?>
-</body>
-</html>
