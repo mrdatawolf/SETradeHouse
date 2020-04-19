@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $system_stock_weight
  * @property int                   $cluster_id
  * @property                       $activeTransactions
+ * @property                       $tradezones
  * @package Models
  */
 class Servers extends Model
@@ -27,6 +28,10 @@ class Servers extends Model
 
     public function clusters() {
         return $this->belongsTo('Models\Clusters');
+    }
+
+    public function tradezones() {
+        return $this->hasMany('Models\TradeZones');
     }
 
     public function types() {

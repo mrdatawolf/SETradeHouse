@@ -29,6 +29,8 @@ Road to 1.0 MVP
 
 ##Future Roadmap
 Revised +1.0 goals.
+1.0.1 Expand the active and inactive transactions to use all columns.
+1.0.2 Add weights to transactions based on distances from server to server.
 1.1. Add a user system.
 1.2. Add sheets as needed to flex out the user experience.
 1.5. Begin gathering the data from the Expanse to update the system with real world data.
@@ -59,11 +61,8 @@ Revised +1.0 goals.
 ##Notes on the foundational logic we are shooting for...
 ![Clusters Example](https://raw.githubusercontent.com/mrdatawolf/Colonization/master/clusters_example.png)
 #How a given item gets it's value for a trade-zone:
-note: We will use gold ore for a simple example (when figuring out a value, ores, do not care how many ingots or components using the ingot, version of the ore, there are).  We will also start in the Nebulon Cluster on the server NUR4 as a simple example.
-note2: Keen has weird minimum prices for items.  We call this the store minimum value.  supply/demand prices need to be based off that rather than the more accurate ones we have... KEEEN!!!!!!  
-2. Example 1: Assuming TradeZone3 has 100 gold ore in stock and desires to have 100 gold ore in stock.  This means the trade-zone if happy with it's current levels.  So it will buy more gold ore at the "worst" (store minimum value) price it can as there is no demand. It will also sell at store minimum value.  The desire of this station bubbles up to the nur4 server. As there is only one trade-zone and it has no demand the server has no demand.  This bubbles up to the cluster and as there is oly 1 server and it has no demand the cluster has no demand.
-3. Example 2: Now lets Assume TradeZone3 has 100 platinum ore but desires 400.  Therefore they will pay 75%  (1 - 100/400) more then the store minimum value.  But they really don't want to sell it so they will only sell at 25% (100/400) more then the store minimum value. 
-4. Example 3: 
-
+notes: cluster 1 is 1 server with 1 tradezone. cluster 2 is 10 servers, 4 of which have tradezones.  See image for layouts.
+notes: A trade zone influences and is influenced by all the other trade-stations in the cluster (as long as there is any path to and/or from the other trade-stations. The amount of influence trade-stations have on each other is expressed as a "weight" for a given station.  Right now weight is based on how long they have been in system.
+notes: We have moved to a tradehouse model.  So we look at the buy and sell orders in the tradezone, server, cluster.
+1. Example 1:  In cluster 1 server 1 we have a tradestation (tz3) looking for 1,000,000 gold ore at 300 SC per.
  
-A trade zone influences and is influenced by all the other trade-stations in the cluster (as long as there is any path to and/or from the other trade-stations. But the amount of influence another trade-station has on another station is expressed as a "weight".

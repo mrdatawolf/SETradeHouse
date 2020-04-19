@@ -25,6 +25,17 @@ function ddng($var)
     die();
 }
 
+function getTZsFromServers($servers) {
+    $tradezones = [];
+    foreach($servers as $server) {
+        foreach ($server->tradezones as $tradezone) {
+            $tradezones[$server->id][] = $tradezone;
+        }
+    }
+
+    return $tradezones;
+}
+
 new Database();
 ?>
 <!DOCTYPE html>

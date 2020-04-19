@@ -9,27 +9,17 @@ use \Models\TradeZones;
 $clusterId  = 2;
 $magic      = new MagicNumbers();
 $magicData  = $magic->basicData();
-
 $cluster        = ClusterModel::with('servers', 'ores', 'economyOre', 'ingots')->find($clusterId);
+
+$servers        = $cluster->servers()->with('tradezones')->get();
+$tradezones     = getTZsFromServers($servers);
 $ores           = $cluster->ores()->get();
 $ingots         = $cluster->ingots()->get();
-$servers        = $cluster->servers()->get();
+
 $economyOre     = $cluster->economyOre;
 $totalServers   = $servers->count();
 $components     = Components::all();
 
-function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
-    $totalWithOre = 0;
-    foreach($serversWithOre->servers as $server) {
-        if($server->clusters_id == $clusterId) {
-            if ($server->types_id == $typeId) {
-                $totalWithOre++;
-            }
-        }
-    }
-
-    return $totalWithOre;
-}
 ?>
 <article class="tabs">
     <section id="magicNumbers" class="simpleDisplay">
@@ -361,8 +351,10 @@ function getTotalTypeWithOre($serversWithOre, $clusterId, $typeId) {
     <?php //variables
     $specialHeaders = ["Name" => 1 ,"Trade Zone Data" => 5,"Server Data" => 5,"Cluster Data" => 5];
     $baseHeaders    = ["Name","Desire","Avg SC per Order","Orders Worth","Scarcity SC Per Order","Scarcity Worth","Desire","Avg SC per Order","Orders Worth","Scarcity SC Per Order","Scarcity Worth","Desire","Avg SC per Order","Orders Worth","Scarcity SC Per Order","Scarcity Worth"];
+    $tradezones     = $cluster->tradezones;
     $tradezone      = TradeZones::with('servers')->find(1);
     $server         = $tradezone->servers;
+
     ?>
     <section id="<?=$tradezone->title;?>Trade" class="simpleDisplay">
         <h2><a class="headerTitle" href="#<?=$tradezone->title;?>Trade"><?=$tradezone->title;?> TZ</a></h2>
