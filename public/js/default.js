@@ -1,10 +1,6 @@
-$(function () {
-    $('.addId').click(function () {
-        console.log(checkNewRowHasData(this.id));
-    });
+$('.addId').click(function () {
+    console.log(checkNewRowHasData(this.id));
 });
 
-function checkNewRowHasData(id){
 
-    return false;
-}
+console.log(localStorage.getItem("clusterId"));
