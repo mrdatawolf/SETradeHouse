@@ -5,6 +5,7 @@ require 'functions.php';
 $title= $title ?? 'test';
 
 new Models\Database();
+new Models\Users();
 ?>
 <!DOCTYPE html>
 <html lang="en">

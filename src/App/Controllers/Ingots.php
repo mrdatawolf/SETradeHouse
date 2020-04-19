@@ -34,7 +34,7 @@ class Ingots extends BaseController implements Crud
         ddng($ingotOresPivot->where('ingots_id', $ingotId)->where('ores_id',$oreId)->first()->toArray());
         $modifer = $modules*$moduleEfficiencyModifier;
 
-        return $ingot->ore_required - $modifer;
+        return $ore->ore_required - $modifer;
     }
 
 }
