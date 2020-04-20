@@ -235,6 +235,11 @@ article.tabs section:target ~ section:last-child .tab-content {
     color: #718daa;
 }
 
+/* from the login sytem */
+
+.wrapper{
+    width: 350px; padding: 20px;
+}
 
 /* =================================
   Media Queries
