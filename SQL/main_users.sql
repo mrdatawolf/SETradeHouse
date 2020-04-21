@@ -5,6 +5,8 @@ create table users
     username   VARCHAR(50)  not null
         unique,
     password   VARCHAR(255) not null,
-    created_at DATETIME default CURRENT_TIMESTAMP
+    cluster_id INTEGER      not null,
+    created_at DATETIME default CURRENT_TIMESTAMP,
+    updated_at DATETIME default CURRENT_TIMESTAMP
 );
 
