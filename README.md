@@ -28,32 +28,32 @@ Road to 1.0 MVP
 8. Bring it up on a server so anyone can interact with the test system.
 
 ##Future Roadmap
-Revised +1.0 goals.
-1.0.1 Expand the active and inactive transactions to use all columns.
-1.0.2 Add weights to transactions based on distances from server to server.
-1.1. Add a user system.
-1.2. Add sheets as needed to flex out the user experience.
-1.5. Begin gathering the data from the Expanse to update the system with real world data.
-2. Goals and the future
+1.  Revised +1.0 goals.
+    1. Expand the active and inactive transactions to use all columns.
+    2. Add weights to transactions based on distances from server to server.
+    3. Add a user system.
+    4. Add sheets as needed to flex out the user experience.
+    5. Begin gathering the data from the Expanse to update the system with real world data.
+2.  Goals and the future
     1. a map generator
-        1. Which creates paths and splits the paths into sub points based on distance
-        2. It needs to make port locations.
-        3. It should make raw goods locations
-        4. The raw goods should be shown with pictograms
-        5. it needs to show player locations (maybe based on view range from player POV)
-    2. a fighting system
+    2. Which creates paths and splits the paths into sub points based on distance
+    3. It needs to make port locations.
+        1. It should make raw goods locations
+        2. The raw goods should be shown with pictograms
+        3. it needs to show player locations (maybe based on view range from player POV)
+    4. a fighting system
         1. ship to ship
         2. ship to port()
-2. 2.1 goals
+3. 2.0 goals
     1. add bot "a.i." to also move commodities.
     2. add player ordered bots to move commodities.
-3. 2.2 goals
+4. 3.0 goals
     1. roles
     2. Ship to shore fighting
     3. allow upgrades at ports
     4. allow player made ports.
     5. Factions
-4. 3.0 goals
+4. 4.0 goals
     1. add more tasks to the bots (ai and player) such as interdiction or patrol.
     2. add api to allow players to add orders to their bots via other inputs (such as phone).
 

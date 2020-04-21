@@ -1,5 +1,15 @@
-<?php require "start.php";
+<?php
+require 'vendor/autoload.php';
+require 'config.php';
+require 'functions.php';
 
+new Models\Database();
+use Models\Users;
+// Initialize the session
+session_start();
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+    header("location: rawdata.php");
+}
 // Define variables and initialize with empty values
 $username = $password = $confirm_password = "";
 $username_err = $password_err = $confirm_password_err = "";
@@ -12,9 +22,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $username_err = "Please enter a username.";
     } else{
         // Set parameters
-        $param_username = trim($_POST["username"]);
+        $username = trim($_POST["username"]);
         // Prepare a select statement
-        $users = Users::select('id')->where('username', $param_username);
+        $users = Users::select('id')->where('username', $username);
         $sql = "SELECT id FROM users WHERE username = ?";
 
 
@@ -49,17 +59,34 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check input errors before inserting in database
     if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
         // Set parameters
-        $param_username = $username;
-        $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
         // Prepare an insert statement
         $users = new Users();
-        $users->username = $param_username;
-        $users->password = $param_password;
+        $users->username = $username;
+        $users->password = password_hash($password, PASSWORD_DEFAULT);
         $users->save();
+        header("location: login.php");
     }
 
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <script src="https://kit.fontawesome.com/b61a9642d4.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+  <link href="public/css/default.css" type="text/css" rel="stylesheet">
+  <script src="public/js/default.js"></script>
+  <script>
+      if(localStorage.getItem("clusterId") === undefined) {
+          localStorage.setItem("clusterId", 1);
+      }
+  </script>
+</head>
+<body>
 <div class="wrapper">
     <h2>Sign Up</h2>
     <p>Please fill this form to create an account.</p>
@@ -86,6 +113,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <p>Already have an account? <a href="login.php">Login here</a>.</p>
     </form>
 </div>
-
-<?php require_once ('end.php'); ?>
+</body>
+</html>
 

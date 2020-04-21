@@ -7,14 +7,19 @@ $title= $title ?? 'test';
 new Models\Database();
 new Models\Users();
 
+// Initialize the session
+session_start();
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] === false){
 
     header("location: login.php");
 }
-// Initialize the session
-session_start();
+
+$thisCluster = (object) [
+  'title' => \Models\Clusters::find($_SESSION["cluster_id"])->title,
+  'id' => $_SESSION["cluster_id"]
+]
 ?>
 <!DOCTYPE html>
 <html lang="en">

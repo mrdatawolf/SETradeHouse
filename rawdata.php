@@ -16,23 +16,23 @@ use Controllers\InactiveTransactions;
 
 $tables = ['Ores', 'Ingots', 'Components', 'Servers', 'Stations', 'TradeZones', 'Clusters', 'MagicNumbers', 'ServerTypes', 'ActiveTransactions', 'InactiveTransactions'];
 
-function read($table) {
+function read($table, $clusterId) {
     $headers = null;
     $rows = null;
   if($table === 'Ores') {
-      $ores     = new Ores(2);
+      $ores     = new Ores($clusterId);
       $headers  = $ores->headers();
       $rows     = $ores->rows();
   } elseif($table === 'Ingots') {
-      $ingots   = new Ingots(2);
+      $ingots   = new Ingots($clusterId);
       $headers  = $ingots->headers();
       $rows     = $ingots->rows();
   } elseif($table === 'Components') {
-      $components   = new Components(2);
+      $components   = new Components($clusterId);
       $headers      = $components->headers();
       $rows         = $components->rows();
   } elseif($table === 'Servers') {
-      $servers  = new Servers(2);
+      $servers  = new Servers($clusterId);
       $headers  = $servers->headers();
       $rows     = $servers->rows();
   } elseif($table === 'Stations') {
@@ -44,7 +44,7 @@ function read($table) {
       $headers      = $tradeZones->headers();
       $rows         = $tradeZones->rows();
   } elseif($table === 'Clusters') {
-      $clusters = new Clusters(2);
+      $clusters = new Clusters($clusterId);
       $headers  = $clusters->headers();
       $rows     = $clusters->rows();
   } elseif($table === 'MagicNumbers') {
@@ -75,7 +75,7 @@ function read($table) {
 </style>
 <article class="tabs">
     <?php foreach($tables as $table) :
-        $tableData = read($table);
+        $tableData = read($table, $thisCluster->id);
         ?>
       <section id="<?=$table;?>" class="simpleDisplay">
           <?php
