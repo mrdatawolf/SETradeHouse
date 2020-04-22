@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                   $id
  * @property string                $username
  * @property                       $password
+ * @property                       $cluster_id
  * @property                       $created_at
  * @package Models
  */
