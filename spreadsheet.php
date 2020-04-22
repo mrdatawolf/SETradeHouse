@@ -379,20 +379,20 @@ $components     = Components::all();
                         <tr>
                           <td><?=$ore->title;?></td>
                           <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->listedValue($thisCluster->id, $typeId, $ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ore->id)*$tradezone->listedValue($thisCluster->id, $typeId,$ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($tradezone->listedValue($thisCluster->id, $typeId, $ore->id),0);?></td>
+                          <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ore->id)*$tradezone->listedValue($thisCluster->id, $typeId,$ore->id),0);?></td>
+                          <td><?=number_format($ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                           <td><?=number_format($server->getDesire($typeId, $ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->listedValue($typeId, $ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $ore->id)*$server->listedValue($typeId,$ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($server->listedValue($typeId, $ore->id),0);?></td>
+                          <td><?=number_format($server->getDesire($typeId, $ore->id)*$server->listedValue($typeId,$ore->id),0);?></td>
+                          <td><?=number_format($ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($server->getDesire($typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                           <td><?=number_format($cluster->getDesire($typeId, $ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->listedValue($typeId, $ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $ore->id)*$cluster->listedValue($typeId,$ore->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($cluster->listedValue($typeId, $ore->id),0);?></td>
+                          <td><?=number_format($cluster->getDesire($typeId, $ore->id)*$cluster->listedValue($typeId,$ore->id),0);?></td>
+                          <td><?=number_format($ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($cluster->getDesire($typeId, $ore->id)*$ore->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                         </tr>
                     <?php endforeach; ?>
                     <thead>
@@ -414,20 +414,20 @@ $components     = Components::all();
                         <tr>
                           <td><?=$ingot->title;?></td>
                           <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->listedValue($thisCluster->id, $typeId, $ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ingot->id)*$tradezone->listedValue($thisCluster->id, $typeId,$ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($tradezone->listedValue($thisCluster->id, $typeId, $ingot->id),0);?></td>
+                          <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ingot->id)*$tradezone->listedValue($thisCluster->id, $typeId,$ingot->id),0);?></td>
+                          <td><?=number_format($ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                           <td><?=number_format($server->getDesire($typeId, $ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->listedValue($typeId, $ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $ingot->id)*$server->listedValue($typeId,$ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($server->listedValue($typeId, $ingot->id),0);?></td>
+                          <td><?=number_format($server->getDesire($typeId, $ingot->id)*$server->listedValue($typeId,$ingot->id),0);?></td>
+                          <td><?=number_format($ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($server->getDesire($typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                           <td><?=number_format($cluster->getDesire($typeId, $ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->listedValue($typeId, $ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $ingot->id)*$cluster->listedValue($typeId,$ingot->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                          <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($cluster->listedValue($typeId, $ingot->id),0);?></td>
+                          <td><?=number_format($cluster->getDesire($typeId, $ingot->id)*$cluster->listedValue($typeId,$ingot->id),0);?></td>
+                          <td><?=number_format($ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                          <td><?=number_format($cluster->getDesire($typeId, $ingot->id)*$ingot->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                         </tr>
                     <?php endforeach; ?>
                     <thead>
@@ -449,20 +449,20 @@ $components     = Components::all();
                     <tr>
                       <td><?=$component->title;?></td>
                       <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->listedValue($thisCluster->id, $typeId, $component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $component->id)*$tradezone->listedValue($thisCluster->id, $typeId,$component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                      <td><?=number_format($tradezone->listedValue($thisCluster->id, $typeId, $component->id),0);?></td>
+                      <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $component->id)*$tradezone->listedValue($thisCluster->id, $typeId,$component->id),0);?></td>
+                      <td><?=number_format($component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                      <td><?=number_format($tradezone->getDesire($thisCluster->id, $typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                       <td><?=number_format($server->getDesire($typeId, $component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->listedValue($typeId, $component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $component->id)*$server->listedValue($typeId,$component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($server->getDesire($typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                      <td><?=number_format($server->listedValue($typeId, $component->id),0);?></td>
+                      <td><?=number_format($server->getDesire($typeId, $component->id)*$server->listedValue($typeId,$component->id),0);?></td>
+                      <td><?=number_format($component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                      <td><?=number_format($server->getDesire($typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                       <td><?=number_format($cluster->getDesire($typeId, $component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->listedValue($typeId, $component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $component->id)*$cluster->listedValue($typeId,$component->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
-                      <td><i class="fa fa-bitcoin"></i>&nbsp;<?=number_format($cluster->getDesire($typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                      <td><?=number_format($cluster->listedValue($typeId, $component->id),0);?></td>
+                      <td><?=number_format($cluster->getDesire($typeId, $component->id)*$cluster->listedValue($typeId,$component->id),0);?></td>
+                      <td><?=number_format($component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
+                      <td><?=number_format($cluster->getDesire($typeId, $component->id)*$component->getScarcityAdjustedValue($totalServers,$thisCluster->id),0);?></td>
                     </tr>
                   <?php endforeach; ?>
                     </tbody>
