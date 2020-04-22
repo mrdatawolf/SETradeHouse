@@ -65,4 +65,3 @@ notes: cluster 1 is 1 server with 1 tradezone. cluster 2 is 10 servers, 4 of whi
 notes: A trade zone influences and is influenced by all the other trade-stations in the cluster (as long as there is any path to and/or from the other trade-stations. The amount of influence trade-stations have on each other is expressed as a "weight" for a given station.  Right now weight is based on how long they have been in system.
 notes: We have moved to a tradehouse model.  So we look at the buy and sell orders in the tradezone, server, cluster.
 1. Example 1:  In cluster 1 server 1 we have a tradestation (tz3) looking for 1,000,000 gold ore at 300 SC per.
- https://colonization.online/
