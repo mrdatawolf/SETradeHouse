@@ -60,6 +60,13 @@ class Ores extends Model
             : $this->getBaseValue() * $this->keen_crap_fix;
     }
 
+
+    /**
+     * @param $totalServers
+     * @param $clusterId
+     *
+     * @return float|int
+     */
     public function getScarcityAdjustedValue($totalServers, $clusterId) {
         $storeAdjustedValue = $this->getStoreAdjustedValue();
         $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $clusterId);
@@ -67,6 +74,14 @@ class Ores extends Model
         return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
     }
 
+
+    /**
+     * @param $totalServers
+     * @param $clusterId
+     * note: ores are the basic building blocks so they don't look at how many ingots etc are out there f the raw ore.
+     *
+     * @return float|int
+     */
     public function getScarcityAdjustment($totalServers, $clusterId) {
         $planetsWith = $this->getPlanetsWith($clusterId);
         $asteroidsWith = $this->getAsteroidsWith($clusterId);

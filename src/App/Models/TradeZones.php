@@ -33,10 +33,11 @@ class TradeZones extends Model
         $transactions = $this->activeTransactions;
 
         foreach($transactions as $transaction) {
-            $transactionsCount++;
-            if($transaction->cluster_id == $clusterId && $transaction->goods_type_id == $typeId && $transaction->goods_id == $id) {
+            if($transaction->clusters_id == $clusterId && $transaction->goods_type_id == $typeId && $transaction->goods_id == $id) {
+                $transactionsCount++;
                 $totalValue += $transaction->value;
             }
+
         }
         if($totalValue > 0) {
             $avgValue = $totalValue/$transactionsCount;

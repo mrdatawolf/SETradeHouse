@@ -50,10 +50,20 @@ class Ingots extends Model
             : $this->getBaseValue() * $this->keen_crap_fix;
     }
 
+
+    /**
+     * @param $totalServers
+     * @param $clusterId
+     * note: Ingots are made from ores. So the amount of ores will effect the scarcity here but not as much as an ingot order.
+     * todo: get total active ingot desire.
+     * todo: get total active ore desire. Then divide by magic base_weight_for_each_system and the amount ore ore per to make an ingot then apply this to the scarcity value being returned.  Later we can dial this in.
+     * @return float|int
+     */
     public function getScarcityAdjustment($totalServers,$clusterId) {
         $planetsWith = $this->getPlanetsWith($clusterId);
         $asteroidsWith = $this->getAsteroidsWith($clusterId);
         $totalServersWithIngot = $planetsWith+$asteroidsWith;
+
         return ($totalServersWithIngot === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
     }
 
