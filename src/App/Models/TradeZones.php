@@ -29,18 +29,19 @@ class TradeZones extends Model
 
     public function listedValue($clusterId, $typeId, $id) {
         $avgValue = $totalValue = 0;
-        $transactionsCount = 0;
+        $totalBeingTraded =  0;
         $transactions = $this->activeTransactions;
 
         foreach($transactions as $transaction) {
             if($transaction->clusters_id == $clusterId && $transaction->goods_type_id == $typeId && $transaction->goods_id == $id) {
-                $transactionsCount++;
-                $totalValue += $transaction->value;
+                //[amount in transaction*value of transaction]/totalAmountInTransactions
+                $totalBeingTraded += $transaction->amount;
+                $totalValue += $transaction->value*$transaction->amount;
             }
 
         }
         if($totalValue > 0) {
-            $avgValue = $totalValue/$transactionsCount;
+            $avgValue = $totalValue/$totalBeingTraded;
         }
 
         return $avgValue;
