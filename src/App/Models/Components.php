@@ -26,6 +26,11 @@ class Components extends Model
     protected $table = 'components';
     protected $fillable = ['title','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','mass','volume'];
 
+
+    /**
+     * note: take all the ingots used to make this and their base value to get a price for the component.
+     * @return float|int
+     */
     public function getBaseValue() {
         $value = 0;
         $ingots = Ingots::all();
@@ -40,6 +45,11 @@ class Components extends Model
         return $value;
     }
 
+
+    /**
+     * note: get the value of the component based on the store price.
+     * @return float|int
+     */
     public function getStoreAdjustedValue() {
         $value = 0;
         $ingots = Ingots::all();
@@ -56,6 +66,7 @@ class Components extends Model
 
 
     /**
+     * note: get the value of the component based on the scarcity prices.
      * @param $totalServers
      * @param $clusterId
      *

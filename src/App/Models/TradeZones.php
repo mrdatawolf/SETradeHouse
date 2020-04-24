@@ -34,7 +34,6 @@ class TradeZones extends Model
 
         foreach($transactions as $transaction) {
             if($transaction->clusters_id == $clusterId && $transaction->goods_type_id == $typeId && $transaction->goods_id == $id) {
-                //[amount in transaction*value of transaction]/totalAmountInTransactions
                 $totalBeingTraded += $transaction->amount;
                 $totalValue += $transaction->value*$transaction->amount;
             }
