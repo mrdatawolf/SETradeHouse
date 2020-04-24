@@ -54,9 +54,6 @@ class Ingots extends Model
     /**
      * @param $totalServers
      * @param $clusterId
-     * note: Ingots are made from ores. So the amount of ores will effect the scarcity here but not as much as an ingot order.
-     * todo: get total active ingot desire.
-     * todo: get total active ore desire. Then divide by magic base_weight_for_each_system and the amount ore ore per to make an ingot then apply this to the scarcity value being returned.  Later we can dial this in.
      * @return float|int
      */
     public function getScarcityAdjustment($totalServers,$clusterId) {
@@ -67,7 +64,25 @@ class Ingots extends Model
         return ($totalServersWithIngot === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
     }
 
-    public function getScarcityAdjustedValue($totalServers, $clusterId) {
+
+    /**
+     * @param $totalServers
+     * @param $clusterId
+     * note: Ingots are made from ores. So the base ore value will effect the value here but not as much as an ingot orders.
+     *
+     * @return float|int
+     */
+    public function getScarcityAdjustedValue($totalServers,$clusterId)  {
+        $ingotWeight = 4;
+        $ore = $this->ores()->first();
+
+        $value = $this->getBaseScarcityAdjustedValue($totalServers,$clusterId);
+        $oreValueAdjustment = $ore->getScarcityAdjustedValue($totalServers, $clusterId)*$ore->getOreRequiredPerIngot(0)*$this->keen_crap_fix;
+
+        return (($value*$ingotWeight)+$oreValueAdjustment)/($ingotWeight+1);
+    }
+
+    public function getBaseScarcityAdjustedValue($totalServers, $clusterId) {
         $storeAdjustedValue = $this->getStoreAdjustedValue();
         $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $clusterId);
 

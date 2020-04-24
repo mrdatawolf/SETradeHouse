@@ -58,8 +58,6 @@ class Components extends Model
     /**
      * @param $totalServers
      * @param $clusterId
-     * todo: get total active component desire and ingot desire and ore desire.
-     * todo: Then divide by magic base_weight_for_each_system and the amount ore ore per to make an ingot and the number of ingots needed to make it then apply this to the scarcity value being returned.  Later we can dial this in.
      *
      * @return float|int
      */

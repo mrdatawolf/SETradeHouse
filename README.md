@@ -64,6 +64,8 @@ notes: We have moved to a tradehouse model.  So we look at the buy and sell orde
 1. Example 1:  In cluster 1 server 1 we have a tradestation (tz3) looking for 1,000,000 gold ore at 300 SC per. Because that is the only order we see the numbers reproduced in the server and cluster level. There is some wiggle room at the server and cluster level because of the math being done.
 2. Example 2: Still in Nebulon Cluster on tz3 we see them selling 1,000,000 nickel ore at 80 SC per. Again you will see the stable numbers because this is the only order. But this time they are negative values because it's a sell order.
 3. Example 3: Normally this would be... weird but if you had both a sell order and a buy order at the same tradestation for the same thing (platinum ore here) we take the ore buy order(s) and subtract the ore sell order to get the desire.  We had 30k in sell orders and 20k in buy orders. So we end up with a negative 10k desire. We also have a sell price of 250 and a buy of 200.  Since there are 10k more at the 250 price the "Average SC" is 5 higher (at 230) then a simple avg of the total Amount/Number of trades.
+4. Example 4: Do an example of the price of ingots being influenced by the amount and value of the ore it's made from.
+5. Example 5: Do an example of the price of a componets being influenced by the amount and value of the ore and ingots it's made from.
 
 ##Special Thanks to
 1. Braelok for the innumerable hours he poured into trade in the SE worlds and for teaching me the ways of the SE economies.  This could not exist without his work!
