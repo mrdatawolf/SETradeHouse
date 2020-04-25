@@ -89,11 +89,19 @@ class Ingots extends Model
         return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
     }
 
+
+    /**
+     * note: this gets the amount of ore it to makes one of these ingots. As modules effect the amount of ore needed to make an ingot we allow for the adjustment here.
+     * @param int $modules
+     *
+     * @return mixed
+     */
     public function getOreRequiredPerIngot($modules = 0) {
         $ore = $this->ores()->first();
 
         return $ore->getOreRequiredPerIngot($modules);
     }
+
 
     public function getPlanetsWith($clusterId) {
         return $this->getServerOfTypeWith(1, $clusterId);
@@ -103,6 +111,14 @@ class Ingots extends Model
         return $this->getServerOfTypeWith(2, $clusterId);
     }
 
+
+    /**
+     * type is held in the server_types table
+     * @param $type
+     * @param $clusterId
+     *
+     * @return int
+     */
     private function getServerOfTypeWith($type, $clusterId) {
         $totalWith = 0;
         foreach($this->servers as $server) {

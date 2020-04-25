@@ -27,6 +27,15 @@ class TradeZones extends Model
         return $this->hasMany('Models\ActiveTransactions');
     }
 
+
+    /**
+     * note: this takes the active transactions for a specific thing (type of thing id and its id) in the cluster (cluster id) and looks at how many units are in trade and each ones value based on its amount traded to get an average price to list.
+     * @param $clusterId
+     * @param $typeId
+     * @param $id
+     *
+     * @return float|int
+     */
     public function listedValue($clusterId, $typeId, $id) {
         $avgValue = $totalValue = 0;
         $totalBeingTraded =  0;
@@ -46,6 +55,16 @@ class TradeZones extends Model
         return $avgValue;
     }
 
+
+    /**
+     * note: the desire of the cluster for a specific thing (type of thing id and its id) in the cluster (cluster id). Where desire is expressed as the total trades buying a thing minus those selling the thing.
+
+     * @param $clusterId
+     * @param $typeId
+     * @param $id
+     *
+     * @return int
+     */
     public function getDesire($clusterId, $typeId, $id) {
         return $this->getTotalBuyOrders($clusterId, $typeId, $id) - $this->getTotalSellOrders($clusterId, $typeId, $id);
     }

@@ -77,7 +77,7 @@ class Clusters extends Model
 
 
     /**
-     * note: this takes the active transactions for a specific thing (type of thing id and its id) in the cluster and looks at how  many units are in trade and each ones value based on it's trade to get an average price to list.
+     * note: this takes the active transactions for a specific thing (type of thing id and its id) in this cluster and looks at how many units are in trade and each ones value based on its amount traded to get an average price to list.
      * @param $typeId
      * @param $id
      *
