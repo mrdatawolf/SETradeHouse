@@ -1,6 +1,5 @@
 <?php namespace API;
 
-use DB\dbClass;
 
 class ores
 {
@@ -13,6 +12,10 @@ class ores
 
     public $oreData;
 
+
+    /**
+     * @return false|string
+     */
     public function ores() {
         $result = [];
         $dbClass = new dbClass();

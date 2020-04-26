@@ -14,7 +14,8 @@
         "eftec/bladeone": "*",
         "illuminate/database": "*",
         "ext-pdo": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "mevdschee/php-crud-api": "^2.9"
     },
     "require-dev": {
     }

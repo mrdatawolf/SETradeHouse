@@ -30,4 +30,29 @@ class Ores extends BaseController implements Crud
 
         return $ore->id;
     }
+
+
+    /**
+     * @param null $data
+     *
+     * @return string
+     */
+    public function read($data = null) {
+        $ores = $this->dataSource;
+        if(empty($data)) {
+            $result = $ores->all()->toJson();
+        } else {
+            $result = null;
+            $id     = $data['id'];
+
+            if (empty($data['column'])) {
+                $result = $ores->find($id);
+            } else {
+                $column = $data['column'];
+                $result = $ores->where($column, $id)->first();
+            }
+        }
+
+        return $result;
+    }
 }

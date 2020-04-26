@@ -44,14 +44,6 @@ class BaseController
         return (object) $rows;
     }
 
-    public function create($data) {
-
-    }
-
-    public function read() {
-        return $this->dataSource::all();
-    }
-
     public function update() {
 
     }

@@ -58,7 +58,6 @@ class TradeZones extends Model
 
     /**
      * note: the desire of the cluster for a specific thing (type of thing id and its id) in the cluster (cluster id). Where desire is expressed as the total trades buying a thing minus those selling the thing.
-
      * @param $clusterId
      * @param $typeId
      * @param $id

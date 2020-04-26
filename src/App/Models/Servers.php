@@ -42,24 +42,41 @@ class Servers extends Model
         return $this->hasMany('Models\ActiveTransactions');
     }
 
+
+    /**
+     * note: this takes the active transactions for a specific thing (type of thing id and its id) in this server and looks at how many units are in trade and each ones value based on its amount traded to get an average price to list.
+     * @param $typeId
+     * @param $id
+     *
+     * @return float|int
+     */
     public function listedValue($typeId, $id) {
         $avgValue = $totalValue = 0;
-        $transactionsCount = 0;
+        $totalBeingTraded =  0;
         $transactions = $this->activeTransactions;
 
         foreach($transactions as $transaction) {
-            $transactionsCount++;
             if($transaction->goods_type_id == $typeId && $transaction->goods_id == $id) {
-                $totalValue += $transaction->value;
+                $totalBeingTraded += $transaction->amount;
+                $totalValue += $transaction->value*$transaction->amount;
             }
+
         }
         if($totalValue > 0) {
-            $avgValue = $totalValue/$transactionsCount;
+            $avgValue = $totalValue/$totalBeingTraded;
         }
 
         return $avgValue;
     }
 
+
+    /**
+     * note: the desire of the cluster for a specific thing (type of thing id and its id) in the server. Where desire is expressed as the total trades buying a thing minus those selling the thing.
+     * @param $typeId
+     * @param $id
+     *
+     * @return int
+     */
     public function getDesire($typeId, $id) {
         return $this->getTotalBuyOrders($typeId, $id) - $this->getTotalSellOrders($typeId, $id);
     }
