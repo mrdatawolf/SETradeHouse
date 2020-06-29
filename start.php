@@ -34,7 +34,10 @@ $tools = [
     'Elite Hand Drill',
     'Elite Welder',
     'Oxygen Bottle',
-    'Hydrogen Bottle'
+    'Hydrogen Bottle',
+    '25x184mm NATO ammo container',
+    '200mm missile container',
+    '5.56x45mm NATO magazine'
 ];
 ?>
 <!DOCTYPE html>
