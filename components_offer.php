@@ -27,24 +27,26 @@ $defaultMultiplier  = 1.1;
   </caption>
     <thead>
     <tr>
-        <th>Item</th>
-        <th>Amount for sale</th>
-        <th>Price Per</th>
+      <th>Item</th>
+      <th>Store Type</th>
+      <th>Amount for sale</th>
+      <th>Price Per</th>
     </tr>
     </thead>
     <tbody>
     <?php
     foreach($components as $component) {
-    if(! in_array($component->title, $tools)){
-      ?>
-        <tr>
-          <td><?=$component->se_name;?></td>
-          <td class="amount"><?=$defaultAmount;?></td>
-          <td><?=round($component->getStoreAdjustedValue()*$defaultMultiplier);?></td>
+      if(! in_array($component->title, $tools)){
+        ?>
+          <tr>
+            <td><?=$component->se_name;?></td>
+            <td>Offer</td>
+            <td class="amount"><?=$defaultAmount;?></td>
+            <td><?=round($component->getStoreAdjustedValue()*$defaultMultiplier);?></td>
 
-        </tr>
-      <?php
-    }
+          </tr>
+        <?php
+      }
     }
     ?>
     </tbody>

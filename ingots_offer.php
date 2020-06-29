@@ -27,9 +27,10 @@ $defaultMultiplier  = 1.1;
   </caption>
     <thead>
     <tr>
-        <th>Item</th>
-        <th>Amount for sale</th>
-        <th>Price Per</th>
+      <th>Item</th>
+      <th>Store Type</th>
+      <th>Amount for sale</th>
+      <th>Price Per</th>
     </tr>
     </thead>
     <tbody>
@@ -38,6 +39,7 @@ $defaultMultiplier  = 1.1;
     ?>
         <tr>
           <td><?=$ingot->se_name;?></td>
+          <td>Offer</td>
           <td class="amount"><?=$defaultAmount?></td>
           <td><?=round($ingot->getStoreAdjustedValue()*$defaultMultiplier);?></td>
 

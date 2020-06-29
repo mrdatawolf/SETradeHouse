@@ -27,9 +27,10 @@ $defaultMultiplier  = 1;
   </caption>
     <thead>
     <tr>
-        <th>Item</th>
-        <th>Amount desired</th>
-        <th>Price Per</th>
+      <th>Item</th>
+      <th>Store Type</th>
+      <th>Amount desired</th>
+      <th>Price Per</th>
     </tr>
     </thead>
     <tbody>
@@ -38,6 +39,7 @@ $defaultMultiplier  = 1;
     ?>
         <tr>
           <td><?=$ore->se_name;?></td>
+          <td>Order</td>
           <td class="amount"><?=$defaultAmount;?></td>
           <td><?=round($ore->getStoreAdjustedValue()*$defaultMultiplier);?></td>
         </tr>
