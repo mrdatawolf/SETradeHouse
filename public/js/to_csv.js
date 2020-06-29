@@ -25,8 +25,9 @@ function downloadCSV(csv, filename) {
 }
 
 function exportTableToCSV(filename, showHeader = true) {
+
     var csv = [];
-    var qSA = showHeader ? "td th" : "td";
+    var qSA = (showHeader) ? "td th" : "td";
     var rows = document.querySelectorAll("table tr");
 
     for (var i = 0; i < rows.length; i++) {

@@ -23,14 +23,14 @@ $defaultMultiplier  = 1;
   <script src="public/js/to_csv.js"></script>
 <table style="margin-top: 5em;" class="table table-bordered">
   <caption>
-    <button onclick="exportTableToCSV('order.csv', false)">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="<?=$defaultAmount;?>"> <label for="set_modifier">Base Value Modifier: </label><input name="set_modifier" type="text" value="<?=$defaultMultiplier;?>">
+    <button onclick="exportTableToCSV('order_ingots.csv', false)">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="<?=$defaultAmount;?>"> <label for="set_modifier">Base Value Modifier: </label><input name="set_modifier" type="text" value="<?=$defaultMultiplier;?>">
   </caption>
     <thead>
     <tr>
       <th>Item</th>
       <th>Store Type</th>
-      <th>Amount desired</th>
       <th>Price Per</th>
+      <th>Amount desired</th>
     </tr>
     </thead>
     <tbody>
@@ -43,8 +43,8 @@ $defaultMultiplier  = 1;
           <tr>
             <td><?=$ingot->se_name;?></td>
             <td>Order</td>
-            <td class="amount"><?=$defaultAmount;?></td>
             <td><?=round($value*$defaultMultiplier);?></td>
+            <td class="amount"><?=$defaultAmount;?></td>
           </tr>
         <?php
         }
