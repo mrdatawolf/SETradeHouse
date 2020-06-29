@@ -19,7 +19,23 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] === false){
 $thisCluster = (object) [
   'title' => \Models\Clusters::find($_SESSION["cluster_id"])->title,
   'id' => $_SESSION["cluster_id"]
-]
+];
+$tools = [
+    'Automatic Rifle',
+    'Grinder',
+    'Hand Drill',
+    'Welder',
+    'Enhanced Automatic Rifle',
+    'Enhanced Grinder',
+    'Enhanced Hand Drill',
+    'Enhanced Welder',
+    'Elite Automatic Rifle',
+    'Elite Grinder',
+    'Elite Hand Drill',
+    'Elite Welder',
+    'Oxygen Bottle',
+    'Hydrogen Bottle'
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 class Components extends Model
 {
     protected $table = 'components';
-    protected $fillable = ['title','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','mass','volume'];
+    protected $fillable = ['title','se_name','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','mass','volume'];
 
 
     /**

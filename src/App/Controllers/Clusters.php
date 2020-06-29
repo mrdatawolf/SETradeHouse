@@ -32,4 +32,8 @@ class Clusters extends BaseController implements Crud
 
         return $cluster->id;
     }
+
+    public function read($data = null) {
+        return null;
+    }
 }

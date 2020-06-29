@@ -37,4 +37,8 @@ class Ingots extends BaseController implements Crud
         return $ore->ore_required - $modifer;
     }
 
+    public function read($data = null) {
+        return null;
+    }
+
 }

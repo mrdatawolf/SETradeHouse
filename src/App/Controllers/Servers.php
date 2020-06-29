@@ -24,4 +24,8 @@ class Servers extends BaseController implements Crud
 
         return $server->id;
     }
+
+    public function read($data = null) {
+        return null;
+    }
 }

@@ -36,6 +36,10 @@ class MagicNumbers extends BaseController implements Crud
         return true;*/
     }
 
+    public function read($data = null) {
+        return null;
+    }
+
     public function getOreGatherCost() {
         $data = $this->dataSource->first();
         $baseRefineryCost = $data->base_refinery_kwh*$data->cost_kw_hour;

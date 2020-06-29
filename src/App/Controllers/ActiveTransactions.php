@@ -34,4 +34,8 @@ class ActiveTransactions extends BaseController implements Crud
 
         return true;
     }
+
+    public function read($data = null) {
+        return null;
+    }
 }

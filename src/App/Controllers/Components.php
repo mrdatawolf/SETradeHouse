@@ -37,4 +37,8 @@ class Components extends BaseController implements Crud
 
         return $component->id;
     }
+
+    public function read($data = null) {
+        return null;
+    }
 }
