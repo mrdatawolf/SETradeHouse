@@ -23,7 +23,7 @@ $defaultMultiplier  = 1.1;
 <script src="public/js/to_csv.js"></script>
 <table style="margin-top: 5em;" class="table table-bordered">
   <caption>
-    <button onclick="exportTableToCSV('offer.csv')">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="<?=$defaultAmount;?>"> <label for="set_modifier">Base Value Modifier: </label><input name="set_modifier" type="text" value="<?=$defaultMultiplier;?>">
+    <button onclick="exportTableToCSV('offer.csv', false)">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="<?=$defaultAmount;?>"> <label for="set_modifier">Base Value Modifier: </label><input name="set_modifier" type="text" value="<?=$defaultMultiplier;?>">
   </caption>
     <thead>
     <tr>
@@ -37,15 +37,18 @@ $defaultMultiplier  = 1.1;
     <?php
     foreach($ingots as $ingot) {
       if($ingot->se_name !== 'fillme') {
-      ?>
+        $value = $ingot->getStoreAdjustedValue();
+        if($value > 0 && $defaultMultiplier > 0) {
+        ?>
         <tr>
           <td><?=$ingot->se_name;?></td>
           <td>Offer</td>
           <td class="amount"><?=$defaultAmount?></td>
-          <td><?=round($ingot->getStoreAdjustedValue()*$defaultMultiplier);?></td>
+          <td><?=round($value*$defaultMultiplier);?></td>
 
         </tr>
-      <?php
+        <?php
+        }
       }
     }
     ?>

@@ -24,12 +24,13 @@ function downloadCSV(csv, filename) {
     downloadLink.click();
 }
 
-function exportTableToCSV(filename) {
+function exportTableToCSV(filename, showHeader = true) {
     var csv = [];
+    var qSA = showHeader ? "td th" : "td";
     var rows = document.querySelectorAll("table tr");
 
     for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll("td");
+        var row = [], cols = rows[i].querySelectorAll(qSA);
 
         for (var j = 0; j < cols.length; j++)
             row.push(cols[j].innerText);

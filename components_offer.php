@@ -23,7 +23,7 @@ $defaultMultiplier  = 1.1;
 <script src="public/js/to_csv.js"></script>
 <table style="margin-top: 5em;" class="table table-bordered">
   <caption>
-    <button onclick="exportTableToCSV('offer.csv')">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="1000"> <label for="set_modifier">Base Value Modifier: </label><input id="set_modifier" name="set_modifier" type="text" value="1.1" readonly>
+    <button onclick="exportTableToCSV('offer.csv', false)">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="1000"> <label for="set_modifier">Base Value Modifier: </label><input id="set_modifier" name="set_modifier" type="text" value="1.1" readonly>
   </caption>
     <thead>
     <tr>
@@ -37,15 +37,17 @@ $defaultMultiplier  = 1.1;
     <?php
     foreach($components as $component) {
       if(! in_array($component->title, $tools) && $component->se_name !== 'fillme'){
+        $value = $component->getStoreAdjustedValue();
+        if($value > 0 && $defaultMultiplier > 0) {
         ?>
           <tr>
             <td><?=$component->se_name;?></td>
             <td>Offer</td>
             <td class="amount"><?=$defaultAmount;?></td>
-            <td><?=round($component->getStoreAdjustedValue()*$defaultMultiplier);?></td>
-
+            <td><?=round($value*$defaultMultiplier);?></td>
           </tr>
         <?php
+        }
       }
     }
     ?>
