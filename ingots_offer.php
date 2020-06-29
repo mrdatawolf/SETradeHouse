@@ -36,7 +36,8 @@ $defaultMultiplier  = 1.1;
     <tbody>
     <?php
     foreach($ingots as $ingot) {
-    ?>
+      if($ingot->se_name !== 'fillme') {
+      ?>
         <tr>
           <td><?=$ingot->se_name;?></td>
           <td>Offer</td>
@@ -44,7 +45,8 @@ $defaultMultiplier  = 1.1;
           <td><?=round($ingot->getStoreAdjustedValue()*$defaultMultiplier);?></td>
 
         </tr>
-    <?php
+      <?php
+      }
     }
     ?>
     </tbody>

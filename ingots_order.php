@@ -36,14 +36,16 @@ $defaultMultiplier  = 1;
     <tbody>
     <?php
     foreach($ingots as $ingot) {
-    ?>
-        <tr>
-          <td><?=$ingot->se_name;?></td>
-          <td>Order</td>
-          <td class="amount"><?=$defaultAmount;?></td>
-          <td><?=round($ingot->getStoreAdjustedValue()*$defaultMultiplier);?></td>
-        </tr>
-    <?php
+      if($ingot->se_name !== 'fillme') {
+      ?>
+      <tr>
+        <td><?=$ingot->se_name;?></td>
+        <td>Order</td>
+        <td class="amount"><?=$defaultAmount;?></td>
+        <td><?=round($ingot->getStoreAdjustedValue()*$defaultMultiplier);?></td>
+      </tr>
+      <?php
+      }
     }
     ?>
     </tbody>

@@ -36,7 +36,8 @@ $defaultMultiplier  = 1.1;
     <tbody>
     <?php
     foreach($ores as $ore) {
-    ?>
+      if($ore->se_name !== 'fillme') {
+      ?>
         <tr>
           <td><?=$ore->se_name;?></td>
           <td class="amount"><?=$defaultAmount;?></td>
@@ -45,6 +46,7 @@ $defaultMultiplier  = 1.1;
 
         </tr>
     <?php
+      }
     }
     ?>
     </tbody>

@@ -36,7 +36,8 @@ $defaultMultiplier  = 1;
     <tbody>
     <?php
     foreach($ores as $ore) {
-    ?>
+      if($ore->se_name !== 'fillme') {
+      ?>
         <tr>
           <td><?=$ore->se_name;?></td>
           <td>Order</td>
@@ -44,6 +45,7 @@ $defaultMultiplier  = 1;
           <td><?=round($ore->getStoreAdjustedValue()*$defaultMultiplier);?></td>
         </tr>
     <?php
+      }
     }
     ?>
     </tbody>

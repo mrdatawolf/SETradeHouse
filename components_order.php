@@ -37,7 +37,7 @@ $defaultMultiplier  = 1;
     <tbody>
     <?php
     foreach($components as $component) {
-      if(! in_array($component->title, $tools)){
+      if(! in_array($component->title, $tools) && $component->se_name !== 'fillme'){
       ?>
         <tr>
           <td><?=$component->se_name;?></td>
