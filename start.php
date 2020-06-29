@@ -20,25 +20,6 @@ $thisCluster = (object) [
   'title' => \Models\Clusters::find($_SESSION["cluster_id"])->title,
   'id' => $_SESSION["cluster_id"]
 ];
-$tools = [
-    'Automatic Rifle',
-    'Grinder',
-    'Hand Drill',
-    'Welder',
-    'Enhanced Automatic Rifle',
-    'Enhanced Grinder',
-    'Enhanced Hand Drill',
-    'Enhanced Welder',
-    'Elite Automatic Rifle',
-    'Elite Grinder',
-    'Elite Hand Drill',
-    'Elite Welder',
-    'Oxygen Bottle',
-    'Hydrogen Bottle',
-    '25x184mm NATO ammo container',
-    '200mm missile container',
-    '5.56x45mm NATO magazine'
-];
 ?>
 <!DOCTYPE html>
 <html lang="en">

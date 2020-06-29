@@ -36,7 +36,7 @@ $defaultMultiplier  = 1.1;
     <tbody>
     <?php
     foreach($components as $component) {
-      if(! in_array($component->title, $tools) && $component->se_name !== 'fillme'){
+      if($component->se_name !== 'fillme' && substr($component->se_name, 0, 25 ) === 'MyObjectBuilder_Component'){
         $value = $component->getStoreAdjustedValue();
         if($value > 0 && $defaultMultiplier > 0) {
         ?>
