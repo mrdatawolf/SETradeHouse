@@ -2,6 +2,12 @@ $(document).ready(function() {
     $('#set_amount').change(function () {
         $('.amount').html($(this).val());
     });
+    $('#set_modifier').change(function () {
+        //$('.')
+       // get the current value
+    });
+
+
     //Loop through all Labels with class 'editable'.
     $(".editable").each(function () {
         //Reference the Label.

@@ -75,7 +75,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
       </script>
   </head>
   <body>
-      <div class="wrapper">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <H3>Welcome to the Space Engineers Trading House Test</H3>
+    </div>
+      <div class="panel-body wrapper">
           <h2>Login</h2>
           <p>Please fill in your credentials to login.</p>
           <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
@@ -95,5 +99,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
               <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
           </form>
       </div>
+  </div>
   </body>
 </html>

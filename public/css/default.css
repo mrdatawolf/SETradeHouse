@@ -241,6 +241,12 @@ article.tabs section:target ~ section:last-child .tab-content {
     width: 350px; padding: 20px;
 }
 
+/* for dealing with the csv stuff */
+.textarea_csv {
+    min-width:60em;
+    min-height: 20em;
+}
+
 /* =================================
   Media Queries
 ==================================== */

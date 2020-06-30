@@ -15,47 +15,15 @@ $ores               = $cluster->ores()->get();
 $ingots             = $cluster->ingots()->get();
 $economyOre         = $cluster->economyOre;
 $totalServers       = $servers->count();
-$components         = Components::all();
-$defaultAmount      = 1000;
+$items              = Components::all();
+$defaultAmount      = 1000000;
 $defaultMultiplier  = 1.1;
 ?>
-
-<script src="public/js/to_csv.js"></script>
-<script src="public/js/offer_order.js"></script>
-<table style="margin-top: 5em;" class="table table-bordered">
-  <caption>
-    <button onclick="exportTableToCSV('offer_comps.csv', false)">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="1000"> <label for="set_modifier">Base Value Modifier: </label><input id="set_modifier" name="set_modifier" type="text" value="1.1" readonly>
-  </caption>
-    <thead>
-    <tr>
-      <th>Item</th>
-      <th>Store Type</th>
-      <th>Price Per</th>
-      <th>Amount for sale</th>
-    </tr>
-    </thead>
-    <tbody>
+<div class="panel panel-default">
     <?php
-    foreach($components as $component) {
-      if($component->se_name !== 'fillme' && substr($component->se_name, 0, 25 ) === 'MyObjectBuilder_Component'){
-        $value = $component->getStoreAdjustedValue();
-        if($value > 0 && $defaultMultiplier > 0) {
-        ?>
-          <tr>
-            <td><?=$component->se_name;?></td>
-            <td>Offer</td>
-            <td><span class="editable"><?=round($value*$defaultMultiplier);?></span></td>
-            <td><span class="amount editable"><?=$defaultAmount;?></span></td>
-          </tr>
-        <?php
-        }
-      }
-    }
-    ?>
-    </tbody>
-</table><br>
-<div id="userData">
-  <textbox id="csv_text">
+    require_once './partials/builder_panel_heading.php';
+    require_once './partials/builder_panel_body.php';
+    require_once './partials/builder_panel_csv.php';?>
 </div>
 <?php require_once('end.php'); ?>
 
