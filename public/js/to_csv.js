@@ -9,7 +9,7 @@ function downloadCSV(csv, filename) {
     downloadLink = document.createElement("a");
 
     // File name
-    downloadLink.download = filename;
+   downloadLink.download = filename;
 
     // Create a link to the file
     downloadLink.href = window.URL.createObjectURL(csvFile);
@@ -33,12 +33,29 @@ function exportTableToCSV(filename, showHeader = true) {
     for (var i = 0; i < rows.length; i++) {
         var row = [], cols = rows[i].querySelectorAll(qSA);
 
-        for (var j = 0; j < cols.length; j++)
-            row.push(cols[j].innerText);
-
+        for (var j = 0; j < cols.length; j++) {
+                row.push(cols[j].innerText);
+        }
         csv.push(row.join(","));
     }
 
     // Download CSV file
     downloadCSV(csv.join("\n"), filename);
+}
+
+function exportTableToDIV(showHeader = true) {
+console.log('there');
+    var csv = [];
+    var qSA = (showHeader) ? "td th" : "td";
+    var rows = document.querySelectorAll("table tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll(qSA);
+
+        for (var j = 0; j < cols.length; j++) {
+            row.push(cols[j].innerText);
+        }
+        csv.push(row.join(","));
+    }
+    $('#csv_text').text(csv.join('\r\n'));
 }

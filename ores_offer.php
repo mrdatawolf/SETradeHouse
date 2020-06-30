@@ -21,9 +21,10 @@ $defaultMultiplier  = 1.1;
 ?>
 
 <script src="public/js/to_csv.js"></script>
+<script src="public/js/offer_order.js"></script>
 <table style="margin-top: 5em;" class="table table-bordered">
   <caption>
-    <button onclick="exportTableToCSV('offer_ores.csv', false)">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="<?=$defaultAmount;?>"> <label for="set_modifier">Base Value Modifier: </label><input name="set_modifier" type="text" value="<?=$defaultMultiplier;?>">
+    <button onclick="exportTableToCSV('offer_ores.csv', false)">Export HTML Table To CSV File</button> | <button onclick="exportTableToDIV(false)">Show CSV Data</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="<?=$defaultAmount;?>"> <label for="set_modifier">Base Value Modifier: </label><input name="set_modifier" type="text" value="<?=$defaultMultiplier;?>">
   </caption>
     <thead>
     <tr>
@@ -43,8 +44,8 @@ $defaultMultiplier  = 1.1;
           <tr>
             <td><?=$ore->se_name;?></td>
             <td>Offer</td>
-            <td><?=round($ore->getStoreAdjustedValue())*$defaultMultiplier;?></td>
-            <td class="amount"><?=$defaultAmount;?></td>
+            <td><span class="editable"><?=round($ore->getStoreAdjustedValue())*$defaultMultiplier;?></span></td>
+            <td><span class="editable amount"><?=$defaultAmount;?></span></td>
           </tr>
         <?php
         }
@@ -52,11 +53,10 @@ $defaultMultiplier  = 1.1;
     }
     ?>
     </tbody>
-</table>
-<script>
-    $('#set_amount').change( function() {
-        $('.amount').html($(this).val());
-    });
-</script>
+</table><br>
+<div id="userData">
+  <h4>CSV Data</h4>
+  <textbox id="csv_text">
+</div>
 <?php require_once('end.php'); ?>
 

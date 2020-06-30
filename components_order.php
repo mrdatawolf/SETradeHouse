@@ -19,9 +19,8 @@ $components         = Components::all();
 $defaultAmount      = 1000000;
 $defaultMultiplier  = 1;
 ?>
-
-
   <script src="public/js/to_csv.js"></script>
+  <script src="public/js/offer_order.js"></script>
 <table style="margin-top: 5em;" class="table table-bordered">
   <caption>
     <button onclick="exportTableToCSV('order_comps.csv', false)">Export HTML Table To CSV File</button> || <label for="set_amount">Amount: </label><input id="set_amount" name="set_amount" type="text" value="<?=$defaultAmount;?>"> <label for="set_modifier">Base Value Modifier: </label><input name="set_modifier" type="text" value="<?=$defaultMultiplier;?>" readonly>
@@ -44,8 +43,8 @@ $defaultMultiplier  = 1;
         <tr>
           <td><?=$component->se_name;?></td>
           <td>Order</td>
-          <td><?=round($value*$defaultMultiplier);?></td>
-          <td class="amount"><?=$defaultAmount;?></td>
+          <td><span class="editable"><?=round($value*$defaultMultiplier);?></span></td>
+          <td><span class="editable amount"><?=$defaultAmount;?></span></td>
         </tr>
       <?php
         }
@@ -53,12 +52,8 @@ $defaultMultiplier  = 1;
     }
     ?>
     </tbody>
-</table>
-
-<script>
-  $('#set_amount').change( function() {
-      $('.amount').html($(this).val());
-  });
-</script>
-
+</table><br>
+  <div id="userData">
+    <textbox id="csv_text">
+  </div>
 <?php require_once('end.php'); ?>
