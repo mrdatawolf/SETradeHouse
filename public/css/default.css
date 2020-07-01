@@ -11,7 +11,7 @@ body {
 }
 
 .headerSpacer {
-    margin: 2em;
+    margin: 3em;
 }
 .simpleDisplay table {
     border: 2px solid #CCCCCC;
@@ -183,8 +183,8 @@ article.tabs section:target ~ section:last-child .tab-content {
     z-index: 1000;
     left: 0;
     top: 0;
-    padding-top: .15em;
-    padding-bottom: .15em;
+    padding-top: 0em;
+    padding-bottom: 0em;
     border: 1px solid #a2a2a2;
     background-color: #ECF7FF;
     -webkit-box-shadow: 0 0 14px 0 rgba(0,0,0,0.75);
@@ -193,6 +193,7 @@ article.tabs section:target ~ section:last-child .tab-content {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+    padding-right: 7em;
 }
 
 

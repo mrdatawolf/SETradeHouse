@@ -19,6 +19,8 @@ $items              = Components::all();
 $defaultAmount      = 1000000;
 $defaultMultiplier  = 1.1;
 ?>
+<div class="headerSpacer">
+</div>
 <div class="panel panel-default">
     <?php
     require_once './partials/builder_panel_heading.php';
