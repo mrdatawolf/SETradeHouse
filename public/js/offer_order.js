@@ -29,7 +29,6 @@ $(".editable").each(function () {
     label.click(function () {
         $(this).hide();
         $(this).next().show().focus();
-        console.log('label');
     });
 
     //When focus is lost from TextBox, hide TextBox and show Label.
@@ -37,7 +36,7 @@ $(".editable").each(function () {
         $(this).hide();
         $(this).prev().html($(this).val());
         $(this).prev().show();
-        console.log('textbox');
+        exportTableToDIV(false);
     });
 });
 
