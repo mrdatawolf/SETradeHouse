@@ -20,6 +20,14 @@
     </ul>
   </div>
   <div class="dropdown">
+  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Test Data
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+      <li id="spreadsheetLink"><a href="stock_levels.php">Stock Levels</a></li>
+      <li id="tradetestLink"><a href="trade_station_data.php">Trade Station Data</a></li>
+    </ul>
+  </div>
+  <div class="dropdown">
     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">User
       <span class="caret"></span></button>
     <ul class="dropdown-menu">
