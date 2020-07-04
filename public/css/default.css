@@ -244,8 +244,8 @@ article.tabs section:target ~ section:last-child .tab-content {
 
 /* for dealing with the csv stuff */
 .textarea_csv #csv_text{
-    min-width:60em;
-    min-height: 20em;
+    min-width:60em !important;
+    min-height: 20em !important;
 }
 
 /* =================================
