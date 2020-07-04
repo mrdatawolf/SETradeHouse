@@ -21,10 +21,10 @@ $defaultMultiplier  = 1;
 ?>
   <div class="headerSpacer">
   </div>
-<div class="panel panel-default">
-    <?php
-    require_once './partials/builder_panel_heading.php';
-    require_once './partials/builder_panel_body.php';
-    require_once './partials/builder_panel_csv.php';?>
-</div>
-<?php require_once('end.php'); ?>
+  <div class="panel panel-default">
+      <?php
+      require_once './partials/builder_panel_heading.php';
+      require_once './partials/builder_panel_body.php';
+      require_once './partials/builder_panel_csv.php';?>
+  </div>
+<?php require_once('partials/offer_order_end.php'); ?>

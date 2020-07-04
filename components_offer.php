@@ -27,5 +27,4 @@ $defaultMultiplier  = 1.1;
     require_once './partials/builder_panel_body.php';
     require_once './partials/builder_panel_csv.php';?>
 </div>
-<?php require_once('end.php'); ?>
-
+<?php require_once('partials/offer_order_end.php'); ?>

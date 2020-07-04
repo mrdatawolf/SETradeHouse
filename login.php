@@ -45,7 +45,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 $_SESSION["username"] = $user->username;
 
                 // Redirect user to welcome page
-                header("location: rawdata.php");
+                header("location: ores_offer.php");
             } else{
                 // Display an error message if password is not valid
                 $password_err = "The password you entered was not valid.";

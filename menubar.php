@@ -2,15 +2,6 @@
   <h1 class="logo"><a href="index.php">Commodity Market for the "<?=$thisCluster->title?>"</a></h1>
 <div class="main-nav">
   <div class="dropdown">
-    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Test Data
-      <span class="caret"></span></button>
-    <ul class="dropdown-menu">
-      <li id="spreadsheetLink"><a href="spreadsheet.php">Spreadsheet</a></li>
-      <li id="rawdataLink"><a href="rawdata.php">Raw Data</a></li>
-      <li id="tradetestLink"><a href="trade_tests.php">Trade Tests</a></li>
-    </ul>
-  </div>
-  <div class="dropdown">
     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Offers
       <span class="caret"></span></button>
     <ul class="dropdown-menu">
