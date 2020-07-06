@@ -1,7 +1,8 @@
 <?php
-require 'vendor/autoload.php';
-require 'config.php';
-require 'functions.php';
+$base_directory = 'C:\Users\Patrick\Projects\SETradeHouse';
+require $base_directory . '/vendor/autoload.php';
+require $base_directory . '/config.php';
+require $base_directory . '/functions.php';
 $title= $title ?? 'test';
 
 new Models\Database();
@@ -41,4 +42,3 @@ $thisCluster = (object) [
 </head>
 <body>
 <?php require_once('menubar.php'); ?>
-
