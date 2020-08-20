@@ -6,17 +6,7 @@
 A standalone web service allowing users to see trade data from participating Space Engineers (SE) Servers.  The goal is to display data to help a user smartly position themselves in their choosen SE Server's markets. Whether the user is running their own trades or are simply looking to maximze their profits; this system will help them understand the market forces in play and give guidance on the setting up the best trade positions.
  
 ##Development setup Quick Start (for local development and testing)
-1. You need php on your system.  At a command prompt run `php -v`
-You are expecting to see something like
- `PHP 7.1.8 (cli) (built: Aug  1 2017 20:56:32) ( NTS MSVC14 (Visual C++ 2015) x64 )
- Copyright (c) 1997-2017 The PHP Group
- Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies`
-    1. If you don't you might need to get php installed on your system. Checkout http://php.net
-2. You might have to edit the php.ini and uncomment `extension=php_pdo_sqlite.dll` to use the sqlite db (this saves us from having to also install a full SQL for local work on the code).
-3. You need a copy of the code.  If you just want to check it out you can goto https://github.com/mrdatawolf/Colonization and use the "Clone or Download" button.  Otherwise you will need to clone it so you can begin working on it and make pull requests.
-4. In the main directory you need to run "composer update" <-- this might mean you need to install composer.
-5. To start the server for local development go into the folder you saved it to and run localWeb.bat (Windows).
-6. Open a web browser and goto `http://localhost:8282`.  You should see simple set of links at the top of the page.
+1. It is now built on laravel 7 so get that running.
 
 ##Current Roadmap
 Road to 1.0 MVP
@@ -29,10 +19,9 @@ Road to 1.0 MVP
 7. Get the spreadsheet page to allow the trade station amounts/values to be created/updated as needed (for testing).
 8. Get the API fully functional for ingesting data and allowing call to view the data.  This API should stay in sync with the internal ablities.
 9. ~~Bring it up on a server online.~~
-10. Setup examples, with matching data, explaining how the system works.
+10. Get the active servers data being ingested.
 11. Open it up so anyone can interact with the test system.
-12. Verify SQL files can bring a basic version of the system up.
-13. Get the system to take data from the torch econ plugin.
+12. Convert SQL files to migrations/seeders.
  
 ##Future Roadmap
 1.  Revised +1.0 goals.
@@ -40,9 +29,10 @@ Road to 1.0 MVP
     2. Add weights to transactions based on distances from server to server.
     3. Improve the user system.
     4. Add sheets as needed to flex out the user experience. Anything that can help the users visualize or work with the data.
-    5. Begin gathering the data from a live system to update the tradehouse with real world data.
-    6. A Map Generator showing cluster servers and their tradezones. Or maybe just a common format for making a diagram for the users.
-    7. There's alot more but where we go will depend on where the people helping see the project going from here.
+    5. Get the ticker working.
+    6. Add a weight to thrust calculator.
+    7. A Map Generator showing cluster servers and their tradezones. Or maybe just a common format for making a diagram for the users.
+    8. There's alot more but where we go will depend on where the people helping see the project going from here.
 
 ## Contributing
 
@@ -68,7 +58,7 @@ notes: We have moved to a tradehouse model.  So we look at the buy and sell orde
 5. Example 5: Do an example of the price of a componets being influenced by the amount and value of the ore and ingots it's made from.
 
 ##Special Thanks to
-1. Braelok for the innumerable hours he poured into trade in the SE worlds and for teaching me the ways of the SE economies.  This could not exist without his work!
+1. Braelok for the innumerable hours he poured into trade in the SE worlds and for teaching me the ways of SE economies.  This could not exist without his work!
 2. The Nebulon Cluster crew for showing me how much an economy adds to SE!
 3. The Frontier Economy Mod for making a great econ mod!
 4. Hobobot, MCI, Azure Night Owl and everyone else who made the Torch Econ Plugin!
