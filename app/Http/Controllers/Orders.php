@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Components;
 use App\Ingots;
 use App\Ores;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
+/**
+ * Class Orders
+ *
+ * @package App\Http\Controllers
+ */
 class Orders extends Controller
 {
-    public function __construct() {
-        dd($this->auth);
-        View::share([ 'currentUser' => $this->auth->user() ]);
-    }
     /**
      * @var int
      */
@@ -24,7 +23,7 @@ class Orders extends Controller
         $exportTitle = 'offer_ores.csv';
         $items = Ores::all();
         $defaultMultiplier = 1;
-        $defaultAmount = 0;
+        $defaultAmount = $this->defaultAmount;
         return view('orders.ores', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
     }
 
@@ -33,7 +32,7 @@ class Orders extends Controller
         $exportTitle = 'offer_ingots.csv';
         $items = Ingots::all();
         $defaultMultiplier = 1;
-        $defaultAmount = 0;
+        $defaultAmount = $this->defaultAmount;
         return view('orders.ingots', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
     }
 
@@ -42,7 +41,7 @@ class Orders extends Controller
         $exportTitle = 'offer_comps.csv';
         $items = Components::all();
         $defaultMultiplier = 1;
-        $defaultAmount = 0;
+        $defaultAmount = $this->defaultAmount;
         return view('orders.components', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
     }
 }
