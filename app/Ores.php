@@ -7,16 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Ores
  *
- * @property int                   $id
- * @property string                $title
- * @property                       $base_processing_time_per_ore
- * @property                       $base_conversion_efficiency
- * @property                       $keen_crap_fix
- * @property                       $module_efficiency_modifier
- * @property                       $ore_per_ingot
- * @property                       $ingots
- * @property                       $servers
- * @property                       $clusters
  * @package App
  */
 class Ores extends Model

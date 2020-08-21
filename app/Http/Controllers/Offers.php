@@ -5,18 +5,10 @@ namespace App\Http\Controllers;
 use App\Components;
 use App\Ingots;
 use App\Ores;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Offers
- * @property integer $id
- * @property string $title
- * @property float $base_processing_time_per_ore
- * @property float $base_conversion_efficiency
- * @property float $keen_crap_fix
- * @property float $module_efficiency_modifier
- * @property float $ore_per_ingot
- * @property string $se_name
+ *
  * @package App\Http\Controllers
  */
 class Offers extends Controller

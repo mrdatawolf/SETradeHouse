@@ -12,6 +12,8 @@
     @extends('menu.menu')
     @extends('ticker.tape')
     <div class="container">
+        @include('partials.builder_panel_body')
+        @include('partials.builder_panel_csv')
         @yield('content')
     </div>
 </div>
@@ -26,7 +28,7 @@
         $(window).on('load', function () {
             $('.ticker').ticker();
             $('.ticker').css('border', '1px solid blue;');
-            exportTableToDIV(false);
+            exportTableTo();
         });
     </script>
 @show
