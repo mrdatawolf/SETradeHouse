@@ -6,6 +6,16 @@
 
     <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav mr-auto">
+            @guest
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                </li>
+                @if (Route::has('register'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                    </li>
+                @endif
+            @else
             <li class="nav-item">
                 <a href="#" class="nav-link">Home</a>
             </li>
@@ -41,12 +51,13 @@
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownAccount" role="button" data-toggle="dropdown">{{ $currentUser->username ?? 'not logged in' }}</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownThrustToWeight">
-                    <a href="#" class="dropdown-item">Current Server: {{ $currentUser->cluster_id }}</a>
+                    <a href="#" class="dropdown-item">Current Server: {{ $currentUser->cluster_id ?? '' }}</a>
                     <a href="#" class="dropdown-item">Current World: 'work in progress'</a>
                     <a href="{{ url('/logout') }}"> logout </a>
 
                 </div>
             </li>
+            @endguest
         </ul>
     </div>
 </nav>
