@@ -51,7 +51,7 @@
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownAccount" role="button" data-toggle="dropdown">{{ $currentUser->username ?? 'not logged in' }}</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownThrustToWeight">
-                    <a href="#" class="dropdown-item">Current Server: {{ $currentUser->cluster_id ?? '' }}</a>
+                    <a href="#" class="dropdown-item">Current Server: {{ $currentUser->server_id ?? '' }}</a>
                     <a href="#" class="dropdown-item">Current World: 'work in progress'</a>
                     <a href="{{ url('/logout') }}"> logout </a>
 

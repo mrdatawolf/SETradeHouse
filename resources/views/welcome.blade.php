@@ -70,27 +70,16 @@
             @if (Route::has('login'))
                 <div class="top-left links">
                     @auth
-                    @extends('menu.menu')
+                        @extends('menu.menu')
                     @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
+                        @extends('menu.notloggedin')
                     @endauth
-
                 </div>
             @endif
             <div class="content">
                 <div class="title m-b-md">
                     Space Engineers Trading House
                 </div>
-                @php
-                $components = new \App\Components();
-                $ingots = new \App\Ingots();
-                //dd(round($components->find(36)->getBaseValue()), round($components->find(36)->getStoreAdjustedValue()),round($components->find(36)->getScarcityAdjustedValue(1, 3)));
-                //dd(round($ingots->find(3)->getBaseValue()), round($ingots->find(1)->getBaseValue()), round($ingots->find(9)->getBaseValue()), round($ingots->find(7)->getBaseValue()), 'eee');
-                @endphp
                 <div class="links">
 
                 </div>

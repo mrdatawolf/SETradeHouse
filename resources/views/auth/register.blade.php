@@ -10,12 +10,24 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
-
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">User{{ __('Name') }}</label>
+                            <label for="server" class="col-md-4 col-form-label text-md-right">Server</label>
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-                                @error('name')
+                                <select id="server" class="form-control @error('server') is-invalid @enderror" name="server" required>
+                                    <option value="3">The Nebulon Cluster</option>
+                                </select>
+                                @error('server')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('UserName') }}</label>
+                            <div class="col-md-6">
+                                <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>
+                                @error('username')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -68,6 +80,11 @@
                     </form>
                 </div>
             </div>
+        </div>
+        <div class="col-md-8">
+            @foreach ($errors->all() as $error)
+                {{ $error }}
+            @endforeach
         </div>
     </div>
 </div>

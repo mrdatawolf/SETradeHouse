@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                   $id
  * @property string                $title
  * @property                       $system_stock_weight
- * @property int                   $cluster_id
+ * @property int                   $server_id
  * @property                       $activeTransactions
  * @property                       $tradezones
  * @package Models
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 class Servers extends Model
 {
     protected $table = 'servers';
-    protected $fillable = ['title','system_stock_weight', 'cluster_id'];
+    protected $fillable = ['title','system_stock_weight', 'server_id'];
 
     public function ores() {
         $this->belongsToMany('App\Ores');
