@@ -37,5 +37,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('ingots', 'Offers@ingots')->name('offers.ingots');
         Route::get('components', 'Offers@components')->name('offers.components');
     });
+    Route::get('/stocklevels', 'Stocklevels@index')->name('stocklevels');
 });
 

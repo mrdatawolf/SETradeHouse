@@ -26,7 +26,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">Stock Levels</a>
+                <a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownThrustToWeight" role="button" data-toggle="dropdown">Thrust to Weight</a>
