@@ -11,6 +11,12 @@ class Stocklevels extends Controller
 {
     public function index() {
         $title = "Stock Levels";
+        $stockLevels = \Session::get('stockLevels');
+
+        return view('stocklevels', compact('stockLevels','title'));
+    }
+
+    public function getStockLevels() {
         $playerData = new \App\StockLevels();
         $items = $playerData->distinct()->pluck('Item');
         $stockLevels = [];
@@ -25,7 +31,7 @@ class Stocklevels extends Controller
                     break;
                 case 'MyObjectBuilder_PhysicalGunObject':
                 case 'MyObjectBuilder_AmmoMagazine':
-                $itemType = 'Tools';
+                    $itemType = 'Tools';
                     break;
                 default:
                     $itemType = 'Components';
@@ -36,7 +42,7 @@ class Stocklevels extends Controller
             }
         }
 
-        return view('stocklevels', compact('stockLevels','title'));
+        return $stockLevels;
     }
 
 

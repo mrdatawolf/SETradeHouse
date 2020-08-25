@@ -13,5 +13,5 @@ use Illuminate\Database\Eloquent\Model;
 class Stations extends Model
 {
     protected $table = 'stations';
-    protected $fillable = ['title','server_id'];
+    protected $fillable = ['title','world_id'];
 }
