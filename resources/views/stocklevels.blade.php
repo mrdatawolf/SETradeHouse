@@ -16,23 +16,25 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($stockLevels as $type => $data)
-            <tr>
-                <th colspan="2">
-                    {{ $type }}
-                </th>
-            </tr>
-            @foreach($data as $item => $amount)
-            <tr>
-                <td>
-                    {{ $item }}
-                </td>
-                <td>
-                    {{ $amount }}
-                </td>
-            </tr>
+        @if(! empty($stockLevels))
+            @foreach($stockLevels as $type => $data)
+                <tr>
+                    <th colspan="2">
+                        {{ $type }}
+                    </th>
+                </tr>
+                @foreach($data as $item => $amount)
+                <tr>
+                    <td>
+                        {{ $item }}
+                    </td>
+                    <td>
+                        {{ $amount }}
+                    </td>
+                </tr>
+                @endforeach
             @endforeach
-        @endforeach
+        @endif
         </tbody>
     </table>
 
