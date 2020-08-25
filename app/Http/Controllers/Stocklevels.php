@@ -17,8 +17,8 @@ class Stocklevels extends Controller
     }
 
     public function getStockLevels() {
-        $playerData = new \App\StockLevels();
-        $items = $playerData->distinct()->pluck('Item');
+        $stockData = new \App\StockLevels();
+        $items = $stockData->distinct()->pluck('Item');
         $stockLevels = [];
         foreach($items as $item) {
             $itemArray = explode('/',$item);
@@ -38,7 +38,7 @@ class Stocklevels extends Controller
             }
             $title = $this->getItemTitle($itemType, $item);
             if ( ! empty($title)) {
-                $stockLevels[$itemType][$title] = number_format($playerData->where('Item', $item)->sum('Qty'));
+                $stockLevels[$itemType][$title] = number_format($stockData->where('Item', $item)->sum('Qty'));
             }
         }
 
