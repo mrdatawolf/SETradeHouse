@@ -3,13 +3,13 @@
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class ServerTypes
+ * Class WorldTypes
  *
  * @property int                   $id
  * @property string                $title
  * @package Models
  */
-class ServerTypes extends Model
+class WorldTypes extends Model
 {
     protected $table = 'server_types';
     protected $fillable = ['title'];

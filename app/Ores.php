@@ -21,11 +21,11 @@ class Ores extends Model
     }
 
     public function servers() {
-        return $this->belongsToMany('App\Servers');
+        return $this->belongsToMany('App\Worlds');
     }
 
     public function clusters() {
-        return $this->belongsToMany('App\Clusters');
+        return $this->belongsToMany('App\Servers');
     }
 
     public function getOreEfficiency($modules = 0) {
@@ -56,13 +56,13 @@ class Ores extends Model
 
     /**
      * @param $totalServers
-     * @param $clusterId
+     * @param $serverId
      *
      * @return float|int
      */
-    public function getScarcityAdjustedValue($totalServers, $clusterId) {
+    public function getScarcityAdjustedValue($totalServers, $serverId) {
         $storeAdjustedValue = $this->getStoreAdjustedValue();
-        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $clusterId);
+        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $serverId);
 
         return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
     }
@@ -70,25 +70,39 @@ class Ores extends Model
 
     /**
      * @param $totalServers
-     * @param $clusterId
+     * @param $serverId
      * note: ores are the basic building blocks so they don't look at how many ingots etc are out there f the raw ore.
      *
      * @return float|int
      */
-    public function getScarcityAdjustment($totalServers, $clusterId) {
-        $planetsWith = $this->getPlanetsWith($clusterId);
-        $asteroidsWith = $this->getAsteroidsWith($clusterId);
+    public function getScarcityAdjustment($totalServers, $serverId) {
+        $planetsWith = $this->getPlanetsWith($serverId);
+        $asteroidsWith = $this->getAsteroidsWith($serverId);
         $totalServersWithOre = $planetsWith+$asteroidsWith;
 
         return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
     }
 
+
+    /**
+     * @param     $economyOre
+     * @param     $scalingModifier
+     * @param int $total
+     *
+     * @return float|int
+     */
     public function getBaseCostToGatherOre($economyOre, $scalingModifier, $total = 1) {
         $econOrePerIngot = $economyOre->ore_per_ingot;
         $orePerIngot = $this->ore_per_ingot;
         return (($orePerIngot/$econOrePerIngot)*$scalingModifier)*$total;
     }
 
+
+    /**
+     * @param int $modules
+     *
+     * @return float|int|mixed
+     */
     public function getOreRequiredPerIngot($modules = 0) {
         $orePerIngot                = $this->ore_per_ingot;
         $moduleEfficiencyModifier   = $this->module_efficiency_modifier;
@@ -97,18 +111,37 @@ class Ores extends Model
         return $orePerIngot - $modifer;
     }
 
-    public function getPlanetsWith($clusterId) {
-        return $this->getServerOfTypeWith(1, $clusterId);
+
+    /**
+     * @param $serverId
+     *
+     * @return int
+     */
+    public function getPlanetsWith($serverId) {
+        return $this->getServerOfTypeWith(1, $serverId);
     }
 
-    public function getAsteroidsWith($clusterId) {
-        return $this->getServerOfTypeWith(2, $clusterId);
+
+    /**
+     * @param $serverId
+     *
+     * @return int
+     */
+    public function getAsteroidsWith($serverId) {
+        return $this->getServerOfTypeWith(2, $serverId);
     }
 
-    private function getServerOfTypeWith($type, $clusterId) {
+
+    /**
+     * @param $type
+     * @param $serverId
+     *
+     * @return int
+     */
+    private function getServerOfTypeWith($type, $serverId) {
         $totalWith = 0;
         foreach($this->servers as $server) {
-            if($server->clusters_id == $clusterId) {
+            if($server->clusters_id == $serverId) {
                 if ($server->types_id == $type) {
                     $totalWith++;
                 }
@@ -116,5 +149,14 @@ class Ores extends Model
         }
 
         return $totalWith;
+    }
+
+
+    /**
+     * @param $serverId
+     * @param $oreId
+     */
+    public function getTotalInStorage($serverId, $oreId) {
+        \Session::get('stockLevels');
     }
 }

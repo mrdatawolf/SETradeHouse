@@ -20,7 +20,7 @@ class TradeZones extends Model
     protected $fillable = ['title','owner_id','servers_id','local_weight'];
 
     public function servers() {
-        return $this->belongsTo('App\Servers');
+        return $this->belongsTo('App\Worlds');
     }
 
     public function activeTransactions() {

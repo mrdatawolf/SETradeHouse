@@ -14,7 +14,9 @@
                             <label for="server" class="col-md-4 col-form-label text-md-right">Server</label>
                             <div class="col-md-6">
                                 <select id="server" class="form-control @error('server') is-invalid @enderror" name="server" required>
-                                    <option value="3">The Nebulon Cluster</option>
+                                    @foreach(\App\Servers::all() as $server)
+                                        <option value="{{ $server->id }}">{{ $server->title }}</option>
+                                    @endforeach
                                 </select>
                                 @error('server')
                                 <span class="invalid-feedback" role="alert">

@@ -1,6 +1,10 @@
 .ticker {
     width: 90%;
     margin: 10px auto;
+    font-size: smaller;
+}
+#tickerBlock {
+    height: 3em;
 }
 /* The HTML list gets replaced with a single div,
    which contains the active ticker item, so you

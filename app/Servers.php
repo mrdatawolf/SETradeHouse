@@ -3,55 +3,88 @@
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Ores
+ * Class Servers
  *
  * @property int                   $id
  * @property string                $title
- * @property                       $system_stock_weight
- * @property int                   $server_id
+ * @property                       $economy_ore
+ * @property                       $economy_stone_modifier
+ * @property                       $scaling_modifier
+ * @property                       $economy_ore_value
+ * @property                       $asteroid_scarcity_modifier
+ * @property                       $planet_scarcity_modifier
+ * @property                       $base_modifier
+ * @property                       $economyOre
+ * @property                       $ores
+ * @property                       $ingots
+ * @property                       $servers
  * @property                       $activeTransactions
- * @property                       $tradezones
  * @package Models
  */
 class Servers extends Model
 {
     protected $table = 'servers';
-    protected $fillable = ['title','system_stock_weight', 'server_id'];
+    protected $fillable = ['title','economy_ore', 'economy_stone_modifier','scaling_modifier','economy_ore_value','asteroid_scarcity_modifier', 'planet_scarcity_modifier', 'base_modifier'];
 
-    public function ores() {
-        $this->belongsToMany('App\Ores');
-    }
 
-    public function ingots() {
-        return $this->belongsToMany('App\Ingots');
-    }
-
-    public function clusters() {
-        return $this->belongsTo('App\Clusters');
-    }
-
-    public function tradezones() {
-        return $this->hasMany('App\TradeZones');
-    }
-
-    public function types() {
-        $this->hasMany('App\ServerTypes');
-    }
-
-    public function activeTransactions() {
-        return $this->hasMany('App\ActiveTransactions');
+    /**
+     * note: the economyOre is the basic foundation of the economy. It can be any ore (including say a "credit" ore) it just gives us somethign to pin the movements against.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function economyOre() {
+        return$this->hasOne('Models\Ores', 'id', 'economy_ore_id');
     }
 
 
     /**
-     * note: this takes the active transactions for a specific thing (type of thing id and its id) in this server and looks at how many units are in trade and each ones value based on its amount traded to get an average price to list.
+     * note: this is all the ores in the cluster
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function ores() {
+        return $this->belongsToMany('Models\Ores');
+    }
+
+
+    /**
+     * note: this is all the ingots in the cluster.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function ingots() {
+        return $this->belongsToMany('Models\Ingots');
+    }
+
+
+    /**
+     * note: this is all the servers in the cluster.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function servers() {
+        return $this->hasMany('Models\Servers');
+    }
+
+
+    /**
+     * note: this is all the current transactions in the cluster.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function activeTransactions() {
+        return $this->hasMany('Models\ActiveTransactions');
+    }
+
+
+    /**
+     * note: this takes the active transactions for a specific thing (type of thing id and its id) in this cluster and looks at how many units are in trade and each ones value based on its amount traded to get an average price to list.
      * @param $typeId
      * @param $id
      *
      * @return float|int
      */
     public function listedValue($typeId, $id) {
-        $avgValue = $totalValue = 0;
+        $totalValue = 0;
         $totalBeingTraded =  0;
         $transactions = $this->activeTransactions;
 
@@ -60,18 +93,14 @@ class Servers extends Model
                 $totalBeingTraded += $transaction->amount;
                 $totalValue += $transaction->value*$transaction->amount;
             }
-
-        }
-        if($totalValue > 0) {
-            $avgValue = $totalValue/$totalBeingTraded;
         }
 
-        return $avgValue;
+        return ($totalValue > 0) ?  $totalValue/$totalBeingTraded : 0;
     }
 
 
     /**
-     * note: the desire of the cluster for a specific thing (type of thing id and its id) in the server. Where desire is expressed as the total trades buying a thing minus those selling the thing.
+     * note: the desire of the cluster for a specific thing (type of thing id and its id) in the cluster. Where desire is expressed as the total trades buying a thing minus those selling the thing.
      * @param $typeId
      * @param $id
      *
@@ -81,14 +110,39 @@ class Servers extends Model
         return $this->getTotalBuyOrders($typeId, $id) - $this->getTotalSellOrders($typeId, $id);
     }
 
+
+    /**
+     * note: gather all buy orders in the cluster.
+     * @param $typeId
+     * @param $id
+     *
+     * @return int
+     */
     public function getTotalBuyOrders($typeId, $id) {
         return $this->getOrdersTransactionType(1, $typeId, $id);
     }
 
+
+    /**
+     * note: gather all sell orders in the cluster.
+     * @param $typeId
+     * @param $id
+     *
+     * @return int
+     */
     public function getTotalSellOrders($typeId, $id) {
         return $this->getOrdersTransactionType(2, $typeId, $id);
     }
 
+
+    /**
+     * the private function that gets the transactions we are looking for.
+     * @param $transactionTypeId
+     * @param $typeId
+     * @param $id
+     *
+     * @return int
+     */
     private function getOrdersTransactionType($transactionTypeId, $typeId, $id) {
         $totalAmount = 0;
         $transactions = $this->activeTransactions;

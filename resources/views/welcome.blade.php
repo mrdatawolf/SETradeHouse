@@ -8,65 +8,12 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-        <script src="https://kit.fontawesome.com/b61a9642d4.js" crossorigin="anonymous"></script>
-        <script src="{{ asset('js/app.js') }}" defer></script>
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+        <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
 
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-left {
-                position: absolute;
-                left: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
+        <div id="app" class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-left links">
                     @auth
@@ -79,19 +26,27 @@
                                 Session::put('stockLevels', $stockLevels);
                             }
                         @endphp
+                        @extends('ticker.tape')
                     @else
                         @extends('menu.notloggedin')
                     @endauth
                 </div>
             @endif
-            <div class="content">
+            <div id="app" class="content">
                 <div class="title m-b-md">
                     Space Engineers Trading House
+                </div>
+                <div class="flex-center">
+                    @auth
+                        Currently you are viewing trade data for {{ \App\Servers::find($currentUser->server_id)->title ?? '' }}
+                    @endauth
                 </div>
                 <div class="links">
 
                 </div>
             </div>
         </div>
+        <script src="https://kit.fontawesome.com/b61a9642d4.js" crossorigin="anonymous"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>

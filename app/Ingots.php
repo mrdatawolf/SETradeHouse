@@ -26,11 +26,11 @@ class Ingots extends Model
     }
 
     public function servers() {
-        return $this->belongsToMany('App\Servers');
+        return $this->belongsToMany('App\Worlds');
     }
 
     public function clusters() {
-        return $this->belongsToMany('App\Clusters');
+        return $this->belongsToMany('App\Servers');
     }
 
     public function getEfficiencyPerSecond($moduleBaseEffeciency, $baseRefinerySpeed) {
