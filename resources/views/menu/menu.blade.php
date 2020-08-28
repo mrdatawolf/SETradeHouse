@@ -58,6 +58,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownThrustToWeight">
                     <a href="#" class="dropdown-item">Current Server: {{ $currentUser->server_id ?? '' }}</a>
                     <a href="#" class="dropdown-item">Current World: 'work in progress'</a>
+                    <a href="#" class="dropdown-item">Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a>
                     <a href="{{ url('/logout') }}"> logout </a>
 
                 </div>

@@ -18,15 +18,13 @@ class Stores extends Controller
     public function worldIndex() {
         $title = "Stores";
         $stores = Session::get('stores');
-
-
+        
         return view('stores.world', compact('stores','title'));
     }
 
     public function serverIndex() {
         $title = "Stores";
         $stores = Session::get('stores');
-        dd($stores);
 
         return view('stores.server', compact('stores','title'));
     }
