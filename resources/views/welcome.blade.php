@@ -18,14 +18,6 @@
                 <div class="top-left links">
                     @auth
                         @extends('menu.menu')
-                        @php
-                            if (! \Session::has('stockLevels'))
-                            {
-                                $stockController = new \App\Http\Controllers\Stocklevels;
-                                $stockLevels = $stockController->getStockLevels();
-                                Session::put('stockLevels', $stockLevels);
-                            }
-                        @endphp
                         @extends('ticker.tape')
                     @else
                         @extends('menu.notloggedin')

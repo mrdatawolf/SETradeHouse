@@ -46,7 +46,12 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">Tests</a>
+                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownStores" role="button" data-toggle="dropdown">Stores</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownStores">
+                    <a href="{{ route('stores') }}" class="dropdown-item">Your Stores</a>
+                    <a href="{{ route('stores.world') }}" class="dropdown-item">World Stores</a>
+                    <a href="{{ route('stores.server') }}" class="dropdown-item">Server Stores</a>
+                </div>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownAccount" role="button" data-toggle="dropdown">{{ $currentUser->username ?? 'You are not logged in!' }}</a>

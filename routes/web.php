@@ -18,7 +18,7 @@ Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/', function () {
     return view('home');
 })->name('root');
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'session.data']], function () {
     Route::get('/home', function () {
         return view('home');
     })->name('home');
@@ -38,5 +38,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('components', 'Offers@components')->name('offers.components');
     });
     Route::get('/stocklevels', 'Stocklevels@index')->name('stocklevels');
+    Route::prefix('/stores')->group(function () {
+        Route::get('your', 'Stores@index')->name('stores');
+        Route::get('world', 'Stores@worldIndex')->name('stores.world');
+        Route::get('server', 'Stores@serverIndex')->name('stores.server');
+    });
 });
 
