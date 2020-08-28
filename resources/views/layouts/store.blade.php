@@ -1,7 +1,8 @@
 <html>
 <head>
-    <title>Order - @yield('title')</title>
+    <title>@yield('title')</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/store.css') }}" rel="stylesheet">
     @yield('style')
 </head>
 <body>
