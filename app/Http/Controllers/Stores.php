@@ -8,6 +8,7 @@ use \Session;
 class Stores extends Controller
 {
     use CheckNames;
+
     public function index() {
         $title = "Stores";
         $stores = Session::get('stores');
@@ -18,7 +19,7 @@ class Stores extends Controller
     public function worldIndex() {
         $title = "Stores";
         $stores = Session::get('stores');
-        
+
         return view('stores.world', compact('stores','title'));
     }
 
@@ -80,6 +81,4 @@ class Stores extends Controller
 
         return (object) $data;
     }
-
-
 }
