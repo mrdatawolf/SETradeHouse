@@ -2,7 +2,7 @@
 <script src="{{ asset('js/jquery.ticker.js') }}"></script>
 <nav id="tickerBlock" class="navbar navbar-light bg-white shadow-sm fixed-bottom">
     <div class="ticker">
-        <strong>Commodity Values:</strong>
+        <strong>Server Insights:</strong>
         <ul>
             @php
             $stockLevels = \Session::get('stockLevels');
@@ -12,7 +12,7 @@
                     $count = 0;
                     $stringedData = $type."...";
                     foreach($data as $name => $value) {
-                        if($count > 7) {
+                        if($count > 6) {
                             $tickerData[] = $stringedData;
                             $stringedData = $type."...";
                             $count=0;

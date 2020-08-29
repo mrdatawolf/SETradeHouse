@@ -35,16 +35,17 @@
                     <a href="{{ route('orders.components') }}" class="dropdown-item">Components</a>
                 </div>
             </li>
+
             <li class="nav-item">
-                <a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a>
+                <!--<a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a>-->
             </li>
-            <li class="nav-item">
+            <!--<li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownThrustToWeight" role="button" data-toggle="dropdown">Thrust to Weight</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownThrustToWeight">
                     <a href="#" class="dropdown-item">Small Ship</a>
                     <a href="#" class="dropdown-item">Large Ship</a>
                 </div>
-            </li>
+            </li>-->
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownStores" role="button" data-toggle="dropdown">Stores</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownStores">
