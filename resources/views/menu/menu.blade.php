@@ -1,11 +1,40 @@
+<style>
+    @media (min-width: 992px){
+        .dropdown-menu .dropdown-toggle:after{
+            border-top: .3em solid transparent;
+            border-right: 0;
+            border-bottom: .3em solid transparent;
+            border-left: .3em solid;
+        }
+        .dropdown-menu .dropdown-menu{
+            margin-left:0; margin-right: 0;
+        }
+        .dropdown-menu li{
+            position: relative;
+        }
+        .nav-item .submenu{
+            display: none;
+            position: absolute;
+            left:100%; top:-7px;
+        }
+        .nav-item .submenu-left{
+            right:100%; left:auto;
+        }
+        .dropdown-menu > li:hover{ background-color: #f1f1f1 }
+        .dropdown-menu > li:hover > .submenu{
+            display: block;
+        }
+    }
+</style>
+
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
-    <a href="#"><img src="/img/SETradeHouse_logo_core.png" alt="Logo" title="Logo" style="width: 4em;"></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+    <a  class="navbar-brand" href="#"><img src="/img/SETradeHouse_logo_core.png" alt="Logo" title="Logo" style="width: 4em;"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav">
         <span class="navbar-toggler-icon"></span>
     </button>
+    <div class="collapse navbar-collapse" id="main_nav">
 
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav">
             @guest
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
@@ -16,55 +45,66 @@
                     </li>
                 @endif
             @else
-            <li class="nav-item">
-                <a href="{{ route('home') }}" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownOffers" role="button" data-toggle="dropdown">Offers</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownOffers">
-                    <a href="{{ route('offers.ores') }}" class="dropdown-item">Ores</a>
-                    <a href="{{ route('offers.ingots') }}" class="dropdown-item">Ingots</a>
-                    <a href="{{ route('offers.components') }}" class="dropdown-item">Components</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownOrders" role="button" data-toggle="dropdown">Orders</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownOrders">
-                    <a href="{{ route('orders.ores') }}" class="dropdown-item">Ores</a>
-                    <a href="{{ route('orders.ingots') }}" class="dropdown-item">Ingots</a>
-                    <a href="{{ route('orders.components') }}" class="dropdown-item">Components</a>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <!--<a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a>-->
-            </li>
-            <!--<li class="nav-item">
-                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownThrustToWeight" role="button" data-toggle="dropdown">Thrust to Weight</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownThrustToWeight">
-                    <a href="#" class="dropdown-item">Small Ship</a>
-                    <a href="#" class="dropdown-item">Large Ship</a>
-                </div>
-            </li>-->
-            <li class="nav-item">
-                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownStores" role="button" data-toggle="dropdown">Stores</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownStores">
-                    <a href="{{ route('stores') }}" class="dropdown-item">Your Stores</a>
-                    <a href="{{ route('stores.world') }}" class="dropdown-item">World Stores</a>
-                    <a href="{{ route('stores.server') }}" class="dropdown-item">Server Stores</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownAccount" role="button" data-toggle="dropdown">{{ $currentUser->username ?? 'You are not logged in!' }}</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownThrustToWeight">
-                    <a href="#" class="dropdown-item">Current Server: {{ $currentUser->server_id ?? '' }}</a>
-                    <a href="#" class="dropdown-item">Current World: 'work in progress'</a>
-                    <a href="#" class="dropdown-item">Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a>
-                    <a href="{{ url('/logout') }}"> logout </a>
-
-                </div>
-            </li>
-            @endguest
+                <li class="nav-item"><a href="{{ route('home') }}" class="nav-link">Home</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Transactions  </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"> Orders &raquo </a>
+                            <ul class="submenu dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('orders.ores') }}"> Ores</a></li>
+                                <li><a class="dropdown-item" href="{{ route('orders.ingots') }}"> Ingots</a></li>
+                                <li><a class="dropdown-item" href="{{ route('orders.components') }}"> Components</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="dropdown-item" href="#"> Offers &raquo </a>
+                            <ul class="submenu dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('offers.ores') }}"> Ores</a></li>
+                                <li><a class="dropdown-item" href="{{ route('offers.ingots') }}"> Ingots</a></li>
+                                <li><a class="dropdown-item" href="{{ route('offers.components') }}"> Components</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Stores  </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('stores') }}"> Your</a></li>
+                        <li><a class="dropdown-item" href="{{ route('stores.world') }}"> World</a></li>
+                        <li><a class="dropdown-item" href="{{ route('stores.server') }}"> Server</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  User  </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href=""> Current Server: {{ $currentUser->server_id ?? '' }}</a></li>
+                        <li><a class="dropdown-item" href=""> Current World: 'work in progress'</a></li>
+                        <li><a class="dropdown-item" href=""> Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
+                    </ul>
+                </li>
+                <!--<li class="nav-item">
+                    <a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a>
+                </li>-->
+            @endif
         </ul>
-    </div>
+    </div> <!-- navbar-collapse.// -->
 </nav>
+
+<script>
+    // Prevent closing from click inside dropdown
+    $(document).on('click', '.dropdown-menu', function (e) {
+        e.stopPropagation();
+    });
+
+    // make it as accordion for smaller screens
+    if ($(window).width() < 992) {
+        $('.dropdown-menu a').click(function(e){
+            e.preventDefault();
+            if($(this).next('.submenu').length){
+                $(this).next('.submenu').toggle();
+            }
+            $('.dropdown').on('hide.bs.dropdown', function () {
+                $(this).find('.submenu').hide();
+            })
+        });
+    }
+</script>
