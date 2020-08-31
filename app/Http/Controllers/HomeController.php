@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Components;
+use App\Ingots;
+use App\Ores;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +26,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+
         return view('home');
     }
 }

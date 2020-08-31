@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use \Session;
 
 /**
  * Class Ingots
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $keen_crap_fix
  * @property                       $ores
  * @property                       $servers
- * @property                       $clusters
+ * @property                       $worlds
  * @package App
  */
 class Ingots extends Model
@@ -21,17 +22,27 @@ class Ingots extends Model
     protected $table = 'ingots';
     protected $fillable = ['title','keen_crap_fix'];
 
+
     public function ores() {
         return $this->belongsToMany('App\Ores');
     }
 
-    public function servers() {
+
+    public function worlds() {
         return $this->belongsToMany('App\Worlds');
     }
 
-    public function clusters() {
+
+    public function servers() {
         return $this->belongsToMany('App\Servers');
     }
+
+
+    public function getTotalInStorage() {
+
+        return Session::get('stockLevels')['Ingots'][$this->title];
+    }
+
 
     public function getEfficiencyPerSecond($moduleBaseEffeciency, $baseRefinerySpeed) {
         $ore = $this->ores()->first();
@@ -39,14 +50,21 @@ class Ingots extends Model
         return ($moduleBaseEffeciency*$ore->base_conversion_efficiency)*($baseRefinerySpeed/$ore->base_processing_time_per_ore);
     }
 
+
     public function getBaseValue($modules = 0) {
         $ore = $this->ores()->first();
         $oreRequired = $ore->getOreRequiredPerIngot($modules);
 
-        return $oreRequired*$ore->getStoreAdjustedValue();
+        return $oreRequired*$ore->getKeenStoreAdjustedValue();
     }
 
-    public function getStoreAdjustedValue() {
+
+    /**
+     * note: testing ignoring the keen fixes and lettign the market determine everything.
+     * @return float|int
+     */
+    public function getKeenStoreAdjustedValue() {
+        //$this->keen_crap_fix = 1;
         return (empty($this->getBaseValue()) || empty($this->keen_crap_fix)) ? 0
             : $this->getBaseValue() * $this->keen_crap_fix;
     }
@@ -69,11 +87,13 @@ class Ingots extends Model
     /**
      * @param $totalServers
      * @param $clusterId
-     * note: Ingots are made from ores. So the base ore value will effect the value here but not as much as an ingot orders.
+     * note: testing ignoring the keen fixes and lettign the market determine everything.
+     * note: Ingots are made from ores. So the base ore value will effect the value here but not as much as the ingot orders.
      *
      * @return float|int
      */
     public function getScarcityAdjustedValue($totalServers,$clusterId)  {
+        //$this->keen_crap_fix = 1;
         $ingotWeight = 4;
         $ore = $this->ores()->first();
 
@@ -84,7 +104,7 @@ class Ingots extends Model
     }
 
     public function getBaseScarcityAdjustedValue($totalServers, $clusterId) {
-        $storeAdjustedValue = $this->getStoreAdjustedValue();
+        $storeAdjustedValue = $this->getKeenStoreAdjustedValue();
         $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $clusterId);
 
         return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));

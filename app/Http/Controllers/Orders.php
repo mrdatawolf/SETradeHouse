@@ -16,32 +16,36 @@ class Orders extends Controller
     /**
      * @var int
      */
-    protected $defaultAmount = 1000000;
+    protected $defaultAmount    = 1000000;
+    protected $transaction      = 'order';
 
     public function ores() {
-        $title = 'Buy ores from the players';
-        $exportTitle = 'offer_ores.csv';
-        $items = Ores::all();
-        $defaultMultiplier = 1;
+        $type               = 'ores';
+        $transaction        = $this->transaction;
+        $header             = 'Buy ores from the players';
+        $items              = Ores::all();
+        $defaultMultiplier  = 1;
         $defaultAmount = $this->defaultAmount;
-        return view('orders.ores', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
+        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
     }
 
     public function ingots() {
-        $title = 'Buy ingots from the players';
-        $exportTitle = 'offer_ingots.csv';
-        $items = Ingots::all();
-        $defaultMultiplier = 1;
-        $defaultAmount = $this->defaultAmount;
-        return view('orders.ingots', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
+        $type               = 'ingots';
+        $transaction        = $this->transaction;
+        $header             = 'Buy ingots from the players';
+        $items              = Ingots::all();
+        $defaultMultiplier  = 1;
+        $defaultAmount      = $this->defaultAmount;
+        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
     }
 
     public function components() {
-        $title = 'Buy components from the players';
-        $exportTitle = 'offer_comps.csv';
+        $type = 'components';
+        $transaction = $this->transaction;
+        $header = 'Buy components from the players';
         $items = Components::all();
         $defaultMultiplier = 1;
         $defaultAmount = $this->defaultAmount;
-        return view('orders.components', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
+        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
     }
 }

@@ -3,9 +3,20 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use \Session;
 
 /**
  * Class Ores
+ * @property int                   $id
+ * @property string                $title
+ * @property                       $base_processing_time_per_ore
+ * @property                       $base_conversion_efficiency
+ * @property                       $keen_crap_fix
+ * @property                       $module_efficiency_modifier
+ * @property                       $ore_per_ingot
+ * @property                       $se_name
+ * @property                       $servers
+ * @property                       $worlds
  *
  * @package App
  */
@@ -16,17 +27,27 @@ class Ores extends Model
     protected $primaryKey = 'id';
     protected $connection = 'sqlite';
 
+
     public function ingots() {
         return $this->belongsToMany('App\Ingots');
     }
 
-    public function servers() {
+
+    public function worlds() {
         return $this->belongsToMany('App\Worlds');
     }
 
-    public function clusters() {
+
+    public function servers() {
         return $this->belongsToMany('App\Servers');
     }
+
+
+    public function getTotalInStorage() {
+
+        return Session::get('stockLevels')['Ores'][$this->title];
+    }
+
 
     public function getOreEfficiency($modules = 0) {
         $modifer = $modules*$this->module_efficiency_modifier;
@@ -34,7 +55,8 @@ class Ores extends Model
         return $this->base_conversion_efficiency + $modifer;
     }
 
-    public function getRefineryKiloWattHour($refinerySpeed, $refineryKWH) {
+
+    public function getRefineryKiloWattHourUsage($refinerySpeed, $refineryKWH) {
         $speedPerOre = $refinerySpeed/$this->base_processing_time_per_ore;
         $return = 0;
         if(!empty($refineryKWH) && !empty($this->base_processing_time_per_ore)) {
@@ -44,11 +66,35 @@ class Ores extends Model
         return $return;
     }
 
+
+    /**
+     * note: if this is ore 10 (stone) adjust based on the server's preference. If it's the econ or we do 1 for 1 otherwise we do the 2 modifier
+     * note: why did I make it *2... hmm
+     * @return float|int
+     */
     public function getBaseValue() {
-        return ($this->id == 10) ? 0 : $this->ore_per_ingot * 2;
+        $server = $this->servers->first();
+        switch($this->id) {
+            case 10 :
+                $basisModifier = $server->economy_stone_modifier;
+                break;
+            case $server->economy_ore_id :
+                $basisModifier = 1;
+                break;
+            default :
+                $basisModifier = 2;
+        }
+
+        return $this->ore_per_ingot * $basisModifier;
     }
 
-    public function getStoreAdjustedValue() {
+
+    /**
+     * note: testing ignoring the keen fixes and letting the market determine everything.
+     * @return float|int
+     */
+    public function getKeenStoreAdjustedValue() {
+        //$this->keen_crap_fix = 1;
         return (empty($this->getBaseValue()) || empty($this->keen_crap_fix)) ? 0
             : $this->getBaseValue() * $this->keen_crap_fix;
     }
@@ -61,7 +107,7 @@ class Ores extends Model
      * @return float|int
      */
     public function getScarcityAdjustedValue($totalServers, $serverId) {
-        $storeAdjustedValue = $this->getStoreAdjustedValue();
+        $storeAdjustedValue = $this->getKeenStoreAdjustedValue();
         $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $serverId);
 
         return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
@@ -71,7 +117,7 @@ class Ores extends Model
     /**
      * @param $totalServers
      * @param $serverId
-     * note: ores are the basic building blocks so they don't look at how many ingots etc are out there f the raw ore.
+     * note: ores are the basic building blocks so they don't look at how many ingots etc are out there versus the raw ore.
      *
      * @return float|int
      */
@@ -99,7 +145,7 @@ class Ores extends Model
 
 
     /**
-     * @param int $modules
+     * @param int $modules //<-- specifically effeciency modules
      *
      * @return float|int|mixed
      */
@@ -149,14 +195,5 @@ class Ores extends Model
         }
 
         return $totalWith;
-    }
-
-
-    /**
-     * @param $serverId
-     * @param $oreId
-     */
-    public function getTotalInStorage($serverId, $oreId) {
-        \Session::get('stockLevels');
     }
 }

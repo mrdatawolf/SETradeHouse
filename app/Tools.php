@@ -53,14 +53,14 @@ class Tools extends Model
      * note: get the value of the component based on the store price.
      * @return float|int
      */
-    public function getStoreAdjustedValue() {
+    public function getKeenStoreAdjustedValue() {
         $value = 0;
         $ingots = Ingots::all();
         foreach ($ingots as $ingot) {
             $title = $ingot->title;
             $needed       = $this->$title;
             if($needed > 0) {
-                $value += $ingot->getStoreAdjustedValue() * $needed;
+                $value += $ingot->getKeenStoreAdjustedValue() * $needed;
             }
         }
 

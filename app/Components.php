@@ -1,6 +1,7 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use \Session;
 
 /**
  * Class Components
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $silver
  * @property                       $gravel
  * @property                       $uranium
+ * @property                       $servers
  * @property                       $mass
  * @property                       $volume
  * @package Models
@@ -26,17 +28,16 @@ class Components extends Model
     protected $table = 'components';
     protected $fillable = ['title','se_name','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','mass','volume'];
 
-
     /**
      * note: take all the ingots used to make this and their base value to get a price for the component.
      * @return float|int
      */
     public function getBaseValue() {
-        $value = 0;
+        $value  = 0;
         $ingots = Ingots::all();
         foreach ($ingots as $ingot) {
-            $title = $ingot->title;
-            $needed       = $this->$title;
+            $title  = $ingot->title;
+            $needed = $this->$title;
             if($needed > 0) {
                 $value += $ingot->getBaseValue() * $needed;
             }
@@ -46,18 +47,24 @@ class Components extends Model
     }
 
 
+    public function getTotalInStorage() {
+
+        return Session::get('stockLevels')['Components'][$this->title];
+    }
+
+
     /**
      * note: get the value of the component based on the store price.
      * @return float|int
      */
-    public function getStoreAdjustedValue() {
-        $value = 0;
+    public function getKeenStoreAdjustedValue() {
+        $value  = 0;
         $ingots = Ingots::all();
         foreach ($ingots as $ingot) {
-            $title = $ingot->title;
-            $needed       = $this->$title;
+            $title  = $ingot->title;
+            $needed = $this->$title;
             if($needed > 0) {
-                $value += $ingot->getStoreAdjustedValue() * $needed;
+                $value += $ingot->getKeenStoreAdjustedValue() * $needed;
             }
         }
 
@@ -73,11 +80,11 @@ class Components extends Model
      * @return float|int
      */
     public function getScarcityAdjustedValue($totalServers, $clusterId) {
-        $value = 0;
+        $value  = 0;
         $ingots = Ingots::all();
         foreach ($ingots as $ingot) {
-            $title = $ingot->title;
-            $needed       = $this->$title;
+            $title  = $ingot->title;
+            $needed = $this->$title;
             if($needed > 0) {
                 $value += $ingot->getScarcityAdjustedValue($totalServers, $clusterId) * $needed;
             }

@@ -47,38 +47,38 @@
             @else
                 <li class="nav-item"><a href="{{ route('home') }}" class="nav-link">Home</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Transactions  </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Transactions</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#"> Orders &raquo </a>
                             <ul class="submenu dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('orders.ores') }}"> Ores</a></li>
-                                <li><a class="dropdown-item" href="{{ route('orders.ingots') }}"> Ingots</a></li>
-                                <li><a class="dropdown-item" href="{{ route('orders.components') }}"> Components</a></li>
+                                <li><a class="dropdown-item" href="{{ route('orders.ores') }}">Ores</a></li>
+                                <li><a class="dropdown-item" href="{{ route('orders.ingots') }}">Ingots</a></li>
+                                <li><a class="dropdown-item" href="{{ route('orders.components') }}">Components</a></li>
                             </ul>
                         </li>
                         <li><a class="dropdown-item" href="#"> Offers &raquo </a>
                             <ul class="submenu dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('offers.ores') }}"> Ores</a></li>
-                                <li><a class="dropdown-item" href="{{ route('offers.ingots') }}"> Ingots</a></li>
-                                <li><a class="dropdown-item" href="{{ route('offers.components') }}"> Components</a></li>
+                                <li><a class="dropdown-item" href="{{ route('offers.ores') }}">Ores</a></li>
+                                <li><a class="dropdown-item" href="{{ route('offers.ingots') }}">Ingots</a></li>
+                                <li><a class="dropdown-item" href="{{ route('offers.components') }}">Components</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Stores  </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Stores</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ route('stores') }}"> Your</a></li>
-                        <li><a class="dropdown-item" href="{{ route('stores.world') }}"> World</a></li>
-                        <li><a class="dropdown-item" href="{{ route('stores.server') }}"> Server</a></li>
+                        <li><a class="dropdown-item" href="{{ route('stores.world') }}">World</a></li>
+                        <li><a class="dropdown-item" href="{{ route('stores.server') }}">Server</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  User  </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ $currentUser->username }}</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href=""> Current Server: {{ $currentUser->server_id ?? '' }}</a></li>
-                        <li><a class="dropdown-item" href=""> Current World: 'work in progress'</a></li>
-                        <li><a class="dropdown-item" href=""> Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
+                        <li>Current Server: {{ $currentUser->server_id ?? '' }}</li>
+                        <li>Current World: 'work in progress'</li>
+                        <li>Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
                     </ul>
                 </li>
                 <!--<li class="nav-item">

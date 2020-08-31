@@ -15,14 +15,9 @@ use Illuminate\Support\Facades\Auth;
 */
 Auth::routes();
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
-Route::get('/', function () {
-    return view('home');
-})->name('root');
+Route::get('/', 'HomeController@index')->name('root');
 Route::group(['middleware' => ['auth', 'session.data']], function () {
-    Route::get('/home', function () {
-        return view('home');
-    })->name('home');
-
+    Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/welcome', function () {
         return view('welcome');
     })->name('welcome');

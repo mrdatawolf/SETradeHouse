@@ -16,32 +16,36 @@ class Offers extends Controller
     /**
      * @var int
      */
-    protected $defaultAmount = 1000000;
+    protected $defaultAmount    = 1000000;
+    protected $transaction      = 'offer';
 
     public function ores() {
-        $title = 'Sell ores to the players';
-        $exportTitle = 'offer_ores.csv';
+        $type = 'ores';
+        $transaction = $this->transaction;
+        $header = 'Sell ores to the players';
         $items = Ores::all();
         $defaultMultiplier = 1;
         $defaultAmount = $this->defaultAmount;
-        return view('offers.ores', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
+        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
     }
 
     public function ingots() {
-        $title = 'Sell ingots to the players';
-        $exportTitle = 'offer_ingots.csv';
+        $type = 'ingots';
+        $title = $this->transaction;
+        $header = 'Sell ingots to the players';
         $items = Ingots::all();
         $defaultMultiplier = 1;
         $defaultAmount = $this->defaultAmount;
-        return view('offers.ingots', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
+        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
     }
 
     public function components() {
-        $title = 'Sell components to the players';
-        $exportTitle = 'offer_comps.csv';
+        $type = 'components';
+        $title = $this->transaction;
+        $header = 'Sell components to the players';
         $items = Components::all();
         $defaultMultiplier = 1;
         $defaultAmount = $this->defaultAmount;
-        return view('offers.components', compact('title', 'items', 'defaultMultiplier', 'defaultAmount', 'exportTitle'));
+        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
     }
 }

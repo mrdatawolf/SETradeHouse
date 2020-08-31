@@ -1,5 +1,5 @@
-@extends('layouts.offer')
-@section('title', 'Ores')
+@extends('layouts.'.$transaction)
+@section('title', $type)
 @section('menu')
     @parent
 @endsection
@@ -8,4 +8,3 @@
 @section('scripts')
     @parent
 @endsection
-
