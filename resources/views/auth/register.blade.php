@@ -36,7 +36,20 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <div class="form-group row">
+                            <label for="seusername" class="col-md-4 col-form-label text-md-right">Space Engineer Username</label>
+                            <div class="col-md-6">
+                                <input id="username" type="text" class="form-control @error('seusername') is-invalid @enderror" name="seusername" value="{{ old('seusername') }}" autocomplete="seusername">
+                                @error('seusername')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <i>note: Space Engineer Username is not required if username is se server username</i>
+                        </div>
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
                             <div class="col-md-6">
