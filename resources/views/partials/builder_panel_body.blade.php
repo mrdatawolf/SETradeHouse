@@ -21,15 +21,12 @@
         <tbody>
         @foreach($items as $item)
             @if($item->se_name !== 'fillme')
-                <?php
-                $value = (!empty($item)) ? $item->getKeenStoreAdjustedValue() : 0;
-                ?>
-                @if($value > 0 && $defaultMultiplier > 0)
+                @if($item->getScarcityAdjustedValue() > 0 && $defaultMultiplier > 0)
                     <tr>
                         <td>{{ $item->title }}</td>
                         <td>{{ $item->se_name }}</td>
                         <td>{{ ucfirst($type) }}</td>
-                        <td><span class="value editable">{{ round($value*$defaultMultiplier) }}</span></td>
+                        <td><span class="value editable">{{ round($item->getScarcityAdjustedValue()*$defaultMultiplier) }}</span></td>
                         <td><span class="amount editable">{{ $defaultAmount }}</span></td>
                     </tr>
                 @endif

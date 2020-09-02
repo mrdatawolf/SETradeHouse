@@ -16,6 +16,10 @@ class Stores extends Controller
         return view('stores.your', compact('stores','title'));
     }
 
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function worldIndex() {
         $title = "Stores";
         $stores = Session::get('stores');
@@ -23,6 +27,10 @@ class Stores extends Controller
         return view('stores.world', compact('stores','title'));
     }
 
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function serverIndex() {
         $title = "Stores";
         $stores = Session::get('stores');
@@ -30,14 +38,18 @@ class Stores extends Controller
         return view('stores.server', compact('stores','title'));
     }
 
+
+    /**
+     * @return object
+     */
     public function getStores() {
         $storeData = new StoreModel();
         $data = [];
         foreach($storeData->all() as $store)
         {
             $gridName   = $store->gridName;
-            $group      = $this->seNameToGroup($store->Item);
-            $item       = $this->seNameToTitle($group, $store->Item);
+            $group      = ucfirst($this->seNameToGroup($store->Item));
+            $item       = ucfirst($this->seNameToTitle($group, $store->Item));
             if(! empty($item)) {
                 $type   = ($store->offerOrOrder === 'Order') ? 'Orders' : 'Offers';
                 $amount = (int)$store->Qty;

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
  * note: these are numbers that are the same on every server. They are foundational numbers allowing us to build the more complicated values.
  * Class MagicNumbers
  *
+ * @property int                   $id
  * @property int                   $receipt_base_efficiency
  * @property string                $base_multiplier_for_buy_vs_sell
  * @property                       $base_refinery_kwh
@@ -13,13 +14,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $keen_crap_fix
  * @property                       $base_labor_per_hour
  * @property                       $cost_kw_hour
- * @property                       $server_id
+ * @property int                   $server_id
  * @property                       $distance_weight
  * @property                       $other_server_weight
  * @property                       $base_weight_for_system_stock
  * @property                       $markup_total_change
  * @property                       $markup_for_each_leg
  * @property                       $base_drill_per_kw_hour
+ * @property                       $local_store_weight
  * @package Models
  */
 class MagicNumbers extends Model
@@ -38,6 +40,7 @@ class MagicNumbers extends Model
         'distance_weight',
         'server_id',
         'cost_kw_hour',
-        'base_labor_per_hour'
+        'base_labor_per_hour',
+        'local_store_weight'
     ];
 }

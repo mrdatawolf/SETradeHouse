@@ -26,6 +26,11 @@ class CheckSessionData
         {
             $this->setStoreData();
         }
+        if(! Session::has('serverId'))
+        {
+            $this->setGeneralValues();
+        }
+
         return $next($request);
     }
 
@@ -41,5 +46,16 @@ class CheckSessionData
         $storeController = new Stores();
         $stores = $storeController->getStores();
         Session::put('stores', $stores);
+    }
+
+    public function setGeneralValues() {
+        //these are placeholders.  It should be stored retrieved based on the players last selection
+        $serverId = 1;
+        $worldId = 1;
+        $storeId = 1;
+
+        Session::put('serverId', $serverId);
+        Session::put('worldId', $worldId);
+        Session::put('storeId', $storeId);
     }
 }

@@ -79,6 +79,9 @@
                         <li>Current Server: {{ $currentUser->server_id ?? '' }}</li>
                         <li>Current World: 'work in progress'</li>
                         <li>Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('logout') }}">{{ __('Logout') }}</a>
+                        </li>
                     </ul>
                 </li>
                 <!--<li class="nav-item">
