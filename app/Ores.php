@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Http\Traits\ScarcityAdjustment;
 use Illuminate\Database\Eloquent\Model;
 use \Session;
 
@@ -22,6 +23,8 @@ use \Session;
  */
 class Ores extends Model
 {
+    use ScarcityAdjustment;
+
     public $timestamps = false;
     protected $table = 'ores';
     protected $primaryKey = 'id';
@@ -68,7 +71,7 @@ class Ores extends Model
 
 
     /**
-     * note: if this is ore 10 (stone) adjust based on the server's preference. If it's the econ or we do 1 for 1 otherwise we do the 2 modifier
+     * note: if this is ore 10 (stone) adjust based on the server's preference. If it's the econ ore then we do 1 for 1. Otherwise we do the *2 modifier
      * note: why did I make it *2... hmm
      * @return float|int
      */
@@ -91,42 +94,13 @@ class Ores extends Model
 
     /**
      * note: testing ignoring the keen fixes and letting the market determine everything.
+     *
      * @return float|int
      */
     public function getKeenStoreAdjustedValue() {
-        //$this->keen_crap_fix = 1;
+        $this->keen_crap_fix = 1;
         return (empty($this->getBaseValue()) || empty($this->keen_crap_fix)) ? 0
             : $this->getBaseValue() * $this->keen_crap_fix;
-    }
-
-
-    /**
-     * @param $totalServers
-     * @param $serverId
-     *
-     * @return float|int
-     */
-    public function getScarcityAdjustedValue($totalServers, $serverId) {
-        $storeAdjustedValue = $this->getKeenStoreAdjustedValue();
-        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $serverId);
-
-        return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
-    }
-
-
-    /**
-     * @param $totalServers
-     * @param $serverId
-     * note: ores are the basic building blocks so they don't look at how many ingots etc are out there versus the raw ore.
-     *
-     * @return float|int
-     */
-    public function getScarcityAdjustment($totalServers, $serverId) {
-        $planetsWith = $this->getPlanetsWith($serverId);
-        $asteroidsWith = $this->getAsteroidsWith($serverId);
-        $totalServersWithOre = $planetsWith+$asteroidsWith;
-
-        return ($totalServersWithOre === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
     }
 
 
@@ -159,38 +133,34 @@ class Ores extends Model
 
 
     /**
-     * @param $serverId
      *
      * @return int
      */
-    public function getPlanetsWith($serverId) {
-        return $this->getServerOfTypeWith(1, $serverId);
+    public function getPlanets() {
+        return $this->getWorldOfType(1);
     }
 
 
     /**
-     * @param $serverId
      *
      * @return int
      */
-    public function getAsteroidsWith($serverId) {
-        return $this->getServerOfTypeWith(2, $serverId);
+    public function getAsteroids() {
+        return $this->getWorldOfType(2);
     }
 
 
     /**
      * @param $type
-     * @param $serverId
      *
      * @return int
      */
-    private function getServerOfTypeWith($type, $serverId) {
+    private function getWorldOfType($type) {
+        $serverId = $this->currentUser->server_id;
         $totalWith = 0;
-        foreach($this->servers as $server) {
-            if($server->clusters_id == $serverId) {
-                if ($server->types_id == $type) {
-                    $totalWith++;
-                }
+        foreach($this->worlds as $world) {
+            if($world->server_id == $serverId && $world->types_id == $type) {
+                $totalWith++;
             }
         }
 

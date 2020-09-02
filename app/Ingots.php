@@ -1,7 +1,6 @@
-<?php
+<?php namespace App;
 
-namespace App;
-
+use App\Http\Traits\ScarcityAdjustment;
 use Illuminate\Database\Eloquent\Model;
 use \Session;
 
@@ -19,6 +18,8 @@ use \Session;
  */
 class Ingots extends Model
 {
+    use ScarcityAdjustment;
+
     protected $table = 'ingots';
     protected $fillable = ['title','keen_crap_fix'];
 
@@ -64,50 +65,9 @@ class Ingots extends Model
      * @return float|int
      */
     public function getKeenStoreAdjustedValue() {
-        //$this->keen_crap_fix = 1;
+        $this->keen_crap_fix = 1;
         return (empty($this->getBaseValue()) || empty($this->keen_crap_fix)) ? 0
             : $this->getBaseValue() * $this->keen_crap_fix;
-    }
-
-
-    /**
-     * @param $totalServers
-     * @param $clusterId
-     * @return float|int
-     */
-    public function getScarcityAdjustment($totalServers,$clusterId) {
-        $planetsWith = $this->getPlanetsWith($clusterId);
-        $asteroidsWith = $this->getAsteroidsWith($clusterId);
-        $totalServersWithIngot = $planetsWith+$asteroidsWith;
-
-        return ($totalServersWithIngot === $totalServers) ? $totalServers*10 : ($planetsWith * 10) + ($asteroidsWith * 5);
-    }
-
-
-    /**
-     * @param $totalServers
-     * @param $clusterId
-     * note: testing ignoring the keen fixes and lettign the market determine everything.
-     * note: Ingots are made from ores. So the base ore value will effect the value here but not as much as the ingot orders.
-     *
-     * @return float|int
-     */
-    public function getScarcityAdjustedValue($totalServers,$clusterId)  {
-        //$this->keen_crap_fix = 1;
-        $ingotWeight = 4;
-        $ore = $this->ores()->first();
-
-        $value = $this->getBaseScarcityAdjustedValue($totalServers,$clusterId);
-        $oreValueAdjustment = $ore->getScarcityAdjustedValue($totalServers, $clusterId)*$ore->getOreRequiredPerIngot(0)*$this->keen_crap_fix;
-
-        return (($value*$ingotWeight)+$oreValueAdjustment)/($ingotWeight+1);
-    }
-
-    public function getBaseScarcityAdjustedValue($totalServers, $clusterId) {
-        $storeAdjustedValue = $this->getKeenStoreAdjustedValue();
-        $scarcityAdjustment = $this->getScarcityAdjustment($totalServers, $clusterId);
-
-        return $storeAdjustedValue*(2-($scarcityAdjustment/($totalServers*10)));
     }
 
 
@@ -124,27 +84,27 @@ class Ingots extends Model
     }
 
 
-    public function getPlanetsWith($clusterId) {
-        return $this->getServerOfTypeWith(1, $clusterId);
+    public function getPlanets() {
+        return $this->getServerOfType(1);
     }
 
-    public function getAsteroidsWith($clusterId) {
-        return $this->getServerOfTypeWith(2, $clusterId);
+    public function getAsteroids() {
+        return $this->getServerOfType(2);
     }
 
 
     /**
      * type is held in the server_types table
      * @param $type
-     * @param $clusterId
      *
      * @return int
      */
-    private function getServerOfTypeWith($type, $clusterId) {
+    private function getServerOfType($type) {
+        $serverId = $this->currentUser->server_id;
         $totalWith = 0;
-        foreach($this->servers as $server) {
-            if($server->clusters_id == $clusterId) {
-                if ($server->types_id == $type) {
+        foreach($this->worlds as $world) {
+            if($world->server_id == $serverId) {
+                if ($world->types_id == $type) {
                     $totalWith++;
                 }
             }

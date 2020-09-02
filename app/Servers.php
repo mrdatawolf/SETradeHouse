@@ -19,7 +19,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $ingots
  * @property                       $servers
  * @property                       $activeTransactions
- * @package Models
+ * @property                       $scarcity
+ * @property                       $magicNumbers
+ * @package App
  */
 class Servers extends Model
 {
@@ -32,7 +34,7 @@ class Servers extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function economyOre() {
-        return$this->hasOne('Models\Ores', 'id', 'economy_ore_id');
+        return $this->hasOne('App\Ores', 'id', 'economy_ore_id');
     }
 
 
@@ -42,7 +44,7 @@ class Servers extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function ores() {
-        return $this->belongsToMany('Models\Ores');
+        return $this->belongsToMany('App\Ores');
     }
 
 
@@ -52,7 +54,7 @@ class Servers extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function ingots() {
-        return $this->belongsToMany('Models\Ingots');
+        return $this->belongsToMany('App\Ingots');
     }
 
 
@@ -62,7 +64,7 @@ class Servers extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function servers() {
-        return $this->hasMany('Models\Servers');
+        return $this->hasMany('App\Servers');
     }
 
 
@@ -72,7 +74,15 @@ class Servers extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function activeTransactions() {
-        return $this->hasMany('Models\ActiveTransactions');
+        return $this->hasMany('App\ActiveTransactions');
+    }
+
+    public function scarcity() {
+        return $this->hasOne('App\Scarcity', 'id', 'scarcity_id');
+    }
+
+    public function magicNumbers() {
+        return $this->hasOne('App\MagicNumbers', 'server_id', 'id');
     }
 
 
