@@ -8,19 +8,22 @@
             $stockLevels = \Session::get('stockLevels');
             $tickerData = [];
             if(! empty($stockLevels)) {
-                foreach($stockLevels as $type => $data) {
-                    $count = 0;
-                    $stringedData = $type."...";
-                    foreach($data as $name => $value) {
-                        if($count > 6) {
-                            $tickerData[] = $stringedData;
-                            $stringedData = $type."...";
-                            $count=0;
+                foreach($stockLevels as $entityType => $entityData) {
+                    $stringedData = $entityType . "---";
+                    foreach($entityData as $type => $data) {
+                        $count = 0;
+                        $stringedData .= " " . $type."...";
+                        foreach($data as $name => $value) {
+                            if($count > 5) {
+                                $tickerData[] = $stringedData;
+                                $stringedData = $entityType . "---" . $type . "...";
+                                $count=0;
+                            }
+                            $stringedData .=" | ".$name." ".$value." ";
+                            $count++;
                         }
-                        $stringedData .=" | ".$name." ".$value." ";
-                        $count++;
+                        $tickerData[] = $stringedData;
                     }
-                    $tickerData[] = $stringedData;
                 }
             }
             @endphp

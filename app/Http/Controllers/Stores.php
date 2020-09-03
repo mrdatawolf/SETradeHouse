@@ -48,8 +48,8 @@ class Stores extends Controller
         foreach($storeData->all() as $store)
         {
             $gridName   = $store->gridName;
-            $group      = ucfirst($this->seNameToGroup($store->Item));
-            $item       = ucfirst($this->seNameToTitle($group, $store->Item));
+            $group      = $this->seNameToGroup($store->Item);
+            $item       = ucfirst($this->seNameToItemTitle($group, $store->Item));
             if(! empty($item)) {
                 $type   = ($store->offerOrOrder === 'Order') ? 'Orders' : 'Offers';
                 $amount = (int)$store->Qty;
@@ -59,34 +59,34 @@ class Stores extends Controller
                     $data[$gridName]['Info']['GPS']             = $store->GPSString;
                     $data[$gridName]['Totals']                  = [];
                 }
-                if(empty($data[$gridName]['Data'][$group])) {
-                    $data[$gridName]['Data'][$group]['Offers']  = [];
-                    $data[$gridName]['Data'][$group]['Orders']  = [];
+                if(empty($data[$gridName]['Data'][$group->title])) {
+                    $data[$gridName]['Data'][$group->title]['Offers']  = [];
+                    $data[$gridName]['Data'][$group->title]['Orders']  = [];
                 }
-                if (empty($data[$gridName]['Totals'][$group][$type][$item])) {
-                    $data[$gridName]['Totals'][$group][$type][$item]            = [
+                if (empty($data[$gridName]['Totals'][$group->title][$type][$item])) {
+                    $data[$gridName]['Totals'][$group->title][$type][$item]            = [
                         'Amount'   => 0,
                         'Price'    => 0,
                         'MinPrice' => 0,
                         'MaxPrice' => 0,
                     ];
-                    $data[$gridName]['Averages'][$group][$type][$item]['Price'] = 0;
+                    $data[$gridName]['Averages'][$group->title][$type][$item]['Price'] = 0;
                 }
 
-                $data[$gridName]['Data'][$group][$type][$item]['Transactions'][] = [
+                $data[$gridName]['Data'][$group->title][$type][$item]['Transactions'][] = [
                     'Amount' => $amount,
                     'Price'  => $price
                 ];
-                $data[$gridName]['Totals'][$group][$type][$item]['Amount']  += $amount;
-                $data[$gridName]['Totals'][$group][$type][$item]['Price']   += $amount * $price;
-                if (($data[$gridName]['Totals'][$group][$type][$item]['MinPrice'] > $price) || $data[$gridName]['Totals'][$group][$type][$item]['MinPrice'] === 0) {
-                    $data[$gridName]['Totals'][$group][$type][$item]['MinPrice'] = $price;
+                $data[$gridName]['Totals'][$group->title][$type][$item]['Amount']  += $amount;
+                $data[$gridName]['Totals'][$group->title][$type][$item]['Price']   += $amount * $price;
+                if (($data[$gridName]['Totals'][$group->title][$type][$item]['MinPrice'] > $price) || $data[$gridName]['Totals'][$group->title][$type][$item]['MinPrice'] === 0) {
+                    $data[$gridName]['Totals'][$group->title][$type][$item]['MinPrice'] = $price;
                 }
-                if ($data[$gridName]['Totals'][$group][$type][$item]['MaxPrice'] < $price) {
-                    $data[$gridName]['Totals'][$group][$type][$item]['MaxPrice'] = $price;
+                if ($data[$gridName]['Totals'][$group->title][$type][$item]['MaxPrice'] < $price) {
+                    $data[$gridName]['Totals'][$group->title][$type][$item]['MaxPrice'] = $price;
                 }
-                if ($data[$gridName]['Totals'][$group][$type][$item]['Price'] > 0 && $data[$gridName]['Totals'][$group][$type][$item]['Amount'] > 0) {
-                    $data[$gridName]['Averages'][$group][$type][$item]['Price'] = $data[$gridName]['Totals'][$group][$type][$item]['Price'] / $data[$gridName]['Totals'][$group][$type][$item]['Amount'];
+                if ($data[$gridName]['Totals'][$group->title][$type][$item]['Price'] > 0 && $data[$gridName]['Totals'][$group->title][$type][$item]['Amount'] > 0) {
+                    $data[$gridName]['Averages'][$group->title][$type][$item]['Price'] = $data[$gridName]['Totals'][$group->title][$type][$item]['Price'] / $data[$gridName]['Totals'][$group->title][$type][$item]['Amount'];
                 }
             }
         }

@@ -1,12 +1,13 @@
 <?php namespace App\Http\Traits;
 
 use App\Components;
+use App\Groups;
 use App\Ingots;
 use App\Ores;
 use App\Tools;
 
 trait CheckNames {
-    public function seNameToGroup($item) {
+    public function seNameToGroupType($item) {
         $itemArray = explode('/',$item);
         $seName = $itemArray[0];
         switch($seName) {
@@ -20,6 +21,9 @@ trait CheckNames {
                 $itemType = 'Components';
                 break;
             default:
+                    /* tools should be things like
+                     * 'MyObjectBuilder_AmmoMagazine','MyObjectBuilder_ConsumableItem','MyObjectBuilder_GasContainerObject','MyObjectBuilder_OxygenContainerObject','MyObjectBuilder_PhysicalGunObject','MyObjectBuilder_Datapad','MyObjectBuilder_PhysicalObject','MyObjectBuilder_Package'
+                    */
                 $itemType = 'Tools';
 
         }
@@ -27,21 +31,28 @@ trait CheckNames {
         return $itemType;
     }
 
+    public function seNameToGroup($item) {
+        $itemArray = explode('/',$item);
+        $itemType = $this->seNameToGroupType($itemArray[0]);
+
+        return Groups::where('title',$itemType)->first();
+    }
+
     /**
-     * @param $itemGroup
+     * @param $group
      * @param $item
      *
      * @return string
      */
-    private function seNameToTitle($itemGroup, $item) {
-        switch($itemGroup) {
-            case 'Ingots' :
+    private function seNameToItemTitle($group, $item) {
+        switch($group->id) {
+            case '2' :
                 $name = Ingots::where('se_name', $item)->pluck('title')->first();
                 break;
-            case 'Ores' :
+            case '1' :
                 $name = Ores::where('se_name', $item)->pluck('title')->first();
                 break;
-            case 'Components' :
+            case '3' :
                 $name = Components::where('se_name', $item)->pluck('title')->first();
                 break;
             default:
@@ -50,5 +61,25 @@ trait CheckNames {
         }
 
         return $name ?? '';
+    }
+
+
+    private function seNameToItem($group, $item) {
+        switch($group->id) {
+            case '2' :
+                $model = Ingots::where('se_name', $item)->first();
+                break;
+            case '1' :
+                $model = Ores::where('se_name', $item)->first();
+                break;
+            case '3' :
+                $model = Components::where('se_name', $item)->first();
+                break;
+            default:
+                $model = Tools::where('se_name', $item)->first();
+
+        }
+
+        return $model;
     }
 }

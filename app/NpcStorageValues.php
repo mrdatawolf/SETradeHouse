@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * UserStorageValues
+ * NpcStorageValues
  *
  * @property int                   $id
  * @property string                $owner
@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed                 $updated_at
  * @property mixed                 $created_at
  */
-class UserStorageValues extends Model
+class NpcStorageValues extends Model
 {
-    public $table = 'user_storage_values';
+    public $table = 'npc_storage_values';
     public $index = 'id';
     public $timestamps = true;
     public $fillable = ['owner', 'server_id', 'world_id', 'group_id', 'item_id', 'amount'];

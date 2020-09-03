@@ -13,8 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserItems extends Model
 {
-    protected $connection='mysql';
-    protected $table = 'everyonesitems';
-    protected $index = 'ID';
-    protected $fillable = ['Owner','Item', 'Qty','Timestamp'];
+    const CREATED_AT = 'Timestamp';
+    public $connection='mysql';
+    public $table = 'everyonesitems';
+    public $index = 'ID';
+    public $fillable = ['Owner','Item', 'Qty','Timestamp'];
 }
