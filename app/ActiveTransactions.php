@@ -3,7 +3,8 @@
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Ores
+ * Class ActiveTransactions
+ * note: holds the most recent transactions from a store
  *
  * @property int                   $tradestation_id
  * @property int                   $server_id
@@ -20,5 +21,5 @@ use Illuminate\Database\Eloquent\Model;
 class ActiveTransactions extends Model
 {
     protected $table = 'active_transactions';
-    protected $fillable = ['tradestation_id','server_id','world_id', 'transaction_type','good_type','good_id','value','amount','created_at','updated_at'];
+    protected $fillable = ['tradestation_id','server_id','world_id', 'transaction_type','good_type','good_id','value','amount','created_at'];
 }
