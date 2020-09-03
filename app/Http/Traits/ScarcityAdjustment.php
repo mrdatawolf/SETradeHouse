@@ -82,6 +82,9 @@ trait ScarcityAdjustment
             case 'App\Components' :
                 $itemModel = 'Components';
                 break;
+            case 'App\Tools' :
+                $itemModel = 'Tools';
+                break;
         }
         if(! empty($stores)) {
             switch ($level) {
@@ -124,6 +127,9 @@ trait ScarcityAdjustment
                 break;
             case 'App\Components' :
                 $itemModel = 'Components';
+                break;
+            case 'App\Tools' :
+                $itemModel = 'Tools';
                 break;
         }
 

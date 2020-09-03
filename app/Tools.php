@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use App\Http\Traits\ScarcityAdjustment;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Tools extends Model
 {
+    use ScarcityAdjustment;
     protected $table = 'tools';
     protected $fillable = ['title','se_name','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','naquadah','trinium','neutronium','mass','volume'];
 
@@ -61,28 +63,6 @@ class Tools extends Model
             $needed       = $this->$title;
             if($needed > 0) {
                 $value += $ingot->getKeenStoreAdjustedValue() * $needed;
-            }
-        }
-
-        return $value;
-    }
-
-
-    /**
-     * note: get the value of the component based on the scarcity prices.
-     * @param $totalServers
-     * @param $clusterId
-     *
-     * @return float|int
-     */
-    public function getScarcityAdjustedValue($totalServers, $clusterId) {
-        $value = 0;
-        $ingots = Ingots::all();
-        foreach ($ingots as $ingot) {
-            $title = $ingot->title;
-            $needed       = $this->$title;
-            if($needed > 0) {
-                $value += $ingot->getScarcityAdjustedValue($totalServers, $clusterId) * $needed;
             }
         }
 

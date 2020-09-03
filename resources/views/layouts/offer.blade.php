@@ -24,8 +24,6 @@
     <script src="/js/jquery.ticker.js"></script>
     <script>
         $(window).on('load', function () {
-            $('.ticker').ticker();
-            $('.ticker').css('border', '1px solid blue;');
             exportTableTo();
         });
     </script>

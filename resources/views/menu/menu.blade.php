@@ -54,6 +54,7 @@
                                 <li><a class="dropdown-item" href="{{ route('orders.ores') }}">Ores</a></li>
                                 <li><a class="dropdown-item" href="{{ route('orders.ingots') }}">Ingots</a></li>
                                 <li><a class="dropdown-item" href="{{ route('orders.components') }}">Components</a></li>
+                                <li><a class="dropdown-item" href="{{ route('orders.tools') }}">Tools</a></li>
                             </ul>
                         </li>
                         <li><a class="dropdown-item" href="#"> Offers &raquo </a>
@@ -61,6 +62,7 @@
                                 <li><a class="dropdown-item" href="{{ route('offers.ores') }}">Ores</a></li>
                                 <li><a class="dropdown-item" href="{{ route('offers.ingots') }}">Ingots</a></li>
                                 <li><a class="dropdown-item" href="{{ route('offers.components') }}">Components</a></li>
+                                <li><a class="dropdown-item" href="{{ route('offers.tools') }}">Tools</a></li>
                             </ul>
                         </li>
                     </ul>

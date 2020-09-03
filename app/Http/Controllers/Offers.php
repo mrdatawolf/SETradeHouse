@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Components;
 use App\Ingots;
 use App\Ores;
+use App\Tools;
 
 /**
  * Class Offers
@@ -22,7 +23,7 @@ class Offers extends Controller
     public function ores() {
         $type = 'ores';
         $transaction = $this->transaction;
-        $header = 'Sell ores to the players';
+        $header = 'Sell ' . $type . ' to the players';
         $items = Ores::all();
         $defaultMultiplier = 1;
         $defaultAmount = $this->defaultAmount;
@@ -31,8 +32,8 @@ class Offers extends Controller
 
     public function ingots() {
         $type = 'ingots';
-        $title = $this->transaction;
-        $header = 'Sell ingots to the players';
+        $transaction = $this->transaction;
+        $header = 'Sell ' . $type . ' to the players';
         $items = Ingots::all();
         $defaultMultiplier = 1;
         $defaultAmount = $this->defaultAmount;
@@ -41,9 +42,20 @@ class Offers extends Controller
 
     public function components() {
         $type = 'components';
-        $title = $this->transaction;
-        $header = 'Sell components to the players';
+        $transaction = $this->transaction;
+        $header = 'Sell ' . $type . ' to the players';
         $items = Components::all();
+        $defaultMultiplier = 1;
+        $defaultAmount = $this->defaultAmount;
+        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
+    }
+
+
+    public function tools() {
+        $type = 'tools';
+        $transaction = $this->transaction;
+        $header = 'Sell ' . $type . ' to the players';
+        $items = Tools::all();
         $defaultMultiplier = 1;
         $defaultAmount = $this->defaultAmount;
         return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));

@@ -16,12 +16,12 @@ trait CheckNames {
             case 'MyObjectBuilder_Ore' :
                 $itemType = 'Ores';
                 break;
-            case 'MyObjectBuilder_PhysicalGunObject':
-            case 'MyObjectBuilder_AmmoMagazine':
-                $itemType = 'Tools';
+            case 'MyObjectBuilder_Component':
+                $itemType = 'Components';
                 break;
             default:
-                $itemType = 'Components';
+                $itemType = 'Tools';
+
         }
 
         return $itemType;
@@ -41,11 +41,12 @@ trait CheckNames {
             case 'Ores' :
                 $name = Ores::where('se_name', $item)->pluck('title')->first();
                 break;
-            case 'Tools' :
-                $name = Tools::where('se_name', $item)->pluck('title')->first();
+            case 'Components' :
+                $name = Components::where('se_name', $item)->pluck('title')->first();
                 break;
             default:
-                $name = Components::where('se_name', $item)->pluck('title')->first();
+                $name = Tools::where('se_name', $item)->pluck('title')->first();
+
         }
 
         return $name ?? '';

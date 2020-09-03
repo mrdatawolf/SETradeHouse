@@ -32,7 +32,7 @@
 </nav>
 <script>
     $(window).on('load', function () {
-        @if(! empty($stockLevels))
+        @if(! empty($tickerData))
             $('.ticker').ticker();
         @endif
         $('.ticker').css('border', '1px solid blue;');
