@@ -21,7 +21,7 @@
         <tbody>
         @foreach($items as $item)
             @if($item->se_name !== 'fillme')
-                @if($item->getScarcityAdjustedValue() > 0 && $defaultMultiplier > 0)
+                @if($defaultMultiplier > 0)
                     <tr>
                         <td>{{ $item->title }}</td>
                         <td>{{ $item->se_name }}</td>
