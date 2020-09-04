@@ -25,7 +25,7 @@
                     <tr>
                         <td>{{ $item->title }}</td>
                         <td>{{ $item->se_name }}</td>
-                        <td>{{ ucfirst($type) }}</td>
+                        <td>{{ ucfirst($transaction) }}</td>
                         <td><span class="value editable">{{ round($item->getScarcityAdjustedValue()*$defaultMultiplier) }}</span></td>
                         <td><span class="amount editable">{{ $defaultAmount }}</span></td>
                     </tr>
