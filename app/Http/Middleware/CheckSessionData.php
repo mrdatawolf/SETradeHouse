@@ -16,8 +16,7 @@ class CheckSessionData
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
-    {
+    public function handle($request, Closure $next) {
         if(! Session::has('stockLevels'))
         {
             $this->setStockData();
@@ -34,17 +33,15 @@ class CheckSessionData
         return $next($request);
     }
 
-    public function setStockData()
-    {
+    public function setStockData() {
         $stockController = new Stocklevels();
         $stockLevels = $stockController->getStockLevels();
         Session::put('stockLevels', $stockLevels);
     }
 
-    public function setStoreData()
-    {
+    public function setStoreData() {
         $storeController = new Stores();
-        $stores = $storeController->getStores();
+        $stores = $storeController->getTransactionsUsingTitles();
         Session::put('stores', $stores);
     }
 

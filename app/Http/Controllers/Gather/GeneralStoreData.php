@@ -6,12 +6,10 @@ use App\Stores;
 use App\TradeZones;
 use App\Transactions;
 use App\TransactionTypes;
-use Carbon\Carbon;
 
 class GeneralStoreData
 {
     use CheckNames;
-
 
     protected $serverId;
     protected $worldId;
