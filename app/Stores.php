@@ -25,6 +25,6 @@ class Stores extends Model
     public $timestamps      = false;
     protected $connection   ='mysql';
     protected $table        = 'stores';
-    protected $index        = 'index';
+    protected $primaryKey   = 'index';
     protected $fillable     = ['gridName', 'X','Y', 'Z', 'Owner', 'Item', 'offerOrOrder', 'Qty', 'pricePerUnit', 'GPSString'];
 }
