@@ -43,7 +43,10 @@ class Stores extends Controller
     }
 
 
-
+    /**
+     * note: this gets all the transactions for the stores and returns it with the ids converted to titles.
+     * @return object
+     */
     public function getTransactionsUsingTitles() {
         $transactions = new Transactions();
         $this->data = [];
@@ -58,7 +61,7 @@ class Stores extends Controller
                 $gps = 'check back later';
                 $price = $transaction->value;
                 $amount = $transaction->amount;
-                $transactionType = ($transactionType->title === 'buy') ? 'Order' : 'Offer';
+                $transactionType = ($transactionType->title === 'buy') ? 'Orders' : 'Offers';
 
                 if($tradeZone->count() > 0 && $group->count() > 0 && $item->count() > 0) {
                     if (empty($this->data[$gridName])) {
