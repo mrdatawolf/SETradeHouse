@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Groups;
 use App\Http\Traits\CheckNames;
-use \App\Stores as StoreModel;
+use App\TradeZones;
+use App\Transactions;
 use \Session;
 
 class Stores extends Controller
 {
     use CheckNames;
+
+    protected $data;
 
     public function index() {
         $title = "Stores";
@@ -39,58 +43,62 @@ class Stores extends Controller
     }
 
 
-    /**
-     * @return object
-     */
-    public function getStores() {
-        $storeData = new StoreModel();
-        $data = [];
-        foreach($storeData->all() as $store)
-        {
-            $gridName   = $store->gridName;
-            $group      = $this->seNameToGroup($store->Item);
-            $item       = ucfirst($this->seNameToItemTitle($group, $store->Item));
-            if(! empty($item)) {
-                $type   = ($store->offerOrOrder === 'Order') ? 'Orders' : 'Offers';
-                $amount = (int)$store->Qty;
-                $price  = (float)$store->pricePerUnit;
-                if (empty($data[$gridName])) {
-                    $data[$gridName]['Info']['Owner']           = $store->Owner;
-                    $data[$gridName]['Info']['GPS']             = $store->GPSString;
-                    $data[$gridName]['Totals']                  = [];
-                }
-                if(empty($data[$gridName]['Data'][$group->title])) {
-                    $data[$gridName]['Data'][$group->title]['Offers']  = [];
-                    $data[$gridName]['Data'][$group->title]['Orders']  = [];
-                }
-                if (empty($data[$gridName]['Totals'][$group->title][$type][$item])) {
-                    $data[$gridName]['Totals'][$group->title][$type][$item]            = [
-                        'Amount'   => 0,
-                        'Price'    => 0,
-                        'MinPrice' => 0,
-                        'MaxPrice' => 0,
-                    ];
-                    $data[$gridName]['Averages'][$group->title][$type][$item]['Price'] = 0;
-                }
 
-                $data[$gridName]['Data'][$group->title][$type][$item]['Transactions'][] = [
-                    'Amount' => $amount,
-                    'Price'  => $price
-                ];
-                $data[$gridName]['Totals'][$group->title][$type][$item]['Amount']  += $amount;
-                $data[$gridName]['Totals'][$group->title][$type][$item]['Price']   += $amount * $price;
-                if (($data[$gridName]['Totals'][$group->title][$type][$item]['MinPrice'] > $price) || $data[$gridName]['Totals'][$group->title][$type][$item]['MinPrice'] === 0) {
-                    $data[$gridName]['Totals'][$group->title][$type][$item]['MinPrice'] = $price;
-                }
-                if ($data[$gridName]['Totals'][$group->title][$type][$item]['MaxPrice'] < $price) {
-                    $data[$gridName]['Totals'][$group->title][$type][$item]['MaxPrice'] = $price;
-                }
-                if ($data[$gridName]['Totals'][$group->title][$type][$item]['Price'] > 0 && $data[$gridName]['Totals'][$group->title][$type][$item]['Amount'] > 0) {
-                    $data[$gridName]['Averages'][$group->title][$type][$item]['Price'] = $data[$gridName]['Totals'][$group->title][$type][$item]['Price'] / $data[$gridName]['Totals'][$group->title][$type][$item]['Amount'];
+    public function getTransactionsUsingTitles() {
+        $transactions = new Transactions();
+        $this->data = [];
+        $transactions->chunk(400, function ($transactions) {
+            foreach($transactions as $transaction) {
+                $tradeZone =  TradeZones::find($transaction->trade_zone_id);
+                $group = Groups::find($transaction->good_type_id);
+                $item =$this->getItemFromGroupAndItemId($group, $transaction->good_id);
+                $transactionType = $this->getTransactionTypeFromId($transaction->transaction_type_id);
+                $gridName = $tradeZone->title;
+                $owner = $transaction->owner;
+                $gps = 'check back later';
+                $price = $transaction->value;
+                $amount = $transaction->amount;
+                $transactionType = ($transactionType->title === 'buy') ? 'Order' : 'Offer';
+
+                if($tradeZone->count() > 0 && $group->count() > 0 && $item->count() > 0) {
+                    if (empty($this->data[$gridName])) {
+                        $this->data[$gridName]['Info']['Owner'] = $owner;
+                        $this->data[$gridName]['Info']['GPS']   = $gps;
+                        $this->data[$gridName]['Totals']        = [];
+                    }
+                    if (empty($this->data[$gridName]['Data'][$group->title])) {
+                        $this->data[$gridName]['Data'][$group->title]['Offers'] = [];
+                        $this->data[$gridName]['Data'][$group->title]['Orders'] = [];
+                    }
+                    if (empty($this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title])) {
+                        $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]            = [
+                            'Amount'   => 0,
+                            'Price'    => 0,
+                            'MinPrice' => 0,
+                            'MaxPrice' => 0,
+                        ];
+                        $this->data[$gridName]['Averages'][$group->title][$transactionType][$item->title]['Price'] = 0;
+                    }
+
+                    $this->data[$gridName]['Data'][$group->title][$transactionType][$item->title]['Transactions'][] = [
+                        'Amount' => $amount,
+                        'Price'  => $price
+                    ];
+                    $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['Amount']       += $amount;
+                    $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['Price']        += $amount * $price;
+                    if (($this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['MinPrice'] > $price) || $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['MinPrice'] === 0) {
+                        $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['MinPrice'] = $price;
+                    }
+                    if ($this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['MaxPrice'] < $price) {
+                        $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['MaxPrice'] = $price;
+                    }
+                    if ($this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['Price'] > 0 && $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['Amount'] > 0) {
+                        $this->data[$gridName]['Averages'][$group->title][$transactionType][$item->title]['Price'] = $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['Price'] / $this->data[$gridName]['Totals'][$group->title][$transactionType][$item->title]['Amount'];
+                    }
                 }
             }
-        }
+        });
 
-        return (object) $data;
+        return (object) $this->data;
     }
 }

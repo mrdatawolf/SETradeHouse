@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Gather\GeneralStorageData;
+use App\Http\Controllers\Gather\GeneralStoreData;
 use App\Servers;
 use App\Worlds;
 use Illuminate\Console\Command;
@@ -47,11 +48,9 @@ class GatherNebulonData extends Command
         $gatherGeneralStorageData = new GeneralStorageData($this->option('initial'), $this->server->id, $this->world->id);
         $gatherGeneralStorageData->upateUserAndNpcStorageValues();
 
-
-        //gather stores
-        //check if it is already in the active_transactions
-        //if it is move the current transaction to the inactive_transactions
-        //add transaction to active_transactions
+        $gatherGeneralStoreData = new GeneralStoreData($this->option('initial'), $this->server->id, $this->world->id);
+        $gatherGeneralStoreData->updateTransactionValues();
+        $gatherGeneralStoreData->updateStoreLocation();
     }
 
 

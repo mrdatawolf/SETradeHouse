@@ -5,6 +5,7 @@ use App\Groups;
 use App\Ingots;
 use App\Ores;
 use App\Tools;
+use App\TransactionTypes;
 
 trait CheckNames {
     public function seNameToGroupType($item) {
@@ -77,9 +78,32 @@ trait CheckNames {
                 break;
             default:
                 $model = Tools::where('se_name', $item)->first();
-
         }
 
         return $model;
     }
+
+    private function getItemFromGroupAndItemId($group, $itemId) {
+        switch($group->id) {
+            case '2' :
+                $model = Ingots::find($itemId);
+                break;
+            case '1' :
+                $model = Ores::find($itemId);
+                break;
+            case '3' :
+                $model = Components::find($itemId);
+                break;
+            default:
+                $model = Tools::find($itemId);
+
+        }
+
+        return (! empty($model)) ? $model : null;
+    }
+
+    private function getTransactionTypeFromId($typeId) {
+        return TransactionTypes::find($typeId);
+    }
+
 }

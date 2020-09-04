@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TradeZones extends Model
 {
-    protected $table = 'trade_zones';
-    protected $fillable = ['title','owner_id','servers_id','local_weight'];
+    public $table       = 'trade_zones';
+    public $timestamps  = false;
+    public $fillable    = ['title', 'owner', 'server_id', 'world_id', 'local_weight'];
 
     public function servers() {
         return $this->belongsTo('App\Worlds');
