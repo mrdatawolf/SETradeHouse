@@ -32,6 +32,7 @@ trait ScarcityAdjustment
         $storeDemandWeight              = $this->getDemandWeight('store');
         $serverSumPrices                = $this->getStoresSumPrice('server');
         $worldSumPrices                 = $this->getStoresSumPrice('world');
+
         //todo: move the next 3 into getStoresAmount and return once like the 3 above
         $serverAmount                   = (object) ['offers' =>$this->getStoresAmount('store', 'offers'), 'orders' => $this->getStoresAmount('store', 'orders')];
         $worldAmount                    = (object) ['offers' =>$this->getStoresAmount('store', 'offers'), 'orders' => $this->getStoresAmount('store', 'orders')];
@@ -92,7 +93,7 @@ trait ScarcityAdjustment
                 case 'world' :
                 case 'store' :
                     foreach ($stores as $store => $storeTotals) {
-                        $amount += $storeTotals['Totals'][$itemModel][ucfirst($transaction)][ucfirst($this->title)]['Amount'] ?? 0;
+                        $amount += $storeTotals['Totals'][$itemModel][ucfirst($transaction)][$this->title]['Amount'] ?? 0;
                     }
             }
         }
@@ -139,7 +140,7 @@ trait ScarcityAdjustment
                 case 'world' :
                 case 'store' :
                     foreach ($stores as $store => $storeTotals) {
-                        $sumPrice += $storeTotals['Totals'][$itemModel][ucfirst($transaction)][ucfirst($this->title)]['Price'] ?? 0;
+                        $sumPrice += $storeTotals['Totals'][$itemModel][ucfirst($transaction)][$this->title]['Price'] ?? 0;
                     }
             }
         }
@@ -170,7 +171,6 @@ trait ScarcityAdjustment
                     $demand = $totalOrders/$totalOffers;
                 }
         }
-
 
         return $demand;
     }

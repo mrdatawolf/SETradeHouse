@@ -16,12 +16,14 @@ Road to 1.0 MVP
 4. ~~Make a clone of the spreadsheet we have been using.~~
 5. ~~Create all the code needed to derive the numbers shown on the spreadsheet.~~
 6. ~~Align all values to the current spreadsheet as a proof that the system is working.~~
-7. Get the spreadsheet page to allow the trade station amounts/values to be created/updated as needed (for testing).
-8. Get the API fully functional for ingesting data and allowing call to view the data.  This API should stay in sync with the internal ablities.
+7. ~~Get the spreadsheet page to allow the trade station amounts/values to be created/updated as needed (for testing).~~
+8. ~~Process data from the game server~~
 9. ~~Bring it up on a server online.~~
-10. Get the active servers data being ingested.
-11. Open it up so anyone can interact with the test system.
-12. Convert SQL files to migrations/seeders.
+10. ~~Get the active servers data being ingested.~~
+11. ~~Open it up so anyone can interact with the test system.~~
+12. Allow touch devices to interact with the pages.
+13. Fix the GPS pull.
+14. Convert SQL files to migrations/seeders.
  
 ##Future Roadmap
 1.  Revised +1.0 goals.
@@ -62,5 +64,4 @@ notes: We have moved to a tradehouse model.  So we look at the buy and sell orde
 2. The Nebulon Cluster crew for showing me how much an economy adds to SE!
 3. The Frontier Economy Mod for making a great econ mod!
 4. Hobobot, MCI, Azure Night Owl and everyone else who made the Torch Econ Plugin!
-5. The Expanse for bringing in the power of a mutli-server cluster of SE servers! And for getting the torch econ mod working in their system!
-  
+5. The Expanse for bringing in the power of a mutli-server cluster of SE servers! And for getting the torch econ mod working in their system!  
