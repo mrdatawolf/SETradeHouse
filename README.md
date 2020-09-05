@@ -21,20 +21,22 @@ Road to 1.0 MVP
 9. ~~Bring it up on a server online.~~
 10. ~~Get the active servers data being ingested.~~
 11. ~~Open it up so anyone can interact with the test system.~~
-12. Allow touch devices to interact with the pages.
+12. ~~Allow touch devices to interact with the pages.~~
 13. Fix the GPS pull.
 14. Convert SQL files to migrations/seeders.
  
 ##Future Roadmap
 1.  Revised +1.0 goals.
-    1. Expand the active and inactive transactions to use all columns.
-    2. Add weights to transactions based on distances from server to server.
-    3. Improve the user system.
-    4. Add sheets as needed to flex out the user experience. Anything that can help the users visualize or work with the data.
-    5. Get the ticker working.
-    6. Add a weight to thrust calculator.
-    7. A Map Generator showing cluster servers and their tradezones. Or maybe just a common format for making a diagram for the users.
-    8. There's alot more but where we go will depend on where the people helping see the project going from here.
+    1. ~~Expand the active and inactive transactions to use all columns.~~
+    2. Add a weight to thrust calculator.
+    3. Add a blueprint breakdown. It would take a blueprint file and tell the user the comps, ingots, ores needed (user choice). It would also breakdown the prices based on server averages.
+    4. Add API to get current trade data on a public store.
+    5. Add weights to transactions based on distances from world to world.
+    6. Improve the user system.
+    7. Add sheets as needed to flex out the user experience. Anything that can help the users visualize or work with the data.
+    8. ~~Get the ticker working~~.
+    9. A Map Generator showing cluster servers and their tradezones. Or maybe just a common format for making a diagram for the users.
+    10. There's alot more but where we go will depend on where the people helping see the project going from here.
 
 ## Contributing
 
@@ -46,18 +48,6 @@ Road to 1.0 MVP
 
 <!-- Markdown link & img dfn's -->
 [wiki]: https://github.com/mrdatawolf/SETradeHouse/wiki
-
-##Notes on the foundational logic we are shooting for...
-![Clusters Example](https://raw.githubusercontent.com/mrdatawolf/SETradeHouse/master/public/img/clusters_example.png)
-#How a given item gets it's value for a trade-zone:
-notes: cluster 1 is 1 server with 1 tradezone. cluster 2 is 10 servers, 4 of which have tradezones.  See image for layouts.
-notes: A trade zone influences and is influenced by all the other trade-stations in the cluster (as long as there is any path to and/or from the other trade-stations. The amount of influence trade-stations have on each other is expressed as a "weight" for a given station.  Right now weight is based on how long they have been in system.
-notes: We have moved to a tradehouse model.  So we look at the buy and sell orders in the tradezone, server, cluster.
-1. Example 1:  In cluster 1 server 1 we have a tradestation (tz3) looking for 1,000,000 gold ore at 300 SC per. Because that is the only order we see the numbers reproduced in the server and cluster level. There is some wiggle room at the server and cluster level because of the math being done.
-2. Example 2: Still in Nebulon Cluster on tz3 we see them selling 1,000,000 nickel ore at 80 SC per. Again you will see the stable numbers because this is the only order. But this time they are negative values because it's a sell order.
-3. Example 3: Normally this would be... weird but if you had both a sell order and a buy order at the same tradestation for the same thing (platinum ore here) we take the ore buy order(s) and subtract the ore sell order to get the desire.  We had 30k in sell orders and 20k in buy orders. So we end up with a negative 10k desire. We also have a sell price of 250 and a buy of 200.  Since there are 10k more at the 250 price the "Average SC" is 5 higher (at 230) then a simple avg of the total Amount/Number of trades.
-4. Example 4: Do an example of the price of ingots being influenced by the amount and value of the ore it's made from.
-5. Example 5: Do an example of the price of a componets being influenced by the amount and value of the ore and ingots it's made from.
 
 ##Special Thanks to
 1. Braelok for the innumerable hours he poured into trade in the SE worlds and for teaching me the ways of SE economies.  This could not exist without his work!
