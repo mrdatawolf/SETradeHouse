@@ -28,70 +28,78 @@
 </style>
 
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
-    <a  class="navbar-brand" href="#"><img src="/img/SETradeHouse_logo_core.png" alt="Logo" title="Logo" style="width: 4em;"></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="main_nav">
+    <div class="container">
+        <a  class="navbar-brand" href="#"><img src="/img/SETradeHouse_logo_core.png" alt="Logo" title="Logo" style="width: 4em;"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main_nav">
 
-        <ul class="navbar-nav">
-            @guest
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                </li>
-                @if (Route::has('register'))
+            <ul class="navbar-nav">
+                @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                        <button class="nav-link dropdown-item" onclick="window.location.href='{{ route("login") }}';">
+                            {{ __('Login') }}
+                        </button>
                     </li>
-                @endif
-            @else
-                <li class="nav-item"><a href="{{ route('home') }}" class="nav-link">Home</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Transactions</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"> Orders &raquo </a>
-                            <ul class="submenu dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('orders.ores') }}">Ores</a></li>
-                                <li><a class="dropdown-item" href="{{ route('orders.ingots') }}">Ingots</a></li>
-                                <li><a class="dropdown-item" href="{{ route('orders.components') }}">Components</a></li>
-                                <li><a class="dropdown-item" href="{{ route('orders.tools') }}">Tools</a></li>
-                            </ul>
-                        </li>
-                        <li><a class="dropdown-item" href="#"> Offers &raquo </a>
-                            <ul class="submenu dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('offers.ores') }}">Ores</a></li>
-                                <li><a class="dropdown-item" href="{{ route('offers.ingots') }}">Ingots</a></li>
-                                <li><a class="dropdown-item" href="{{ route('offers.components') }}">Components</a></li>
-                                <li><a class="dropdown-item" href="{{ route('offers.tools') }}">Tools</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Stores</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('stores') }}"> Your</a></li>
-                        <li><a class="dropdown-item" href="{{ route('stores.world') }}">World</a></li>
-                        <li><a class="dropdown-item" href="{{ route('stores.server') }}">Server</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ $currentUser->username }}</a>
-                    <ul class="dropdown-menu">
-                        <li>Current Server: {{ $currentUser->server_id ?? '' }}</li>
-                        <li>Current World: 'work in progress'</li>
-                        <li>Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
+                    @if (Route::has('register'))
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('logout') }}">{{ __('Logout') }}</a>
+                            <button class="nav-link dropdown-item" onclick="window.location.href='{{ route("register") }}';">
+                                {{ __('Register') }}
+                            </button>
                         </li>
-                    </ul>
-                </li>
-                <!--<li class="nav-item">
-                    <a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a>
-                </li>-->
-            @endif
-        </ul>
-    </div> <!-- navbar-collapse.// -->
+                    @endif
+                @else
+                    <li class="nav-item">
+                        <button class="nav-link dropdown-item" onclick="window.location.href='{{ route('home') }}';">
+                            {{ __('Home') }}
+                        </button>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Transactions</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"> Orders &raquo </a>
+                                <ul class="submenu dropdown-menu">
+                                    <li><button class="dropdown-item" onclick="window.location.href='{{ route("orders.ores") }}';">Ores</button></li>
+                                    <li><button class="dropdown-item" onclick="window.location.href='{{ route("orders.ingots") }}';">Ingots</button></li>
+                                    <li><button class="dropdown-item" onclick="window.location.href='{{ route("orders.components") }}';">Components</button></li>
+                                    <li><button class="dropdown-item" onclick="window.location.href='{{ route("orders.tools") }}';">Tools</button></li>
+                                </ul>
+                            </li>
+                            <li><a class="dropdown-item" href="#"> Offers &raquo </a>
+                                <ul class="submenu dropdown-menu">
+                                    <li><button class="dropdown-item" onclick="window.location.href='{{ route("offers.ores") }}';">Ores</button></li>
+                                    <li><button class="dropdown-item" onclick="window.location.href='{{ route("offers.ingots") }}';">Ingots</button></li>
+                                    <li><button class="dropdown-item" onclick="window.location.href='{{ route("offers.components") }}';">Components</button></li>
+                                    <li><button class="dropdown-item" onclick="window.location.href='{{ route("offers.tools") }}';">Tools</button></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Stores</a>
+                        <ul class="dropdown-menu">
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores') }}';">Personal</button></li>
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.world') }}';">World</button></li>
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.server') }}';">Server</button></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ $currentUser->username }}</a>
+                        <ul class="dropdown-menu">
+                            <li>Current Server: {{ $currentUser->server_id ?? '' }}</li>
+                            <li>Current World: 'work in progress'</li>
+                            <li>Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('logout') }}';">{{ __('Logout') }}</button></li>
+                        </ul>
+                    </li>
+                    <!--<li class="nav-item">
+                        <a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a>
+                    </li>-->
+                @endif
+            </ul>
+        </div> <!-- navbar-collapse.// -->
+    </div>
 </nav>
 
 <script>
