@@ -10,11 +10,11 @@ trait ScarcityAdjustment
      * @return float|int
      */
     public function getScarcityAdjustedValue() {
-        $keenStoreAdjustedValue = $this->getKeenStoreAdjustedValue();
         $server                 = Servers::find(Session::get('serverId'));
         $scarcityId             = $server->scarcity_id ?? 1;
         switch($scarcityId) {
             case 2 :
+                $keenStoreAdjustedValue = $this->getKeenStoreAdjustedValue();
                 $totalWorlds = $this->worlds->count();
                 $scarcityAdjustment = $this->getWorldsScarcityAdjustment($totalWorlds);
                 $return = $keenStoreAdjustedValue*(2-($scarcityAdjustment/($totalWorlds*10)));
@@ -42,12 +42,20 @@ trait ScarcityAdjustment
         $baseWeightforWorld             = $magicNumbers->base_weight_for_world_stock;
         $baseWeightForServer            = $magicNumbers->weight_for_other_world_stock;
         $baseWeightForStore             = $magicNumbers->local_store_weight;
-        $numberPlusWeightBoost          = $baseWeightForServer+$baseWeightforWorld+$baseWeightForStore;
+        $weightBoost                    = $baseWeightForServer+$baseWeightforWorld+$baseWeightForStore;
         $serverWeightedAvgOfferPrice    = $serverAverageOffersPrice*$baseWeightForServer*$serverDemandWeight;
         $worldWeightedAverageOfferPrice = $worldAverageOffersPrice*$baseWeightforWorld*$worldDemandWeight;
         $storeWeightedAverageOfferPrice = $storeAverageOffersPrice*$baseWeightForStore*$storeDemandWeight;
 
-        return ($serverWeightedAvgOfferPrice + $worldWeightedAverageOfferPrice + $storeWeightedAverageOfferPrice)/$numberPlusWeightBoost;
+        return $this->fianlScarcityAdjustment($serverWeightedAvgOfferPrice, $worldWeightedAverageOfferPrice, $storeWeightedAverageOfferPrice, $weightBoost);
+    }
+
+
+    private function fianlScarcityAdjustment($serverPrice, $worldPrice, $storePrice, $weightBoost) {
+        $scarcityCost = ($serverPrice + $worldPrice + $storePrice)/$weightBoost;
+        $baseCost = $this->getBaseValue();
+
+        return ($baseCost > $scarcityCost) ? $baseCost : $scarcityCost;
     }
 
     /**

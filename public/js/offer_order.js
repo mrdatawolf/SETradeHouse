@@ -1,7 +1,7 @@
 
 $('#set_amount').change(function () {
     $('.amount').html($(this).val());
-    exportTableToDIV(false);
+    exportTableTo(false,'','text');
 });
 $('#set_modifier').change(function () {
     //$('.')
