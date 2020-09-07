@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Components;
-use App\Groups;
+use App\GoodTypes;
 use App\Http\Traits\CheckNames;
 use App\Ingots;
 use App\NpcStorageValues;
@@ -29,7 +29,7 @@ class Stocklevels extends Controller
 
         $stockLevels = [];
         foreach($summedUserTotals as $row) {
-            $group = Groups::find($row->group_id);
+            $group = GoodTypes::find($row->group_id);
             $stockModel = $this->getStockModel($row->group_id);
             $item = $stockModel->find($row->item_id);
             if ( ! empty($item->title)) {
@@ -37,7 +37,7 @@ class Stocklevels extends Controller
             }
         }
         foreach($summedNpcTotals as $row) {
-            $group = Groups::find($row->group_id);
+            $group = GoodTypes::find($row->group_id);
             $stockModel = $this->getStockModel($row->group_id);
             $item = $stockModel->find($row->item_id);
             if ( ! empty($item->title)) {

@@ -23,8 +23,11 @@ class GeneralStoreData
         $this->transactionArray = [];
     }
 
+
+    /**
+     * note: take the current stores values and replace the active transactiosn with the new values. this also moves all old data to the inactive table.
+     */
     public function updateTransactionValues() {
-        //gather stores
         $storeTransactions = new Stores();
         $storeTransactions->chunk(400, function ($storeTransactions) {
             foreach ($storeTransactions as $transaction) {
@@ -33,41 +36,79 @@ class GeneralStoreData
                 if ( ! empty($item)) {
                     $tradeZone = $this->getTZ($transaction);
                     $this->updateStoreLocation($tradeZone, $transaction->GPSString);
-                    $currentTransaction    = [
-                        'trade_zone_id'       => $tradeZone->id,
-                        'server_id'           => $this->serverId,
-                        'world_id'            => $this->worldId,
-                        'value'               => $transaction->pricePerUnit,
-                        'amount'              => $transaction->Qty,
-                        'transaction_type_id' => $this->getTransactionId($transaction),
-                        'good_type_id'        => $group->id,
-                        'good_id'             => $item->id,
-                        'owner'               => $transaction->Owner
-                    ];
-                    $this->transactionArray[] = $currentTransaction;
+                    $this->addActiveTransactionToArray($tradeZone, $transaction, $group, $item);
                 }
             }
         });
+        $this->moveActiveTransactionsToInactive();
+        $this->addActiveTransactions();
+    }
 
-        $transactions = new Transactions();
-        $transactions->chunk(400, function ($transactions) {
-           foreach($transactions as $transaction) {
-               $inActiveTransactionModel = new InactiveTransactions();
-               $inActiveTransactionModel->create($transaction->toArray());
-               $transaction->delete();
-           }
-        });
-        foreach($this->transactionArray as $transaction){ //$transaction array contains input data
+
+    /**
+     * note: take the array and add them to the transactions table.
+     */
+    private function addActiveTransactions() {
+        foreach($this->transactionArray as $transaction){
             $transactionModel = new Transactions();
             $transactionModel->create($transaction);
         }
     }
 
+
+    /**
+     * note: add the data we ned to the transaction array.
+     * @param $tradeZone
+     * @param $transaction
+     * @param $group
+     * @param $item
+     */
+    private function addActiveTransactionToArray($tradeZone, $transaction, $group, $item) {
+        $currentTransaction    = [
+            'trade_zone_id'       => $tradeZone->id,
+            'server_id'           => $this->serverId,
+            'world_id'            => $this->worldId,
+            'value'               => $transaction->pricePerUnit,
+            'amount'              => $transaction->Qty,
+            'transaction_type_id' => $this->getTransactionId($transaction),
+            'good_type_id'        => $group->id,
+            'good_id'             => $item->id,
+            'owner'               => $transaction->Owner
+        ];
+        $this->transactionArray[] = $currentTransaction;
+    }
+
+
+    /**
+     * note: take the transactions in transactions table and move them to the inactive table.  This is gives us the history on each update.
+     */
+    private function moveActiveTransactionsToInactive() {
+        $transactions = new Transactions();
+        $transactions->chunk(400, function ($transactions) {
+            foreach($transactions as $transaction) {
+                $inActiveTransactionModel = new InactiveTransactions();
+                $inActiveTransactionModel->create($transaction->toArray());
+                $transaction->delete();
+            }
+        });
+    }
+
+
+    /**
+     * @param $tradeZone
+     * @param $gps
+     */
     public function updateStoreLocation($tradeZone, $gps) {
         $tradeZone->gps = $gps;
         $tradeZone->save();
     }
 
+
+    /**
+     * @param $transaction
+     *
+     * @return int
+     */
     private function getTransactionId($transaction) {
         $tranactionTypeConversion   = ($transaction->offerOrOrder === 'Offer') ? 'sell' : 'buy';
         $transactionType            = TransactionTypes::where('title', $tranactionTypeConversion)->first();
