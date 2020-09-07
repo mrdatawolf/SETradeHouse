@@ -12,13 +12,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $local_weight
  * @property                       $servers
  * @property                       $activeTransactions
+ * @property                       $gps
  * @package Models
  */
 class TradeZones extends Model
 {
     public $table       = 'trade_zones';
     public $timestamps  = false;
-    public $fillable    = ['title', 'owner', 'server_id', 'world_id', 'local_weight'];
+    public $fillable    = ['title', 'owner', 'server_id', 'world_id', 'local_weight', 'gps'];
 
     public function servers() {
         return $this->belongsTo('App\Worlds');

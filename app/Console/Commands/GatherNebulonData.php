@@ -50,7 +50,6 @@ class GatherNebulonData extends Command
 
         $gatherGeneralStoreData = new GeneralStoreData($this->option('initial'), $this->server->id, $this->world->id);
         $gatherGeneralStoreData->updateTransactionValues();
-        $gatherGeneralStoreData->updateStoreLocation();
     }
 
 

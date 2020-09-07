@@ -58,7 +58,7 @@ class Stores extends Controller
                 $transactionType = $this->getTransactionTypeFromId($transaction->transaction_type_id);
                 $gridName = $tradeZone->title;
                 $owner = $transaction->owner;
-                $gps = 'check back later';
+                $gps = $tradeZone->gps;
                 $price = $transaction->value;
                 $amount = $transaction->amount;
                 $transactionType = ($transactionType->title === 'buy') ? 'Orders' : 'Offers';
