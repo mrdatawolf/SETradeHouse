@@ -22,21 +22,23 @@ Road to 1.0 MVP
 10. ~~Get the active servers data being ingested.~~
 11. ~~Open it up so anyone can interact with the test system.~~
 12. ~~Allow touch devices to interact with the pages.~~
-13. Fix the GPS pull.
+13. ~~Fix the GPS pull.~~
 14. Convert SQL files to migrations/seeders.
  
 ##Future Roadmap
 1.  Revised +1.0 goals.
     1. ~~Expand the active and inactive transactions to use all columns.~~
-    2. Add a weight to thrust calculator.
-    3. Add a blueprint breakdown. It would take a blueprint file and tell the user the comps, ingots, ores needed (user choice). It would also breakdown the prices based on server averages.
-    4. Add API to get current trade data on a public store.
-    5. Add weights to transactions based on distances from world to world.
-    6. Improve the user system.
-    7. Add sheets as needed to flex out the user experience. Anything that can help the users visualize or work with the data.
-    8. ~~Get the ticker working~~.
-    9. A Map Generator showing cluster servers and their tradezones. Or maybe just a common format for making a diagram for the users.
-    10. There's alot more but where we go will depend on where the people helping see the project going from here.
+    2. Add a three.js map of the system.
+    3. Have the three.js map show current  store locations.
+    4. Add a weight to thrust calculator.
+    5. Add a blueprint breakdown. It would take a blueprint file and tell the user the comps, ingots, ores needed (user choice). It would also breakdown the prices based on server averages.
+    6. Add API to get current trade data on a public store.
+    7. Add weights to transactions based on distances from world to world.
+    8. Improve the user system.
+    9. Add sheets as needed to flex out the user experience. Anything that can help the users visualize or work with the data.
+    10. ~~Get the ticker working~~.
+    11. A Map Generator showing cluster servers and their tradezones. Or maybe just a common format for making a diagram for the users.
+    12. There's alot more but where we go will depend on where the people helping see the project going from here.
 
 ## Contributing
 
