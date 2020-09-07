@@ -417,6 +417,10 @@ h6,
   font-size: 0.9rem;
 }
 
+#app {
+    margin-top: 4em;
+}
+
 .lead {
   font-size: 1.125rem;
   font-weight: 300;
@@ -10804,32 +10808,6 @@ a.text-dark:focus {
 
 .invisible {
   visibility: hidden !important;
-}
-
-.top-left {
-    position: absolute;
-    left: 10px;
-    top: 18px;
-}
-.top-right {
-    position: absolute;
-    right: 100px;
-    top: 18px;
-}
-
-.links > a {
-    color: #636b6f;
-    padding: 0 25px;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: .1rem;
-    text-decoration: none;
-    text-transform: uppercase;
-}
-
-#app {
-    padding-top: 70px;
-    padding-bottom: 70px;
 }
 
 @media print {
