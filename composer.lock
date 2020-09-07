@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "33de1c5de9ac4ff041d3a60518f4389c",
+    "content-hash": "96ec36c25bb6ab6993c9d321b19faccc",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -103,6 +103,69 @@
                 "math"
             ],
             "time": "2020-08-18T23:57:15+00:00"
+        },
+        {
+            "name": "components/three.js",
+            "version": "0.0.79",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/components/three.js.git",
+                "reference": "38d3270f7f36adb9259ee7c358db80ac41459987"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/components/three.js/zipball/38d3270f7f36adb9259ee7c358db80ac41459987",
+                "reference": "38d3270f7f36adb9259ee7c358db80ac41459987",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "name": "threejs",
+                    "scripts": [
+                        "three.js"
+                    ],
+                    "files": [
+                        "three.js"
+                    ],
+                    "shim": {
+                        "exports": "THREE"
+                    }
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "mrdoob",
+                    "homepage": "https://github.com/mrdoob"
+                },
+                {
+                    "name": "alteredq",
+                    "homepage": "https://github.com/alteredq"
+                },
+                {
+                    "name": "bhouston",
+                    "homepage": "https://github.com/bhouston"
+                },
+                {
+                    "name": "zz85",
+                    "homepage": "https://github.com/zz85"
+                },
+                {
+                    "name": "gero3",
+                    "homepage": "https://github.com/gero3"
+                },
+                {
+                    "name": "sole",
+                    "homepage": "https://github.com/sole"
+                }
+            ],
+            "description": "ThreeJS JavaScript 3D library",
+            "homepage": "http://threejs.org/",
+            "time": "2016-07-28T16:04:55+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",

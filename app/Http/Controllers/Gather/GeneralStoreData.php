@@ -32,6 +32,7 @@ class GeneralStoreData
                 $item  = $this->seNameToItem($group, $transaction->Item);
                 if ( ! empty($item)) {
                     $tradeZone = $this->getTZ($transaction);
+                    $this->updateStoreLocation($tradeZone, $transaction->GPSString);
                     $currentTransaction    = [
                         'trade_zone_id'       => $tradeZone->id,
                         'server_id'           => $this->serverId,
@@ -56,15 +57,15 @@ class GeneralStoreData
                $transaction->delete();
            }
         });
-        $allintests = [];
         foreach($this->transactionArray as $transaction){ //$transaction array contains input data
             $transactionModel = new Transactions();
             $transactionModel->create($transaction);
         }
     }
 
-    public function updateStoreLocation() {
-        //todo: this needs to be done
+    public function updateStoreLocation($tradeZone, $gps) {
+        $tradeZone->gps = $gps;
+        $tradeZone->save();
     }
 
     private function getTransactionId($transaction) {
