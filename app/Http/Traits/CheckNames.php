@@ -1,7 +1,7 @@
 <?php namespace App\Http\Traits;
 
 use App\Components;
-use App\Groups;
+use App\GoodTypes;
 use App\Ingots;
 use App\Ores;
 use App\Tools;
@@ -36,7 +36,7 @@ trait CheckNames {
         $itemArray = explode('/',$item);
         $itemType = $this->seNameToGroupType($itemArray[0]);
 
-        return Groups::where('title',$itemType)->first();
+        return GoodTypes::where('title',$itemType)->first();
     }
 
     /**

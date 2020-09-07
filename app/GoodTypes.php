@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                   $id
  * @property string                $title
  */
-class Groups extends Model
+class GoodTypes extends Model
 {
-    protected $table = 'groups';
+    protected $table = 'good_types';
     protected $index = 'id';
     protected $fillable = ['title'];
 }
