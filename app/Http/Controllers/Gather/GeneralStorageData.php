@@ -30,19 +30,19 @@ class GeneralStorageData
             foreach ($userItems as $row) {
                 $owner = $row['Owner'];
                 $amount = $row['Qty'];
-                $group = $this->seNameToGroup($row['Item']);
-                if(! empty($group->id) && ! empty($owner)) {
-                    $item  = $this->seNameToItem($group, $row['Item']);
+                $goodType = $this->seNameToGoodType($row['Item']);
+                if(! empty($goodType->id) && ! empty($owner)) {
+                    $good  = $this->seNameToGood($row['Item']);
                     $isNpc = (substr($owner,0,4) === 'NPC ');
-                    if(!empty($item->id)) {
+                    if(!empty($good->id)) {
                         $storages = ($isNpc) ? new NpcStorageValues() : new UserStorageValues();
-                        $amount = $this->getCurrentAmount($owner, $group->id, $item->id, $runningTotals, $amount);
-                        $runningTotals[$owner][$group->id][$item->id] = $amount;
+                        $amount = $this->getCurrentAmount($owner, $goodType->id, $good->id, $runningTotals, $amount);
+                        $runningTotals[$owner][$goodType->id][$good->id] = $amount;
                         $storages->updateOrCreate(
                             [
                                 'owner'     => $owner,
-                                'item_id'   => $item->id,
-                                'group_id'  => $group->id,
+                                'item_id'   => $good->id,
+                                'group_id'  => $goodType->id,
                                 'server_id' => $this->serverId,
                                 'world_id'  => $this->worldId
                             ],

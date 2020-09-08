@@ -31,12 +31,12 @@ class GeneralStoreData
         $storeTransactions = new Stores();
         $storeTransactions->chunk(400, function ($storeTransactions) {
             foreach ($storeTransactions as $transaction) {
-                $group = $this->seNameToGroup($transaction->Item);
-                $item  = $this->seNameToItem($group, $transaction->Item);
-                if ( ! empty($item)) {
+                $good = $this->seNameToGood($transaction->Item);
+                $goodType = $this->seNameToGoodType($transaction->Item);
+                if ( ! empty($good)) {
                     $tradeZone = $this->getTZ($transaction);
                     $this->updateStoreLocation($tradeZone, $transaction->GPSString);
-                    $this->addActiveTransactionToArray($tradeZone, $transaction, $group, $item);
+                    $this->addActiveTransactionToArray($tradeZone, $transaction, $goodType, $good);
                 }
             }
         });
@@ -60,10 +60,10 @@ class GeneralStoreData
      * note: add the data we ned to the transaction array.
      * @param $tradeZone
      * @param $transaction
-     * @param $group
-     * @param $item
+     * @param $goodType
+     * @param $good
      */
-    private function addActiveTransactionToArray($tradeZone, $transaction, $group, $item) {
+    private function addActiveTransactionToArray($tradeZone, $transaction, $goodType, $good) {
         $currentTransaction    = [
             'trade_zone_id'       => $tradeZone->id,
             'server_id'           => $this->serverId,
@@ -71,8 +71,8 @@ class GeneralStoreData
             'value'               => $transaction->pricePerUnit,
             'amount'              => $transaction->Qty,
             'transaction_type_id' => $this->getTransactionId($transaction),
-            'good_type_id'        => $group->id,
-            'good_id'             => $item->id,
+            'good_type_id'        => $goodType->id,
+            'good_id'             => $good->id,
             'owner'               => $transaction->Owner
         ];
         $this->transactionArray[] = $currentTransaction;

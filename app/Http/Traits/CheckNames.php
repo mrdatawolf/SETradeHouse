@@ -8,56 +8,79 @@ use App\Tools;
 use App\TransactionTypes;
 
 trait CheckNames {
-    public function seNameToGroupType($item) {
-        $itemArray = explode('/',$item);
-        $seName = $itemArray[0];
-        switch($seName) {
+    /**
+     * note: normally you want the good from the seName... this returns it for you.
+     * @param $seName
+     *
+     * @return mixed
+     */
+    public function seNameToGood($seName) {
+        $goodType = $this->seNameToGoodType($seName);
+
+        return $this->seNameAndGoodTypeToGood($goodType, $seName);
+    }
+
+
+    /**
+     * @param $seName
+     *
+     * @return string
+     */
+    public function seNameGroupToGoodTypeTitle($seName) {
+        $seNameArray = explode('/',$seName);
+        $seGoodType = $seNameArray[0];
+        switch($seGoodType) {
             case 'MyObjectBuilder_Ingot' :
-                $itemType = 'Ingots';
+                $itemType = 'Ingot';
                 break;
             case 'MyObjectBuilder_Ore' :
-                $itemType = 'Ores';
+                $itemType = 'Ore';
                 break;
             case 'MyObjectBuilder_Component':
-                $itemType = 'Components';
+                $itemType = 'Component';
                 break;
             default:
-                    /* tools should be things like
-                     * 'MyObjectBuilder_AmmoMagazine','MyObjectBuilder_ConsumableItem','MyObjectBuilder_GasContainerObject','MyObjectBuilder_OxygenContainerObject','MyObjectBuilder_PhysicalGunObject','MyObjectBuilder_Datapad','MyObjectBuilder_PhysicalObject','MyObjectBuilder_Package'
-                    */
-                $itemType = 'Tools';
+                    /* tools should be things like :  'MyObjectBuilder_AmmoMagazine','MyObjectBuilder_ConsumableItem','MyObjectBuilder_GasContainerObject','MyObjectBuilder_OxygenContainerObject','MyObjectBuilder_PhysicalGunObject','MyObjectBuilder_Datapad','MyObjectBuilder_PhysicalObject','MyObjectBuilder_Package'*/
+                $itemType = 'Tool';
 
         }
 
         return $itemType;
     }
 
-    public function seNameToGroup($item) {
-        $itemArray = explode('/',$item);
-        $itemType = $this->seNameToGroupType($itemArray[0]);
 
-        return GoodTypes::where('title',$itemType)->first();
+    /**
+     * @param $goodSeName
+     *
+     * @return mixed
+     */
+    public function seNameToGoodType($goodSeName) {
+        $seNameArray = explode('/',$goodSeName);
+        $goodType = $this->seNameGroupToGoodTypeTitle($seNameArray[0]);
+
+
+        return GoodTypes::where('title',$goodType)->first();
     }
 
     /**
-     * @param $group
-     * @param $item
+     * @param $goodType
+     * @param $seName
      *
      * @return string
      */
-    private function seNameToItemTitle($group, $item) {
-        switch($group->id) {
+    private function seNameToGoodTitle($goodType, $seName) {
+        switch($goodType->id) {
             case '2' :
-                $name = Ingots::where('se_name', $item)->pluck('title')->first();
+                $name = Ingots::where('se_name', $seName)->pluck('title')->first();
                 break;
             case '1' :
-                $name = Ores::where('se_name', $item)->pluck('title')->first();
+                $name = Ores::where('se_name', $seName)->pluck('title')->first();
                 break;
             case '3' :
-                $name = Components::where('se_name', $item)->pluck('title')->first();
+                $name = Components::where('se_name', $seName)->pluck('title')->first();
                 break;
             default:
-                $name = Tools::where('se_name', $item)->pluck('title')->first();
+                $name = Tools::where('se_name', $seName)->pluck('title')->first();
 
         }
 
@@ -65,43 +88,65 @@ trait CheckNames {
     }
 
 
-    private function seNameToItem($group, $item) {
-        switch($group->id) {
-            case '2' :
-                $model = Ingots::where('se_name', $item)->first();
-                break;
+    /**
+     * @param $goodType
+     * @param $seName
+     *
+     * @return mixed
+     */
+    private function seNameAndGoodTypeToGood($goodType, $seName) {
+        switch($goodType->id) {
             case '1' :
-                $model = Ores::where('se_name', $item)->first();
+                $model = Ores::where('se_name', $seName)->first();
+                break;
+            case '2' :
+                $model = Ingots::where('se_name', $seName)->first();
                 break;
             case '3' :
-                $model = Components::where('se_name', $item)->first();
+                $model = Components::where('se_name', $seName)->first();
                 break;
             default:
-                $model = Tools::where('se_name', $item)->first();
+                $model = Tools::where('se_name', $seName)->first();
         }
 
         return $model;
     }
 
-    private function getItemFromGroupAndItemId($group, $itemId) {
-        switch($group->id) {
+    public function getGoodFromIds($typeId, $goodId) {
+
+    }
+
+    /**
+     * @param $goodType
+     * @param $goodId
+     *
+     * @return |null
+     */
+    private function getGoodFromGoodTypeAndGoodId($goodType, $goodId) {
+        switch($goodType->id) {
             case '2' :
-                $model = Ingots::find($itemId);
+                $model = Ingots::find($goodId);
                 break;
             case '1' :
-                $model = Ores::find($itemId);
+                $model = Ores::find($goodId);
                 break;
             case '3' :
-                $model = Components::find($itemId);
+                $model = Components::find($goodId);
                 break;
             default:
-                $model = Tools::find($itemId);
+                $model = Tools::find($goodId);
 
         }
 
         return (! empty($model)) ? $model : null;
     }
 
+
+    /**
+     * @param $typeId
+     *
+     * @return mixed
+     */
     private function getTransactionTypeFromId($typeId) {
         return TransactionTypes::find($typeId);
     }

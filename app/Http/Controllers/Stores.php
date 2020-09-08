@@ -54,7 +54,7 @@ class Stores extends Controller
             foreach($transactions as $transaction) {
                 $tradeZone =  TradeZones::find($transaction->trade_zone_id);
                 $goodType = GoodTypes::find($transaction->good_type_id);
-                $item =$this->getItemFromGroupAndItemId($goodType, $transaction->good_id);
+                $item =$this->getGoodFromGoodTypeAndGoodId($goodType, $transaction->good_id);
                 $transactionType = $this->getTransactionTypeFromId($transaction->transaction_type_id);
                 $gridName = $tradeZone->title;
                 $owner = $transaction->owner;
