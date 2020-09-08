@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers\Gather;
 
-use App\Http\Traits\CheckNames;
+use App\Http\Traits\FindingGoods;
 use App\InactiveTransactions;
 use App\Stores;
 use App\TradeZones;
@@ -9,7 +9,7 @@ use App\TransactionTypes;
 
 class GeneralStoreData
 {
-    use CheckNames;
+    use FindingGoods;
 
     protected $serverId;
     protected $worldId;

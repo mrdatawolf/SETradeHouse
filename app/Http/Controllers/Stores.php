@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 use App\GoodTypes;
-use App\Http\Traits\CheckNames;
+use App\Http\Traits\FindingGoods;
 use App\TradeZones;
 use App\Transactions;
 use \Session;
 
 class Stores extends Controller
 {
-    use CheckNames;
+    use FindingGoods;
 
     protected $data;
 
     public function index() {
-        $title = "Stores";
-        $stores = Session::get('stores');
+        $title      = "Stores";
+        $storeType  = "personal";
+        $stores     = Session::get('stores');
 
-        return view('stores.your', compact('stores','title'));
+
+        return view('stores.personal', compact('stores', 'storeType', 'title'));
     }
 
 
@@ -25,10 +27,11 @@ class Stores extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function worldIndex() {
-        $title = "Stores";
-        $stores = Session::get('stores');
+        $title      = "Stores";
+        $storeType  = "world";
+        $stores     = Session::get('stores');
 
-        return view('stores.world', compact('stores','title'));
+        return view('stores.world', compact('stores','storeType', 'title'));
     }
 
 
@@ -36,10 +39,38 @@ class Stores extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function serverIndex() {
-        $title = "Stores";
-        $stores = Session::get('stores');
+        $title          = "Stores";
+        $storeType      = "server";
+        $stores         = Session::get('stores');
+        $globalAverages = $this->getGlobalAveragesForGoods('server',$stores);
 
-        return view('stores.server', compact('stores','title'));
+        return view('stores.server', compact('stores','storeType', 'title', 'globalAverages'));
+    }
+
+
+    /**
+     * @param $levelToSearch
+     * @param $stores
+     *
+     * @return array
+     */
+    private function getGlobalAveragesForGoods($levelToSearch,$stores) {
+        //$searchUsername = $currentUser->server_username ?? $currentUser->username;
+        //todo: to actually limit to a personal/world/server levels we will have to refactor how we get the data
+        $globalAverages = [];
+        foreach($stores as $storeData) {
+            foreach($storeData['Averages'] as $goodType => $goodTypeData) {
+                foreach($goodTypeData as $transactionType => $transactionTypeData) {
+                    foreach($transactionTypeData as $good => $goodData) {
+                        $globalAverages[$goodType][$transactionType][$good]['price']    = (empty($globalAverages[$goodType][$transactionType][$good]['price'])) ? $goodData['Price'] : $globalAverages[$goodType][$transactionType][$good]['price']+$goodData['Price'];
+                        $globalAverages[$goodType][$transactionType][$good]['count']    = (empty($globalAverages[$goodType][$transactionType][$good]['count'])) ? 1 : $globalAverages[$goodType][$transactionType][$good]['count']+1;
+                        $globalAverages[$goodType][$transactionType][$good]['average']  = $globalAverages[$goodType][$transactionType][$good]['price']/$globalAverages[$goodType][$transactionType][$good]['count'];
+                    }
+                }
+            }
+        }
+
+        return $globalAverages;
     }
 
 

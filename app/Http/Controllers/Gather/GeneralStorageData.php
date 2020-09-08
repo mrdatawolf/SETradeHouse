@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers\Gather;
 
-use App\Http\Traits\CheckNames;
+use App\Http\Traits\FindingGoods;
 use App\NpcStorageValues;
 use App\UserItems;
 use App\UserStorageValues;
@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class GeneralStorageData
 {
-    use CheckNames;
+    use FindingGoods;
 
 
     protected $serverId;

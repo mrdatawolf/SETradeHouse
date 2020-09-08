@@ -17,46 +17,46 @@ class Orders extends Controller
     /**
      * @var int
      */
-    protected $defaultAmount    = 1000000;
+    protected $defaultAmount    = 100000;
     protected $transaction      = 'order';
 
     public function ores() {
-        $type               = 'ores';
-        $transaction        = $this->transaction;
-        $header             = 'Buy ' . $type . ' from the players';
-        $items              = Ores::all();
-        $defaultMultiplier  = 1;
-        $defaultAmount = $this->defaultAmount;
-        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
+        $goodType           = 'ores';
+        $transactionType    = $this->transaction;
+        $header             = 'Buy ' . $goodType . ' from the players';
+        $goods              = Ores::all();
+        $defaultMultiplier  = .95;
+        $defaultAmount      = $this->defaultAmount;
+        return view('transactions.type', compact('transactionType', 'goodType', 'header', 'goods', 'defaultMultiplier', 'defaultAmount'));
     }
 
     public function ingots() {
-        $type               = 'ingots';
-        $transaction        = $this->transaction;
-        $header             = 'Buy ' . $type . ' from the players';
-        $items              = Ingots::all();
-        $defaultMultiplier  = 1;
+        $goodType           = 'ingots';
+        $transactionType    = $this->transaction;
+        $header             = 'Buy ' . $goodType . ' from the players';
+        $goods              = Ingots::all();
+        $defaultMultiplier  = .95;
         $defaultAmount      = $this->defaultAmount;
-        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
+        return view('transactions.type', compact('transactionType', 'goodType', 'header', 'goods', 'defaultMultiplier', 'defaultAmount'));
     }
 
     public function components() {
-        $type = 'components';
-        $transaction = $this->transaction;
-        $header = 'Buy ' . $type . ' from the players';
-        $items = Components::all();
-        $defaultMultiplier = 1;
-        $defaultAmount = $this->defaultAmount;
-        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
+        $goodType           = 'components';
+        $transactionType    = $this->transaction;
+        $header             = 'Buy ' . $goodType . ' from the players';
+        $goods              = Components::all();
+        $defaultMultiplier  = .95;
+        $defaultAmount      = $this->defaultAmount;
+        return view('transactions.type', compact('transactionType', 'goodType', 'header', 'goods', 'defaultMultiplier', 'defaultAmount'));
     }
 
     public function tools() {
-        $type = 'tools';
-        $transaction = $this->transaction;
-        $header = 'Buy ' . $type . ' from the players';
-        $items = Tools::all();
-        $defaultMultiplier = 1;
-        $defaultAmount = $this->defaultAmount;
-        return view('transactions.type', compact('transaction', 'type', 'header', 'items', 'defaultMultiplier', 'defaultAmount'));
+        $goodType           = 'tools';
+        $transactionType    = $this->transaction;
+        $header             = 'Buy ' . $goodType . ' from the players';
+        $goods              = Tools::all();
+        $defaultMultiplier  = .95;
+        $defaultAmount  = $this->defaultAmount;
+        return view('transactions.type', compact('transactionType', 'goodType', 'header', 'goods', 'defaultMultiplier', 'defaultAmount'));
     }
 }

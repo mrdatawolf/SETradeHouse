@@ -4,8 +4,12 @@ $('#set_amount').change(function () {
     exportTableTo(false,'','text');
 });
 $('#set_modifier').change(function () {
-    //$('.')
-   // get the current value
+    var newModifier = $(this).val();
+    $('.value').each(function(i, obj) {
+        var originalValue = $(obj).data('originalValue');
+        $(obj).html(originalValue * newModifier);
+    })
+    exportTableTo(false,'','text');
 });
 
 

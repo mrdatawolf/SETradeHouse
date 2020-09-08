@@ -1,5 +1,5 @@
-@extends('layouts.'.$transaction)
-@section('title', $type)
+@extends('layouts.'.$transactionType)
+@section('title', $goodType)
 @section('menu')
     @parent
 @endsection
