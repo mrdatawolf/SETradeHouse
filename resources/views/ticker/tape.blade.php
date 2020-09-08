@@ -5,19 +5,24 @@
         <strong>Server Insights:</strong>
         <ul>
             @php
-            $stockLevels = \Session::get('stockLevels');
-            $tickerData = [];
+            $stockLevels    = \Session::get('stockLevels');
+            $tickerData     = [];
             if(! empty($stockLevels)) {
+                $maxCount       = 5;
+                $count          = $maxCount+1;
+                $stringedData   = "Gathering Data from around the Cluster...";
                 foreach($stockLevels as $entityType => $entityData) {
-                    $stringedData = $entityType . "---";
                     foreach($entityData as $type => $data) {
-                        $count = 0;
-                        $stringedData .= " " . $type."...";
+                        if($count > 0) {
+                            $tickerData[]   = $stringedData;
+                            $stringedData   = $entityType . " - " . $type;
+                            $count          = 0;
+                        }
                         foreach($data as $name => $value) {
                             if($count > 5) {
-                                $tickerData[] = $stringedData;
-                                $stringedData = $entityType . "---" . $type . "...";
-                                $count=0;
+                                $tickerData[]   = $stringedData;
+                                $stringedData   = $entityType . " - " . $type;
+                                $count          = 0;
                             }
                             $stringedData .=" | ".$name." ".$value." ";
                             $count++;

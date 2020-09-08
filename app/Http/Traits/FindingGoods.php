@@ -7,7 +7,7 @@ use App\Ores;
 use App\Tools;
 use App\TransactionTypes;
 
-trait CheckNames {
+trait FindingGoods {
     /**
      * note: normally you want the good from the seName... this returns it for you.
      * @param $seName

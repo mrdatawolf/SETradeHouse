@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components;
 use App\GoodTypes;
-use App\Http\Traits\CheckNames;
+use App\Http\Traits\FindingGoods;
 use App\Ingots;
 use App\NpcStorageValues;
 use App\Ores;
@@ -13,7 +13,7 @@ use App\UserStorageValues;
 
 class Stocklevels extends Controller
 {
-    use CheckNames;
+    use FindingGoods;
     public function index() {
         $title = "Stock Levels";
         $stockLevels = \Session::get('stockLevels');
