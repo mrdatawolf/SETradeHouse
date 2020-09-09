@@ -7,6 +7,12 @@ A standalone web service allowing users to see trade data from participating Spa
  
 ##Development setup Quick Start (for local development and testing)
 1. It is now built on laravel 7 so get that running.
+2. Do composer update
+3. Configure your .env to handle your dbs etc.
+4. run ```php artisan migrate:fresh```
+5. You will need to add the initial user, server, and world to the db (by hand for now)
+6. run ```php artisan db:seed```
+7. Let me know what I missed here :)
 
 ##Current Roadmap
 Road to 1.0 MVP
@@ -23,7 +29,7 @@ Road to 1.0 MVP
 11. ~~Open it up so anyone can interact with the test system.~~
 12. ~~Allow touch devices to interact with the pages.~~
 13. ~~Fix the GPS pull.~~
-14. Convert SQL files to migrations/seeders.
+14. ~~Convert SQL files to migrations/seeders.~~
  
 ##Future Roadmap
 1.  Revised +1.0 goals.

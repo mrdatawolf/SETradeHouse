@@ -1,0 +1,15 @@
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (1, 'cobalt', 1.463463463, 'MyObjectBuilder_Ingot/Cobalt');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (2, 'nickel', 1.168, 'MyObjectBuilder_Ingot/Nickel');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (3, 'iron', 1.0139860139, 'MyObjectBuilder_Ingot/Iron');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (4, 'platinum', 1.4620875, 'MyObjectBuilder_Ingot/Platinum');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (5, 'uranium', 1.53646, 'MyObjectBuilder_Ingot/Uranium');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (6, 'magnesium', 1.1351322978, 'MyObjectBuilder_Ingot/Magnesium');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (7, 'silver', 1.2309999999, 'MyObjectBuilder_Ingot/Silver');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (8, 'silicon', 1.153846154, 'MyObjectBuilder_Ingot/Silicon');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (9, 'gold', 1.11215, 'MyObjectBuilder_Ingot/Gold');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (10, 'gravel', 1, 'MyObjectBuilder_Ingot/Stone');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (11, 'ice', 1, 'fillme');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (12, 'scrap', 1, 'MyObjectBuilder_Ingot/Scrap');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (13, 'naquadah', 1.53646, 'MyObjectBuilder_Ingot/Naquadah');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (14, 'trinium', 1.53646, 'MyObjectBuilder_Ingot/Trinium');
+insert into main.ingots (id, title, keen_crap_fix, se_name) values (15, 'neutronium', 1.53646, 'MyObjectBuilder_Ingot/Neutronium');
