@@ -35,8 +35,6 @@ class GatherNebulonData extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->server=Servers::where('title', 'The Nebulon Cluster')->first();
-        $this->world=Worlds::where('title', 'Nebulon')->first();
     }
 
     /**
@@ -45,11 +43,23 @@ class GatherNebulonData extends Command
      */
     public function handle()
     {
-        $gatherGeneralStorageData = new GeneralStorageData($this->option('initial'), $this->server->id, $this->world->id);
-        $gatherGeneralStorageData->upateUserAndNpcStorageValues();
+        $servers = Servers::where('title', 'The Nebulon Cluster');
+        if(! $servers->count() > 0) {
+            $this->server = $servers->first();
+        }
+        $worlds = Worlds::where('title', 'Nebulon');
+        if(! $worlds->count() > 0) {
+            $this->world = $worlds->first();
+        }
+        if(!empty($this->server) && !empty($this->world)) {
+            $gatherGeneralStorageData = new GeneralStorageData($this->option('initial'), $this->server->id,
+                $this->world->id);
+            $gatherGeneralStorageData->upateUserAndNpcStorageValues();
 
-        $gatherGeneralStoreData = new GeneralStoreData($this->option('initial'), $this->server->id, $this->world->id);
-        $gatherGeneralStoreData->updateTransactionValues();
+            $gatherGeneralStoreData = new GeneralStoreData($this->option('initial'), $this->server->id,
+                $this->world->id);
+            $gatherGeneralStoreData->updateTransactionValues();
+        }
     }
 
 
