@@ -44,14 +44,16 @@ class GatherNebulonData extends Command
     public function handle()
     {
         $servers = Servers::where('title', 'The Nebulon Cluster');
-        if(! $servers->count() > 0) {
+        if( $servers->count() > 0) {
             $this->server = $servers->first();
         }
         $worlds = Worlds::where('title', 'Nebulon');
-        if(! $worlds->count() > 0) {
+        if( $worlds->count() > 0) {
             $this->world = $worlds->first();
         }
         if(!empty($this->server) && !empty($this->world)) {
+            $this->output->note('Server: ' . $this->server->title);
+            $this->output->note('World : ' . $this->world->title);
             $gatherGeneralStorageData = new GeneralStorageData($this->option('initial'), $this->server->id,
                 $this->world->id);
             $gatherGeneralStorageData->upateUserAndNpcStorageValues();
