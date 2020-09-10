@@ -152,10 +152,17 @@
                     </li>
                     */ ?>
                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Other Info</a>
+                        <ul class="dropdown-menu">
+                            <li>Current Server: {{ \App\Servers::find($currentUser->server_id)->title ?? '' }}</li>
+                            <li>Current World: 'work in progress'</li>
+                            <li>Last DB date: {{ Session::get('newest_db_date') }}</li>
+                            <li>Last sync: {{ Session::get('newest_sync_date') }}</li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ $currentUser->username }}</a>
                         <ul class="dropdown-menu">
-                            <li>Current Server: {{ $currentUser->server_id ?? '' }}</li>
-                            <li>Current World: 'work in progress'</li>
                             <li>Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
                             <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('logout') }}';">{{ __('Logout') }}</button></li>
                         </ul>

@@ -9,6 +9,7 @@ use \Session;
  *
  * @property int                   $id
  * @property string                $title
+ * @property string                $se_name
  * @property                       $cobalt
  * @property                       $gold
  * @property                       $iron
@@ -19,6 +20,9 @@ use \Session;
  * @property                       $silver
  * @property                       $gravel
  * @property                       $uranium
+ * @property                       $neutronium
+ * @property                       $naquadah
+ * @property                       $trinium
  * @property                       $servers
  * @property                       $mass
  * @property                       $volume
@@ -28,8 +32,19 @@ class Components extends Model
 {
     use ScarcityAdjustment;
 
-    protected $table = 'components';
-    protected $fillable = ['title','se_name','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','mass','volume'];
+    protected $table    = 'components';
+    public $fillable    = ['title','se_name','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','neutronium','naquadah','trinium','mass','volume'];
+    public $timestamps  = false;
+
+
+    public function worlds() {
+        return $this->belongsToMany('App\Worlds');
+    }
+
+
+    public function servers() {
+        return $this->belongsToMany('App\Servers');
+    }
 
     /**
      * note: take all the ingots used to make this and their base value to get a price for the component.
