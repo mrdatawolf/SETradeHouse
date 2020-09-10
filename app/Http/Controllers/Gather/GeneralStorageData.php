@@ -20,40 +20,46 @@ class GeneralStorageData
         $this->serverId = $serverId;
         $this->worldId = $worldId;
     }
-    public function upateUserAndNpcStorageValues() {
+    public function upateUserAndNpcStorageValues()
+    {
         $userItems = new UserItems();
-        if (! $this->isInitial) {
+        if ( ! $this->isInitial) {
             $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subDay());
         }
-        $runningTotals = [];
-        $userItems->chunk(400, function ($userItems) use($runningTotals) {
-            foreach ($userItems as $row) {
-                $owner = $row['Owner'];
-                $amount = $row['Qty'];
-                $goodType = $this->seNameToGoodType($row['Item']);
-                if(! empty($goodType->id) && ! empty($owner)) {
-                    $good  = $this->seNameToGood($row['Item']);
-                    $isNpc = (substr($owner,0,4) === 'NPC ');
-                    if(!empty($good->id)) {
-                        $storages = ($isNpc) ? new NpcStorageValues() : new UserStorageValues();
-                        $amount = $this->getCurrentAmount($owner, $goodType->id, $good->id, $runningTotals, $amount);
-                        $runningTotals[$owner][$goodType->id][$good->id] = $amount;
-                        $storages->updateOrCreate(
-                            [
+        if ($userItems->count() < 1) {
+            \Session::put('newest_db_date','More then 1 days old!');
+        } else {
+            $runningTotals = [];
+            $userItems->chunk(400, function ($userItems) use ($runningTotals) {
+                foreach ($userItems as $row) {
+                    $owner           = $row['Owner'];
+                    $amount          = $row['Qty'];
+                    $origintimestamp = $row['Timestamp'];
+                    $goodType        = $this->seNameToGoodType($row['Item']);
+                    if ( ! empty($goodType->id) && ! empty($owner)) {
+                        $good  = $this->seNameToGood($row['Item']);
+                        $isNpc = (substr($owner, 0, 4) === 'NPC ');
+                        if ( ! empty($good->id)) {
+                            $storages                                        = ($isNpc) ? new NpcStorageValues()
+                                : new UserStorageValues();
+                            $amount                                          = $this->getCurrentAmount($owner,
+                                $goodType->id, $good->id, $runningTotals, $amount);
+                            $runningTotals[$owner][$goodType->id][$good->id] = $amount;
+                            $storages->updateOrCreate([
                                 'owner'     => $owner,
                                 'item_id'   => $good->id,
                                 'group_id'  => $goodType->id,
                                 'server_id' => $this->serverId,
                                 'world_id'  => $this->worldId
-                            ],
-                            [
-                                'amount' => $amount
-                            ]
-                        );
+                            ], [
+                                    'amount'           => $amount,
+                                    'origin_timestamp' => $origintimestamp
+                                ]);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
 

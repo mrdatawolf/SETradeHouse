@@ -6,6 +6,7 @@ use App\Stores;
 use App\TradeZones;
 use App\Transactions;
 use App\TransactionTypes;
+use Carbon\Carbon;
 
 class GeneralStoreData
 {
@@ -53,6 +54,7 @@ class GeneralStoreData
             $transactionModel = new Transactions();
             $transactionModel->create($transaction);
         }
+        \Session::put('newest_db_date', Carbon::now()->toDateTimeString());
     }
 
 
