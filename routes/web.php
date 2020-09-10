@@ -40,5 +40,10 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
         Route::get('world', 'Stores@worldIndex')->name('stores.world');
         Route::get('server', 'Stores@serverIndex')->name('stores.server');
     });
+    Route::prefix('/profitvsloss')->group(function () {
+        Route::get('your', 'ProfitLoss@index')->name('profitvsloss');
+        Route::get('world', 'ProfitLoss@worldIndex')->name('profitvsloss.world');
+        Route::get('server', 'ProfitLoss@serverIndex')->name('profitvsloss.server');
+    });
 });
 

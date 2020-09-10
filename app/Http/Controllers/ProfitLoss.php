@@ -7,19 +7,20 @@ use App\TradeZones;
 use App\Transactions;
 use \Session;
 
-class Stores extends Controller
+class ProfitLoss extends Controller
 {
     use FindingGoods;
 
     protected $data;
 
     public function index() {
-        $title      = "Stores";
+        $title      = "Stores P/L";
         $storeType  = "personal";
         $stores     = Session::get('stores');
         $globalAverages = $this->getGlobalAveragesForGoods('server',$stores);
 
-        return view('stores.personal', compact('stores', 'storeType', 'title', 'globalAverages'));
+
+        return view('stores.pl.personal', compact('stores', 'storeType', 'title', 'globalAverages'));
     }
 
 
@@ -27,12 +28,12 @@ class Stores extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function worldIndex() {
-        $title      = "Stores";
+        $title      = "Stores P/L";
         $storeType  = "world";
         $stores     = Session::get('stores');
         $globalAverages = $this->getGlobalAveragesForGoods('server',$stores);
 
-        return view('stores.world', compact('stores','storeType', 'title', 'globalAverages'));
+        return view('stores.pl.world', compact('stores','storeType', 'title', 'globalAverages'));
     }
 
 
@@ -40,12 +41,12 @@ class Stores extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function serverIndex() {
-        $title          = "Stores";
+        $title          = "Stores P/L";
         $storeType      = "server";
         $stores         = Session::get('stores');
         $globalAverages = $this->getGlobalAveragesForGoods('server',$stores);
 
-        return view('stores.server', compact('stores','storeType', 'title', 'globalAverages'));
+        return view('stores.pl.server', compact('stores','storeType', 'title', 'globalAverages'));
     }
 
 
