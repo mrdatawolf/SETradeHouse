@@ -154,10 +154,10 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Other Info</a>
                         <ul class="dropdown-menu">
-                            <li>Current Server: {{ \App\Servers::find($currentUser->server_id)->title ?? '' }}</li>
-                            <li>Current World: 'work in progress'</li>
-                            <li>Last DB date: {{ Session::get('newest_db_date') }}</li>
-                            <li>Last sync: {{ Session::get('newest_sync_date') }}</li>
+                            <li class="font-weight-bold">Current Server: {{ \App\Servers::find($currentUser->server_id)->title ?? '' }}</li>
+                            <li class="font-weight-bold">Current World: 'N/A'</li>
+                            <li class="font-weight-bold">Newest DB date: {{ Session::get('newest_db_record') }}</li>
+                            <li class="font-weight-bold">Newest sync date: {{ Session::get('newest_sync_record') }}</li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

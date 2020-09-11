@@ -26,17 +26,15 @@ class GeneralStorageData
         if ( ! $this->isInitial) {
             $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subDay());
         }
-        if ($userItems->count() < 1) {
-            \Session::put('newest_db_date','More then 1 days old!');
-        } else {
+        if ($userItems->count() >= 1) {
             $runningTotals = [];
             $userItems->chunk(400, function ($userItems) use ($runningTotals) {
                 foreach ($userItems as $row) {
                     $owner           = $row['Owner'];
-                    $amount          = $row['Qty'];
-                    $origintimestamp = $row['Timestamp'];
                     $goodType        = $this->seNameToGoodType($row['Item']);
                     if ( ! empty($goodType->id) && ! empty($owner)) {
+                        $amount          = $row['Qty'];
+                        $originTimestamp = $row['Timestamp'];
                         $good  = $this->seNameToGood($row['Item']);
                         $isNpc = (substr($owner, 0, 4) === 'NPC ');
                         if ( ! empty($good->id)) {
@@ -53,7 +51,7 @@ class GeneralStorageData
                                 'world_id'  => $this->worldId
                             ], [
                                     'amount'           => $amount,
-                                    'origin_timestamp' => $origintimestamp
+                                    'origin_timestamp' => $originTimestamp
                                 ]);
                         }
                     }
