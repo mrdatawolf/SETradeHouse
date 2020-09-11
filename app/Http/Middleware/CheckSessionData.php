@@ -67,14 +67,14 @@ class CheckSessionData
     public function setNewestDBRecordedDate() {
         $npcStorageValue = NpcStorageValues::latest('origin_timestamp')->first();
 
-        $originString = (empty($npcStorageValue->origin_timestamp)) ? 'N/A' : $npcStorageValue->origin_timestamp . ' +0';
+        $originString = (empty($npcStorageValue->origin_timestamp)) ? 'N/A' : $npcStorageValue->origin_timestamp . ' -7';
         Session::put('newest_db_record', $originString);
     }
 
 
     public function setNewestSyncRecordedDate() {
         $transaction = Transactions::latest('updated_at')->first();
-        $updatedAtString = (empty($transaction->updated_at)) ? 'N/A' : $transaction->updated_at->toDateTimeString() . ' +7';
+        $updatedAtString = (empty($transaction->updated_at)) ? 'N/A' : $transaction->updated_at->toDateTimeString() . ' +0';
         Session::put('newest_sync_record', $updatedAtString);
     }
 }
