@@ -124,8 +124,10 @@ class GeneralStoreData
      * @return mixed
      */
     private function getTZ($transaction) {
-        $tzTitle    = $transaction->gridName;
-        $owner      = $transaction->Owner;
+        $tzTitle = str_replace('"', "", $transaction->gridName);
+        $tzTitle = str_replace("'", "", $tzTitle);
+        $owner = str_replace('"', "", $transaction->Owner);
+        $owner = str_replace("'", "", $owner);
         $tradeZones = new TradeZones();
         $gps        = $transaction->GPSString;
 
