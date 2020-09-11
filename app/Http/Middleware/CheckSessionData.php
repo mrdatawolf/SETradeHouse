@@ -65,8 +65,9 @@ class CheckSessionData
 
 
     public function setNewestDBRecordedDate() {
-        $npcStorageValue = NpcStorageValues::latest()->first();
-        $originString = (empty($npcStorageValue->origin_timestamp)) ? 'N/A' : $npcStorageValue->origin_timestamp->toDateTimeString() . ' UTZ';
+        $npcStorageValue = NpcStorageValues::latest('origin_timestamp')->first();
+
+        $originString = (empty($npcStorageValue->origin_timestamp)) ? 'N/A' : $npcStorageValue->origin_timestamp . ' UTZ';
         Session::put('newest_db_record', $originString);
     }
 
