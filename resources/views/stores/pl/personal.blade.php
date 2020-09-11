@@ -9,7 +9,15 @@
                 @foreach($stores as $gridName => $gridData)
                     @php $searchUsername = $currentUser->server_username ?? $currentUser->username; @endphp
                     @if(strtolower($gridData['Info']['Owner']) === strtolower($searchUsername))
-                        @php $idName = str_replace(' ', '', $gridName); @endphp
+                        @php
+                            $idName = str_replace(' ', '', $gridName);
+                            $idName = str_replace('[', '', $idName);
+                            $idName = str_replace(']', '', $idName);
+                            $idName = str_replace('(', '', $idName);
+                            $idName = str_replace(')', '', $idName);
+                            $idName = htmlentities($idName);
+                            $idName = htmlspecialchars($idName);
+                        @endphp
                         <li class="nav-item">
                             <a href="#{{ $idName }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $gridName }}</a>
                         </li>
@@ -22,7 +30,15 @@
                 @foreach($stores as $gridName => $gridData)
                     @php $searchUsername = $currentUser->server_username ?? $currentUser->username; @endphp
                     @if(strtolower($gridData['Info']['Owner']) === strtolower($searchUsername))
-                        @php $idName = str_replace(' ', '', $gridName); @endphp
+                        @php
+                            $idName = str_replace(' ', '', $gridName);
+                            $idName = str_replace('[', '', $idName);
+                            $idName = str_replace(']', '', $idName);
+                            $idName = str_replace('(', '', $idName);
+                            $idName = str_replace(')', '', $idName);
+                            $idName = htmlentities($idName);
+                            $idName = htmlspecialchars($idName);
+                        @endphp
                         <div class="tab-pane fade {{ $specialClasses }}" id="{{ $idName }}">
                             <div class="card">
                                 <div class="card-header">{{ $gridData['Info']['Owner'] }}</div>
