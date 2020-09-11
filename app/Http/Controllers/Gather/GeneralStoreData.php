@@ -127,6 +127,7 @@ class GeneralStoreData
         $tzTitle    = $transaction->gridName;
         $owner      = $transaction->Owner;
         $tradeZones = new TradeZones();
+        $gps        = $transaction->GPSString;
 
         return $tradeZones->firstOrCreate(
             [
@@ -136,7 +137,8 @@ class GeneralStoreData
                 'world_id' => $this->worldId
             ],
             [
-                'local_weight' => 4
+                'local_weight'  => 4,
+                'gps'           => $gps
             ]
         );
     }
