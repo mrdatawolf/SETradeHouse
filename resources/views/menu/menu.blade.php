@@ -95,10 +95,10 @@
                             </li>
                         </ul>
                     </li>
-                <?php /*
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Trends</a>
                         <ul class="dropdown-menu">
+                        <?php /*
                             <li><a class="dropdown-item" href="#"> Stores &raquo </a>
                                 <ul class="submenu dropdown-menu">
                                     <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
@@ -106,13 +106,13 @@
                                     <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
                                 </ul>
                             </li>
+                        */ ?>
                             <li><a class="dropdown-item" href="#"> Ores &raquo </a>
                                 <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ores.iron') }}';">Iron</button></li>
                                 </ul>
                             </li>
+                        <?php /*
                             <li><a class="dropdown-item" href="#"> Ingots &raquo </a>
                                 <ul class="submenu dropdown-menu">
                                     <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
@@ -148,9 +148,9 @@
                                     <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
                                 </ul>
                             </li>
+                        */ ?>
                         </ul>
                     </li>
-                    */ ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Other Info</a>
                         <ul class="dropdown-menu">

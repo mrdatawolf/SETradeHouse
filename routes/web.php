@@ -46,4 +46,12 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
         Route::get('server', 'ProfitLoss@serverIndex')->name('profitvsloss.server');
     });
 });
+//trends
+Route::group(['middleware' => ['auth', 'session.data']], function () {
+    Route::prefix('/trends')->group(function () {
+        Route::prefix('/ores')->group(function () {
+            Route::get('iron', 'Trends@ironOreIndex')->name('trends.ores.iron');
+        });
+    });
+});
 
