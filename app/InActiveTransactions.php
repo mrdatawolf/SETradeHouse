@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property double                $amount
  * @package Models
  */
-class InactiveTransactions extends Model
+class InActiveTransactions extends Model
 {
     protected $table = 'inactive_transactions';
     protected $fillable = ['trade_zone_id', 'owner', 'server_id','world_id', 'transaction_type_id','good_type_id','good_id','value','amount'];
