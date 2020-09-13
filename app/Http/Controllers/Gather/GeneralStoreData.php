@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers\Gather;
 
 use App\Http\Traits\FindingGoods;
-use App\InactiveTransactions;
+use App\InActiveTransactions;
 use App\Stores;
 use App\TradeZones;
 use App\Transactions;
@@ -88,7 +88,7 @@ class GeneralStoreData
         $transactions = new Transactions();
         $transactions->chunk(400, function ($transactions) {
             foreach($transactions as $transaction) {
-                $inActiveTransactionModel = new InactiveTransactions();
+                $inActiveTransactionModel = new InActiveTransactions();
                 $inActiveTransactionModel->create($transaction->toArray());
                 $transaction->delete();
             }
