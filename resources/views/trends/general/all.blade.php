@@ -13,7 +13,7 @@
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ ucfirst($title) }} Daily</h5>
+                    <h5 class="card-title">{{ ucfirst($title) }} Daily (last 30)</h5>
                     <canvas id="trend{{ $title }}Daily"></canvas>
                 </div>
             </div>
@@ -21,7 +21,7 @@
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ ucfirst($title) }} Hourly</h5>
+                    <h5 class="card-title">{{ ucfirst($title) }} Hourly (last 30)</h5>
                     <canvas id="trend{{ $title }}Hourly"></canvas>
                 </div>
             </div>
