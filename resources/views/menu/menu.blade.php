@@ -109,6 +109,7 @@
                         */ ?>
                             <li><a class="dropdown-item" href="#"> Ores &raquo </a>
                                 <ul class="submenu dropdown-menu">
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ores') }}';">All</button></li>
                                     <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ores.iron') }}';">Iron</button></li>
                                 </ul>
                             </li>

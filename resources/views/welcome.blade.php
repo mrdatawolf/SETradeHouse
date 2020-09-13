@@ -24,7 +24,7 @@
                     @endauth
                 </div>
             @endif
-            <div id="app" class="content">
+            <div class="content">
                 <div class="title m-b-md">
                     Space Engineers Trading House
                 </div>

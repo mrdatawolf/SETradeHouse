@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
 Route::group(['middleware' => ['auth', 'session.data']], function () {
     Route::prefix('/trends')->group(function () {
         Route::prefix('/ores')->group(function () {
+            Route::get('/', 'Trends@oreIndex')->name('trends.ores');
             Route::get('iron', 'Trends@ironOreIndex')->name('trends.ores.iron');
         });
     });
