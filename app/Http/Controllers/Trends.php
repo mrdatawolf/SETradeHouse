@@ -37,7 +37,7 @@ class Trends extends Controller
         $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
         $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
 
-        return view('trends.ores.all', compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels'));
+        return view('trends.general.all', compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels'));
     }
 
     public function ingotIndex() {
@@ -74,16 +74,25 @@ class Trends extends Controller
     }
 
 
+    /**
+     * @param $dataPoints
+     *
+     * @return array
+     */
     private function trendingHourlyAvg($dataPoints) {
         $trendHourlyAvg = [];
         if(!empty($dataPoints)) {
-            foreach ($dataPoints as $title => $oreData) {
+            foreach ($dataPoints->all() as $title => $oreData) {
                 foreach ($oreData as $month => $monthValue) {
-                    foreach ($monthValue as $day => $dayValue) {
-                        $trendDailyAvgLabels[$title][] = $month."/".$day;
-                        foreach ($dayValue as $hour => $hourValue) {
-                            $avg                      = round($hourValue['average'] / $hourValue['amount'], 2);
-                            $trendHourlyAvg[$title][] = $avg;
+                    if((int)$month === Carbon::now()->month) {
+                        foreach ($monthValue as $day => $dayValue) {
+                            if ((int)$day === Carbon::now()->day) {
+                                $trendDailyAvgLabels[$title][] = $month."/".$day;
+                                foreach ($dayValue as $hour => $hourValue) {
+                                    $avg                      = round($hourValue->average / $hourValue->amount, 2);
+                                    $trendHourlyAvg[$title][] = $avg;
+                                }
+                            }
                         }
                     }
                 }
@@ -94,15 +103,24 @@ class Trends extends Controller
     }
 
 
+    /**
+     * @param $dataPoints
+     *
+     * @return array
+     */
     private function trendingHourlyAvgLabels($dataPoints) {
         $trendHourlyAvgLabels = [];
         if(!empty($dataPoints)) {
             foreach ($dataPoints as $title => $oreData) {
                 foreach ($oreData as $month => $monthValue) {
-                    foreach ($monthValue as $day => $dayValue) {
-                        $trendDailyAvgLabels[$title][] = $month."/".$day;
-                        foreach ($dayValue as $hour => $hourValue) {
-                            $trendHourlyAvgLabels[$title][] = [$month."/".$day.":".$hour];;
+                    if((int)$month === Carbon::now()->month) {
+                        foreach ($monthValue as $day => $dayValue) {
+                            if ((int)$day === Carbon::now()->day) {
+                                $trendDailyAvgLabels[$title][] = $month."/".$day;
+                                foreach ($dayValue as $hour => $hourValue) {
+                                    $trendHourlyAvgLabels[$title][] = [$hour];;
+                                }
+                            }
                         }
                     }
                 }
@@ -123,7 +141,7 @@ class Trends extends Controller
                         $trendDailyAmount              = 0;
                         $trendDailyAvgLabels[$title][] = $month."/".$day;
                         foreach ($dayValue as $hour => $hourValue) {
-                            $avg              = round($hourValue['average'] / $hourValue['amount'], 2);
+                            $avg              = round($hourValue->average / $hourValue->amount, 2);
                             $trendDailyRawAvg += $avg;
                             $trendDailyAmount++;
                         }
@@ -152,6 +170,14 @@ class Trends extends Controller
         return $trendDailyAvgLabels;
     }
 
+
+    /**
+     * note: take the inactive transactions and get a collection to work with.
+     * @param      $goodTypeId
+     * @param null $goodId
+     *
+     * @return mixed
+     */
     private function gatherDataPoints($goodTypeId, $goodId = null)
     {
         $dataPoints          = [];
@@ -202,7 +228,9 @@ class Trends extends Controller
                 }
             }
         }
+        $dataPointsJson = json_encode($dataPoints);
+        $dataPointsObject = json_decode($dataPointsJson);
 
-        return $dataPoints;
+        return collect($dataPointsObject);
     }
 }
