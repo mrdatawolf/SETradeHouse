@@ -53,6 +53,15 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
             Route::get('/', 'Trends@oreIndex')->name('trends.ores');
             Route::get('iron', 'Trends@ironOreIndex')->name('trends.ores.iron');
         });
+        Route::prefix('/ingots')->group(function () {
+            Route::get('/', 'Trends@ingotIndex')->name('trends.ingots');
+        });
+        Route::prefix('/components')->group(function () {
+            Route::get('/', 'Trends@componentIndex')->name('trends.components');
+        });
+        Route::prefix('/tools')->group(function () {
+            Route::get('/', 'Trends@toolIndex')->name('trends.tools');
+        });
     });
 });
 

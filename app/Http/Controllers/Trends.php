@@ -2,52 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Components;
 use App\InActiveTransactions;
+use App\Ingots;
 use App\Ores;
+use App\Tools;
 use Carbon\Carbon;
 
 class Trends extends Controller
 {
-
     public function ironOreIndex() {
-        $title                  = "Iron Ore Trends";
-        $inActiveTransactons    = InActiveTransactions::where('good_type_id',1)->where('good_id', 3)->get();
-        $dataPoints             = [];
-        foreach($inActiveTransactons as $transacton) {
-            $hour   = $transacton->updated_at->hour;
-            $day    = $transacton->updated_at->day;
-            $month  = $transacton->updated_at->month;
-            if(empty($dataPoints[$month][$day][$hour])) {
-                $dataPoints[$month][$day][$hour]['value']    = $transacton->value;
-                $dataPoints[$month][$day][$hour]['amount']   = $transacton->amount;
-                $dataPoints[$month][$day][$hour]['average']  = $transacton->value*$transacton->amount;
-                $dataPoints[$month][$day][$hour]['count']  = 0;
-            } else {
-                $dataPoints[$month][$day][$hour]['value']    += $transacton->value;
-                $dataPoints[$month][$day][$hour]['amount']   += $transacton->amount;
-                $dataPoints[$month][$day][$hour]['average']  += $transacton->value*$transacton->amount;
-                $dataPoints[$month][$day][$hour]['count']    += 1;
-            }
-        }
-        $trendHourlyAvg = [];
-        $trendHourlyAvgLabels = [];
-        $trendDailyAvg = [];
-        $trendDailyAvgLabels = [];
-        foreach ($dataPoints as $month => $monthValue) {
-            foreach($monthValue as $day => $dayValue) {
-                $trendDailyRawAvg = 0;
-                $trendDailyAmount = 0;
-                $trendDailyAvgLabels[] = $month . "/" . $day;
-                foreach ($dayValue as $hour => $hourValue) {
-                    $avg = round($hourValue['average'] / $hourValue['amount'], 2);
-                    $trendHourlyAvg[]       = $avg;
-                    $trendHourlyAvgLabels[] = [$month . "/" . $day . ":" . $hour];
-                    $trendDailyRawAvg += $avg;
-                    $trendDailyAmount++;
-                }
-               $trendDailyAvg[] = $trendDailyRawAvg/$trendDailyAmount;
-            }
-        }
+        $pageTitle = "Iron Ore Trends";
+        $dataPoints = $this->gatherDataPoints(1, 3);
+        $trendHourlyAvg = $this->trendingHourlyAvg($dataPoints);
+        $trendHourlyAvgLabels = $this->trendingHourlyAvgLabels($dataPoints);
+        $trendDailyAvg = $this->trendingDailyAvg($dataPoints);
+        $trendDailyAvgLabels = $this->trendingDailyAvgLabels($dataPoints);
 
         $jsonDataPoints = json_encode($dataPoints);
         $jsonHourlyAvg        = json_encode($trendHourlyAvg, true);
@@ -55,53 +25,184 @@ class Trends extends Controller
         $jsonDailyAvg        = json_encode($trendDailyAvg, true);
         $jsonDailyAvgLabels  = json_encode($trendDailyAvgLabels);
 
-        return view('trends.ores.iron', compact('title','jsonDataPoints', 'jsonHourlyAvg', 'jsonHourlyAvgLabels', 'jsonDailyAvg', 'jsonDailyAvgLabels'));
+        return view('trends.ores.iron', compact('pageTitle','jsonDataPoints', 'jsonHourlyAvg', 'jsonHourlyAvgLabels', 'jsonDailyAvg', 'jsonDailyAvgLabels'));
     }
 
 
     public function oreIndex() {
-        $title                  = "Iron Ore Trends";
-        $inActiveTransactons    = InActiveTransactions::where('good_type_id',1)->where('updated_at', '>', Carbon::now()->subDays(30))->get();
-        $dataPoints             = [];
-        foreach($inActiveTransactons as $transacton) {
-            $hour       = $transacton->updated_at->hour;
-            $day        = $transacton->updated_at->day;
-            $month      = $transacton->updated_at->month;
-            $oreTitle   = Ores::find($transacton->good_id)->title;
-            if(empty($dataPoints[$month][$day][$hour])) {
-                $dataPoints[$oreTitle][$month][$day][$hour]['value']    = $transacton->value;
-                $dataPoints[$oreTitle][$month][$day][$hour]['amount']   = $transacton->amount;
-                $dataPoints[$oreTitle][$month][$day][$hour]['average']  = $transacton->value*$transacton->amount;
-                $dataPoints[$oreTitle][$month][$day][$hour]['count']    = 0;
-            } else {
-                $dataPoints[$oreTitle][$month][$day][$hour]['value']    += $transacton->value;
-                $dataPoints[$oreTitle][$month][$day][$hour]['amount']   += $transacton->amount;
-                $dataPoints[$oreTitle][$month][$day][$hour]['average']  += $transacton->value*$transacton->amount;
-                $dataPoints[$oreTitle][$month][$day][$hour]['count']    += 1;
-            }
-        }
+        $pageTitle              = "Ore Trends";
+        $dataPoints             = $this->gatherDataPoints(1);
+        $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
+        $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
+        $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
+        $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
+
+        return view('trends.ores.all', compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels'));
+    }
+
+    public function ingotIndex() {
+        $pageTitle              = "Ingot Trends";
+        $dataPoints             = $this->gatherDataPoints(2);
+        $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
+        $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
+        $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
+        $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
+
+        return view('trends.general.all', compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels'));
+    }
+
+    public function componentIndex() {
+        $pageTitle              = "Component Trends";
+        $dataPoints             = $this->gatherDataPoints(3);
+        $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
+        $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
+        $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
+        $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
+
+        return view('trends.general.all', compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels'));
+    }
+
+    public function toolIndex() {
+        $pageTitle              = "Tools Trends";
+        $dataPoints             = $this->gatherDataPoints(4);
+        $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
+        $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
+        $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
+        $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
+
+        return view('trends.general.all', compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels'));
+    }
+
+
+    private function trendingHourlyAvg($dataPoints) {
         $trendHourlyAvg = [];
-        $trendHourlyAvgLabels = [];
-        $trendDailyAvg = [];
-        $trendDailyAvgLabels = [];
-        foreach($dataPoints as $oreTitle => $oreData) {
-            foreach ($oreData as $month => $monthValue) {
-                foreach ($monthValue as $day => $dayValue) {
-                    $trendDailyRawAvg      = 0;
-                    $trendDailyAmount      = 0;
-                    $trendDailyAvgLabels[$oreTitle][] = $month."/".$day;
-                    foreach ($dayValue as $hour => $hourValue) {
-                        $avg                    = round($hourValue['average'] / $hourValue['amount'], 2);
-                        $trendHourlyAvg[$oreTitle][]       = $avg;
-                        $trendHourlyAvgLabels[$oreTitle][] = [$month."/".$day.":".$hour];
-                        $trendDailyRawAvg       += $avg;
-                        $trendDailyAmount++;
+        if(!empty($dataPoints)) {
+            foreach ($dataPoints as $title => $oreData) {
+                foreach ($oreData as $month => $monthValue) {
+                    foreach ($monthValue as $day => $dayValue) {
+                        $trendDailyAvgLabels[$title][] = $month."/".$day;
+                        foreach ($dayValue as $hour => $hourValue) {
+                            $avg                      = round($hourValue['average'] / $hourValue['amount'], 2);
+                            $trendHourlyAvg[$title][] = $avg;
+                        }
                     }
-                    $trendDailyAvg[$oreTitle][] = $trendDailyRawAvg / $trendDailyAmount;
                 }
             }
         }
 
-        return view('trends.ores.all', compact('title', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels'));
+        return $trendHourlyAvg;
+    }
+
+
+    private function trendingHourlyAvgLabels($dataPoints) {
+        $trendHourlyAvgLabels = [];
+        if(!empty($dataPoints)) {
+            foreach ($dataPoints as $title => $oreData) {
+                foreach ($oreData as $month => $monthValue) {
+                    foreach ($monthValue as $day => $dayValue) {
+                        $trendDailyAvgLabels[$title][] = $month."/".$day;
+                        foreach ($dayValue as $hour => $hourValue) {
+                            $trendHourlyAvgLabels[$title][] = [$month."/".$day.":".$hour];;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $trendHourlyAvgLabels;
+    }
+
+
+    private function trendingDailyAvg($dataPoints) {
+        $trendDailyAvg = [];
+        if(!empty($dataPoints)) {
+            foreach ($dataPoints as $title => $oreData) {
+                foreach ($oreData as $month => $monthValue) {
+                    foreach ($monthValue as $day => $dayValue) {
+                        $trendDailyRawAvg              = 0;
+                        $trendDailyAmount              = 0;
+                        $trendDailyAvgLabels[$title][] = $month."/".$day;
+                        foreach ($dayValue as $hour => $hourValue) {
+                            $avg              = round($hourValue['average'] / $hourValue['amount'], 2);
+                            $trendDailyRawAvg += $avg;
+                            $trendDailyAmount++;
+                        }
+                        $trendDailyAvg[$title][] = $trendDailyRawAvg / $trendDailyAmount;
+                    }
+                }
+            }
+        }
+
+        return $trendDailyAvg;
+    }
+
+
+    private function trendingDailyAvgLabels($dataPoints) {
+        $trendDailyAvgLabels = [];
+        if(!empty($dataPoints)) {
+            foreach ($dataPoints as $title => $oreData) {
+                foreach ($oreData as $month => $monthValue) {
+                    foreach ($monthValue as $day => $dayValue) {
+                        $trendDailyAvgLabels[$title][] = $month."/".$day;
+                    }
+                }
+            }
+        }
+
+        return $trendDailyAvgLabels;
+    }
+
+    private function gatherDataPoints($goodTypeId, $goodId = null)
+    {
+        $dataPoints          = [];
+        $inActiveTransactons = InActiveTransactions::where('good_type_id', $goodTypeId)->where('updated_at', '>', Carbon::now()->subDays(30));
+        if ( ! empty($goodId)) {
+            $inActiveTransactons->where('good_id', $goodId);
+        }
+        $transactons = $inActiveTransactons->get();
+        if(! empty($transactons)) {
+            foreach ($transactons as $transacton) {
+                switch ($goodTypeId) {
+                    case 1:
+                        $title = Ores::find($transacton->good_id)->title;
+                        break;
+                    case 2:
+                        $title = Ingots::find($transacton->good_id)->title;
+                        break;
+                    case 3:
+                        $title = Components::find($transacton->good_id)->title;
+                        break;
+                    case 4:
+                        $title = Tools::find($transacton->good_id)->title;
+                        break;
+                    default:
+                        die('Invalid type');
+                }
+                $title = str_replace(' ','',$title);
+                $title = str_replace('.','',$title);
+                $title = str_replace('-','',$title);
+                $title = str_replace('[','',$title);
+                $title = str_replace(']','',$title);
+                $title = str_replace('(','',$title);
+                $title = str_replace(')','',$title);
+                $hour  = $transacton->updated_at->hour;
+                $day   = $transacton->updated_at->day;
+                $month = $transacton->updated_at->month;
+
+                if (empty($dataPoints[$month][$day][$hour])) {
+                    $dataPoints[$title][$month][$day][$hour]['value']   = $transacton->value;
+                    $dataPoints[$title][$month][$day][$hour]['amount']  = $transacton->amount;
+                    $dataPoints[$title][$month][$day][$hour]['average'] = $transacton->value * $transacton->amount;
+                    $dataPoints[$title][$month][$day][$hour]['count']   = 0;
+                } else {
+                    $dataPoints[$title][$month][$day][$hour]['value']   += $transacton->value;
+                    $dataPoints[$title][$month][$day][$hour]['amount']  += $transacton->amount;
+                    $dataPoints[$title][$month][$day][$hour]['average'] += $transacton->value * $transacton->amount;
+                    $dataPoints[$title][$month][$day][$hour]['count']   += 1;
+                }
+            }
+        }
+
+        return $dataPoints;
     }
 }
