@@ -115,17 +115,23 @@ class Trends extends Controller
      * @return array
      */
     private function trendingHourlyAvg($dataPoints) {
-        $trendHourlyAvg = [];
+        $averages = [];
         if(!empty($dataPoints)) {
             foreach ($dataPoints as $title => $oreData) {
-                foreach ($oreData as $month => $monthValue) {
+                foreach ($oreData as $month => $monthData) {
                     if((int)$month === Carbon::now()->month) {
-                        foreach ($monthValue as $day => $dayValue) {
+                        foreach ($monthData as $day => $dayData) {
                             if ((int)$day === Carbon::now()->day) {
-                                $trendDailyAvgLabels[$title][] = $month."/".$day;
-                                foreach ($dayValue as $hour => $hourValue) {
-                                    $avg                      = round($hourValue->average / $hourValue->amount, 2);
-                                    $trendHourlyAvg[$title][] = $avg;
+                                $currentHoursArray = [];
+                                foreach ($dayData as $hour => $hourData) {
+                                    if(empty($currentHoursArray[$hour])) {
+                                        $currentHoursArray[$hour] = ['sum' => 0, 'amount' => 0];
+                                    }
+                                        $currentHoursArray[$hour]['sum'] += $hourData->value*$hourData->amount;
+                                        $currentHoursArray[$hour]['amount'] += $hourData->amount;
+                                }
+                                foreach($currentHoursArray as $hour => $hourValues) {
+                                    $averages[$title][] = round($hourValues['sum'] / $hourValues['amount'], 2);
                                 }
                             }
                         }
@@ -134,7 +140,7 @@ class Trends extends Controller
             }
         }
 
-        return $trendHourlyAvg;
+        return $averages;
     }
 
 
@@ -144,17 +150,15 @@ class Trends extends Controller
      * @return array
      */
     private function trendingHourlyAvgLabels($dataPoints) {
-        $trendHourlyAvgLabels = [];
+        $labels = [];
         if(!empty($dataPoints)) {
             foreach ($dataPoints as $title => $oreData) {
-                foreach ($oreData as $month => $monthValue) {
+                foreach ($oreData as $month => $monthData) {
                     if((int)$month === Carbon::now()->month) {
-                        foreach ($monthValue as $day => $dayValue) {
+                        foreach ($monthData as $day => $dayData) {
+                            foreach($dayData as $hour => $hourData)
                             if ((int)$day === Carbon::now()->day) {
-                                $trendDailyAvgLabels[$title][] = $month."/".$day;
-                                foreach ($dayValue as $hour => $hourValue) {
-                                    $trendHourlyAvgLabels[$title][] = [$hour];;
-                                }
+                                $labels[$title][] = $hour;
                             }
                         }
                     }
@@ -162,30 +166,35 @@ class Trends extends Controller
             }
         }
 
-        return $trendHourlyAvgLabels;
+        return $labels;
     }
 
 
     private function trendingDailyAvg($dataPoints) {
-        $trendDailyAvg = [];
+        $averages = [];
         if(!empty($dataPoints)) {
             foreach ($dataPoints as $title => $oreData) {
-                foreach ($oreData as $month => $monthValue) {
-                    foreach ($monthValue as $day => $dayValue) {
-                        $trendDailyRawAvg              = 0;
-                        $trendDailyAmount              = 0;
-                        foreach ($dayValue as $hour => $hourValue) {
-                            $avg              = round($hourValue->average / $hourValue->amount, 2);
-                            $trendDailyRawAvg += $avg;
-                            $trendDailyAmount++;
+                foreach ($oreData as $month => $monthData) {
+                    if((int)$month === Carbon::now()->month) {
+                        $currentDaysArray = [];
+                        foreach ($monthData as $day => $dayData) {
+                            foreach ($dayData as $hourData) {
+                                if(empty($currentDaysArray[$day])) {
+                                    $currentDaysArray[$day] = ['sum' => 0, 'amount' => 0];
+                                }
+                                $currentDaysArray[$day]['sum']    += $hourData->value * $hourData->amount;
+                                $currentDaysArray[$day]['amount'] += $hourData->amount;
+                            }
                         }
-                        $trendDailyAvg[$title][] = $trendDailyRawAvg / $trendDailyAmount;
+                        foreach ($currentDaysArray as $day => $dayValues) {
+                            $averages[$title][] = round($dayValues['sum'] / $dayValues['amount'], 2);
+                        }
                     }
                 }
             }
         }
 
-        return $trendDailyAvg;
+        return $averages;
     }
 
 
@@ -229,10 +238,11 @@ class Trends extends Controller
      * note: take the inactive transactions and get a collection to work with.
      * @param      $goodTypeId
      * @param null $goodId
+     * @param bool $useTitle
      *
      * @return mixed
      */
-    private function gatherInActiveTransactions($goodTypeId, $goodId = null, $useTitle)
+    private function gatherInActiveTransactions($goodTypeId, $goodId = null, $useTitle = true)
     {
         $dataPoints          = [];
         $inActiveTransactons = InActiveTransactions::where('good_type_id', $goodTypeId)->where('updated_at', '>', Carbon::now()->subDays(30));
@@ -294,6 +304,7 @@ class Trends extends Controller
             $dataPoints[$identifier][$month][$day][$hour]['amount']                  = 0;
             $dataPoints[$identifier][$month][$day][$hour]['orderAmount']             = 0;
             $dataPoints[$identifier][$month][$day][$hour]['offerAmount']             = 0;
+            $dataPoints[$identifier][$month][$day][$hour]['sum']                     = 0;
             $dataPoints[$identifier][$month][$day][$hour]['average']                 = 0;
             $dataPoints[$identifier][$month][$day][$hour]['count']                   = 0;
             $dataPoints[$identifier][$month][$day][$hour]['orderAmountLatestMinute'] = 0;
@@ -311,7 +322,7 @@ class Trends extends Controller
             $dataPoints[$identifier][$month][$day][$hour][$amountType] += $transaction->amount;
         }
 
-        $dataPoints[$identifier][$month][$day][$hour]['average'] += $transaction->value * $transaction->amount;
+        $dataPoints[$identifier][$month][$day][$hour]['sum'] += $transaction->value * $transaction->amount;
         $dataPoints[$identifier][$month][$day][$hour]['count']   += 1;
 
         return $dataPoints;
@@ -374,7 +385,7 @@ class Trends extends Controller
                         $dataPoints[$identifier][$month][$day][$hour]['amount']      += $hourData['amount'];
                         $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] += $hourData['offerAmount'];
                         $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] += $hourData['orderAmount'];
-                        $dataPoints[$identifier][$month][$day][$hour]['average']     += $hourData['value'] * $hourData['amount'];
+                        $dataPoints[$identifier][$month][$day][$hour]['average']     += $hourData['sum'] / $hourData['amount'];
                         $dataPoints[$identifier][$month][$day][$hour]['count']       += $hourData['count'];
                     }
                 }
