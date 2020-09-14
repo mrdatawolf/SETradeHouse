@@ -336,22 +336,20 @@ class Trends extends Controller
             foreach($goodData as $month => $monthData) {
                 foreach ($monthData as $day => $dayData) {
                     foreach($dayData as $hour => $hourData) {
-                        foreach($hourData as $key => $data) {
-                            if (empty($dataPoints[$title][$month][$day][$hour])) {
-                                $dataPoints[$title][$month][$day][$hour]['value']       = 0;
-                                $dataPoints[$title][$month][$day][$hour]['amount']      = 0;
-                                $dataPoints[$title][$month][$day][$hour]['orderAmount'] = 0;
-                                $dataPoints[$title][$month][$day][$hour]['offerAmount'] = 0;
-                                $dataPoints[$title][$month][$day][$hour]['average']     = 0;
-                                $dataPoints[$title][$month][$day][$hour]['count']       = 0;
-                            }
-                            $dataPoints[$title][$month][$day][$hour]['value']       += $data['value'];
-                            $dataPoints[$title][$month][$day][$hour]['amount']      += $data['amount'];
-                            $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $data['offerAmount'];
-                            $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $data['orderAmount'];
-                            $dataPoints[$title][$month][$day][$hour]['average']     += $data['value'] * $data['amount'];
-                            $dataPoints[$title][$month][$day][$hour]['count']       += $data['count'];
+                        if (empty($dataPoints[$title][$month][$day][$hour])) {
+                            $dataPoints[$title][$month][$day][$hour]['value']       = 0;
+                            $dataPoints[$title][$month][$day][$hour]['amount']      = 0;
+                            $dataPoints[$title][$month][$day][$hour]['orderAmount'] = 0;
+                            $dataPoints[$title][$month][$day][$hour]['offerAmount'] = 0;
+                            $dataPoints[$title][$month][$day][$hour]['average']     = 0;
+                            $dataPoints[$title][$month][$day][$hour]['count']       = 0;
                         }
+                        $dataPoints[$title][$month][$day][$hour]['value']       += $hourData['value'];
+                        $dataPoints[$title][$month][$day][$hour]['amount']      += $hourData['amount'];
+                        $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $hourData['offerAmount'];
+                        $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $hourData['orderAmount'];
+                        $dataPoints[$title][$month][$day][$hour]['average']     += $hourData['value'] * $hourData['amount'];
+                        $dataPoints[$title][$month][$day][$hour]['count']       += $hourData['count'];
                     }
                 }
             }
