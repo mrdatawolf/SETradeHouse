@@ -12,21 +12,18 @@ use Carbon\Carbon;
 
 class Trends extends Controller
 {
-    private $transactionTypeIds;
-
     public function ironOreIndex() {
-        $pageTitle = "Iron Ore Trends";
-        $dataPoints = $this->sessionDataPoints(1,3);
-        $trendHourlyAvg = $this->trendingHourlyAvg($dataPoints);
-        $trendHourlyAvgLabels = $this->trendingHourlyAvgLabels($dataPoints);
-        $trendDailyAvg = $this->trendingDailyAvg($dataPoints);
-        $trendDailyAvgLabels = $this->trendingDailyAvgLabels($dataPoints);
-
-        $jsonDataPoints = json_encode($dataPoints);
-        $jsonHourlyAvg        = json_encode($trendHourlyAvg, true);
-        $jsonHourlyAvgLabels  = json_encode($trendHourlyAvgLabels);
-        $jsonDailyAvg        = json_encode($trendDailyAvg, true);
-        $jsonDailyAvgLabels  = json_encode($trendDailyAvgLabels);
+        $pageTitle              = "Iron Ore Trends";
+        $dataPoints             = $this->sessionDataPoints(1,3);
+        $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
+        $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
+        $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
+        $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
+        $jsonDataPoints         = json_encode($dataPoints);
+        $jsonHourlyAvg          = json_encode($trendHourlyAvg, true);
+        $jsonHourlyAvgLabels    = json_encode($trendHourlyAvgLabels);
+        $jsonDailyAvg           = json_encode($trendDailyAvg, true);
+        $jsonDailyAvgLabels     = json_encode($trendDailyAvgLabels);
 
         return view('trends.ores.iron', compact('pageTitle','jsonDataPoints', 'jsonHourlyAvg', 'jsonHourlyAvgLabels', 'jsonDailyAvg', 'jsonDailyAvgLabels'));
     }
@@ -88,10 +85,10 @@ class Trends extends Controller
         $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
         $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
         $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
-        $trendDailyAvgAvailable  = $this->trendingDailyAvgAvailable($dataPoints);
+        $trendDailyAvailable    = $this->trendingDailyAvailable($dataPoints);
         $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
 
-        return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels', 'trendDailyAvgAvailable');
+        return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels', 'trendDailyAvailable');
     }
 
 
@@ -160,7 +157,6 @@ class Trends extends Controller
                     foreach ($monthValue as $day => $dayValue) {
                         $trendDailyRawAvg              = 0;
                         $trendDailyAmount              = 0;
-                        $trendDailyAvgLabels[$title][] = $month."/".$day;
                         foreach ($dayValue as $hour => $hourValue) {
                             $avg              = round($hourValue->average / $hourValue->amount, 2);
                             $trendDailyRawAvg += $avg;
@@ -176,26 +172,23 @@ class Trends extends Controller
     }
 
 
-    private function trendingDailyAvgAvailable($dataPoints) {
-        $trendDailyAvg = [];
+    private function trendingDailyAvailable($dataPoints) {
+        $trendDailyAmount = [];
         if(!empty($dataPoints)) {
             foreach ($dataPoints as $title => $oreData) {
                 foreach ($oreData as $month => $monthValue) {
                     foreach ($monthValue as $day => $dayValue) {
                         $rawAmount                      = 0;
-                        $rawCount                       = 0;
-                        $trendDailyAvgLabels[$title][]  = $month."/".$day;
                         foreach ($dayValue as $hour => $hourValue) {
-                            $rawAmount += $hourValue->offerAmount;
-                            $rawCount  +=1;
+                            $rawAmount = $hourValue->offerAmount;
                         }
-                        $trendDailyAvg[$title][] = round($rawAmount/$rawCount, 2);
+                        $trendDailyAmount[$title][] = round($rawAmount, 2);
                     }
                 }
             }
         }
 
-        return $trendDailyAvg;
+        return $trendDailyAmount;
     }
 
 
@@ -272,23 +265,35 @@ class Trends extends Controller
      */
     private function addDataPointRow($dataPoints, $goodTypeId, $transaction) {
         $title      = $this->goodTitleById($goodTypeId, $transaction->good_id);
+        $minute     = $transaction->updated_at->minute;
         $hour       = $transaction->updated_at->hour;
         $day        = $transaction->updated_at->day;
         $month      = $transaction->updated_at->month;
         $amountType = ($transaction->transaction_type_id === 1) ? 'orderAmount' : 'offerAmount';
         if (empty($dataPoints[$title][$month][$day][$hour])) {
-            $dataPoints[$title][$month][$day][$hour]['value']       = 0;
-            $dataPoints[$title][$month][$day][$hour]['amount']      = 0;
-            $dataPoints[$title][$month][$day][$hour]['orderAmount'] = 0;
-            $dataPoints[$title][$month][$day][$hour]['offerAmount'] = 0;
-            $dataPoints[$title][$month][$day][$hour]['average']     = 0;
-            $dataPoints[$title][$month][$day][$hour]['count']       = 0;
+            $dataPoints[$title][$month][$day][$hour]['value']                   = 0;
+            $dataPoints[$title][$month][$day][$hour]['amount']                  = 0;
+            $dataPoints[$title][$month][$day][$hour]['orderAmount']             = 0;
+            $dataPoints[$title][$month][$day][$hour]['offerAmount']             = 0;
+            $dataPoints[$title][$month][$day][$hour]['average']                 = 0;
+            $dataPoints[$title][$month][$day][$hour]['count']                   = 0;
+            $dataPoints[$title][$month][$day][$hour]['orderAmountLatestMinute'] = 0;
+            $dataPoints[$title][$month][$day][$hour]['offerAmountLatestMinute'] = 0;
         }
-        $dataPoints[$title][$month][$day][$hour]['value']       += $transaction->value;
-        $dataPoints[$title][$month][$day][$hour]['amount']      += $transaction->amount;
-        $dataPoints[$title][$month][$day][$hour][$amountType]   += $transaction->amount;
-        $dataPoints[$title][$month][$day][$hour]['average']     += $transaction->value * $transaction->amount;
-        $dataPoints[$title][$month][$day][$hour]['count']       += 1;
+        $dataPoints[$title][$month][$day][$hour]['value']   += $transaction->value;
+        $dataPoints[$title][$month][$day][$hour]['amount']  += $transaction->amount;
+        if($dataPoints[$title][$month][$day][$hour][$amountType . 'LatestMinute'] === 0
+            ||
+            ($minute > $dataPoints[$title][$month][$day][$hour][$amountType . 'LatestMinute'] && $transaction->amount > 0 )
+        ) {
+            $dataPoints[$title][$month][$day][$hour][$amountType . 'LatestMinute']  = $minute;
+            $dataPoints[$title][$month][$day][$hour][$amountType]                   = $transaction->amount;
+        } else {
+            $dataPoints[$title][$month][$day][$hour][$amountType] += $transaction->amount;
+        }
+
+        $dataPoints[$title][$month][$day][$hour]['average'] += $transaction->value * $transaction->amount;
+        $dataPoints[$title][$month][$day][$hour]['count']   += 1;
 
         return $dataPoints;
     }
@@ -358,6 +363,5 @@ class Trends extends Controller
         }
 
         return $this->dataPointsToCollection($dataPoints);
-
     }
 }

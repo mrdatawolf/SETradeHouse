@@ -120,27 +120,28 @@
         @endforeach
     </script>
     <script>
-        @foreach($trendDailyAvgAvailable as $title => $dailyAvg)
+        @foreach($trendDailyAvailable as $title => $dailyAvailable)
+
             @if(! in_array($title, ['scrap']))
                 var canvasName = 'trend{{ $title }}DailyAmount';
                 @php
-                    $jsonDailyAvg       = json_encode($dailyAvg, true);
-                    $jsonDailyAvgLabels = json_encode($trendDailyAvgLabels[$title]);
+                    $jsonDaily       = json_encode($dailyAvailable, true);
+                    $jsonDailyLabels = json_encode($trendDailyAvgLabels[$title]);
                 @endphp
                 var doc = document.getElementById(canvasName);
                 if(doc != null) {
                     var ctx = doc.getContext('2d');
-                    @if(empty($jsonDailyAvg) || empty($jsonDailyAvgLabels))
+                    @if(empty($jsonDaily) || empty($jsonDailyLabels))
                         ctx.font = "30px Arial";
                     ctx.fillText("No data found", 10, 50);
                     @else
                     var trend{{ $title }}DailyAmount = new Chart(ctx, {
                         type: 'line',
                         data: {
-                            labels: {!! $jsonDailyAvgLabels !!},
+                            labels: {!! $jsonDailyLabels !!},
                             datasets: [{
                                 label: 'Rought amount in offer transactions',
-                                data: {!! $jsonDailyAvg !!}
+                                data: {!! $jsonDaily !!}
                             }]
                         },
                         options: {
