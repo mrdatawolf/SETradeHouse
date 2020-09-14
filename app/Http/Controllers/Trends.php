@@ -14,7 +14,7 @@ class Trends extends Controller
 {
     public function ironOreIndex() {
         $pageTitle              = "Iron Ore Trends";
-        $dataPoints             = $this->sessionDataPoints(1,3);
+        $dataPoints             = $this->getDataPoints(1,3);
         $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
         $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
         $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
@@ -31,7 +31,7 @@ class Trends extends Controller
 
     public function oreIndex() {
         $pageTitle  = "Ore Trends";
-        $dataPoints = $this->sessionDataPoints(1);
+        $dataPoints = $this->getDataPoints(1);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -39,7 +39,7 @@ class Trends extends Controller
 
     public function ingotIndex() {
         $pageTitle  = "Ingot Trends";
-        $dataPoints = $this->sessionDataPoints(2);
+        $dataPoints = $this->getDataPoints(2);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -47,7 +47,7 @@ class Trends extends Controller
 
     public function componentIndex() {
         $pageTitle  = "Component Trends";
-        $dataPoints = $this->sessionDataPoints(3);
+        $dataPoints = $this->getDataPoints(3);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -55,23 +55,40 @@ class Trends extends Controller
 
     public function toolIndex() {
         $pageTitle  = "Tools Trends";
-        $dataPoints = $this->sessionDataPoints(4);
+        $dataPoints = $this->getDataPoints(4);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    private function sessionDataPoints($goodTypeId, $goodId = 0) {
+    public function getTrends($goodTypeId, $goodId, $usetitle) {
+        return $this->gatherDataPoints($goodTypeId, $goodId, $usetitle);
+    }
 
-        if(! \Session::has('dataPoints_' . $goodTypeId . '_' . $goodId)) {
-            $dataPoints = $this->gatherDataPoints($goodTypeId, $goodId);
-            \Session::put('dataPoints_' . $goodTypeId . '_' . $goodId);
+
+    private function getDataPoints($goodTypeId, $goodId = 0) {
+        $dataPoints = [];
+        if($goodId > 0) {
+            $trends = \App\Trends::where(['goodTypeId' => $goodTypeId, 'goodId' => $goodId])->get();
         } else {
-            $dataPoints = \Session::get('dataPoints_' . $goodTypeId . '_' . $goodId);
+            $trends = \App\Trends::where(['goodTypeId' => $goodTypeId])->get();
+        }
+        foreach($trends as $trend) {
+            $title = $this->goodTitleById($goodTypeId, $trend->goodId);
+            $dataPoints[$title][$trend->month][$trend->day][$trend->hour] = [
+                'value'                     => $trend->value,
+                'amount'                    => $trend->amount,
+                'orderAmount'               => $trend->orderAmount,
+                'offerAmount'               => $trend->offerAmount,
+                'average'                   => $trend->average,
+                'count'                     => $trend->count,
+                'orderAmountLatestMinute'   => $trend->orderAmountLatestMinute,
+                'offerAmountLatestMinute'   => $trend->offerAmountLatestMinute
+                ];
         }
 
-        return $dataPoints;
+        return $this->dataPointsToCollection($dataPoints);
     }
 
 
@@ -215,7 +232,7 @@ class Trends extends Controller
      *
      * @return mixed
      */
-    private function gatherInActiveTransactions($goodTypeId, $goodId = null)
+    private function gatherInActiveTransactions($goodTypeId, $goodId = null, $useTitle)
     {
         $dataPoints          = [];
         $inActiveTransactons = InActiveTransactions::where('good_type_id', $goodTypeId)->where('updated_at', '>', Carbon::now()->subDays(30));
@@ -225,7 +242,7 @@ class Trends extends Controller
         $transactions = $inActiveTransactons->get();
         if(! empty($transactions)) {
             foreach ($transactions as $transaction) {
-                $dataPoints = $this->addDataPointRow($dataPoints, $goodTypeId, $transaction);
+                $dataPoints = $this->addDataPointRow($dataPoints, $goodTypeId, $transaction, $useTitle);
             }
         }
         return $dataPoints;
@@ -236,10 +253,11 @@ class Trends extends Controller
      * note: take the active transactions and get a collection to work with.
      * @param      $goodTypeId
      * @param null $goodId
+     * @param bool $useTitle
      *
      * @return mixed
      */
-    private function gatherTransactions($goodTypeId, $goodId = null)
+    private function gatherTransactions($goodTypeId, $goodId = null, $useTitle = true)
     {
         $dataPoints          = [];
         $inActiveTransactons = Transactions::where('good_type_id', $goodTypeId)->where('updated_at', '>', Carbon::now()->subDays(30));
@@ -249,7 +267,7 @@ class Trends extends Controller
         $transactions = $inActiveTransactons->get();
         if(! empty($transactions)) {
             foreach ($transactions as $transaction) {
-                $dataPoints = $this->addDataPointRow($dataPoints, $goodTypeId, $transaction);
+                $dataPoints = $this->addDataPointRow($dataPoints, $goodTypeId, $transaction, $useTitle);
             }
         }
         return $dataPoints;
@@ -260,40 +278,41 @@ class Trends extends Controller
      * @param $dataPoints
      * @param $goodTypeId
      * @param $transaction
+     * @param $useTitle
      *
      * @return array
      */
-    private function addDataPointRow($dataPoints, $goodTypeId, $transaction) {
-        $title      = $this->goodTitleById($goodTypeId, $transaction->good_id);
+    private function addDataPointRow($dataPoints, $goodTypeId, $transaction, $useTitle) {
+        $identifier = ($useTitle) ? $this->goodTitleById($goodTypeId, $transaction->good_id) : $transaction->good_id;
         $minute     = $transaction->updated_at->minute;
         $hour       = $transaction->updated_at->hour;
         $day        = $transaction->updated_at->day;
         $month      = $transaction->updated_at->month;
         $amountType = ($transaction->transaction_type_id === 1) ? 'orderAmount' : 'offerAmount';
-        if (empty($dataPoints[$title][$month][$day][$hour])) {
-            $dataPoints[$title][$month][$day][$hour]['value']                   = 0;
-            $dataPoints[$title][$month][$day][$hour]['amount']                  = 0;
-            $dataPoints[$title][$month][$day][$hour]['orderAmount']             = 0;
-            $dataPoints[$title][$month][$day][$hour]['offerAmount']             = 0;
-            $dataPoints[$title][$month][$day][$hour]['average']                 = 0;
-            $dataPoints[$title][$month][$day][$hour]['count']                   = 0;
-            $dataPoints[$title][$month][$day][$hour]['orderAmountLatestMinute'] = 0;
-            $dataPoints[$title][$month][$day][$hour]['offerAmountLatestMinute'] = 0;
+        if (empty($dataPoints[$identifier][$month][$day][$hour])) {
+            $dataPoints[$identifier][$month][$day][$hour]['value']                   = 0;
+            $dataPoints[$identifier][$month][$day][$hour]['amount']                  = 0;
+            $dataPoints[$identifier][$month][$day][$hour]['orderAmount']             = 0;
+            $dataPoints[$identifier][$month][$day][$hour]['offerAmount']             = 0;
+            $dataPoints[$identifier][$month][$day][$hour]['average']                 = 0;
+            $dataPoints[$identifier][$month][$day][$hour]['count']                   = 0;
+            $dataPoints[$identifier][$month][$day][$hour]['orderAmountLatestMinute'] = 0;
+            $dataPoints[$identifier][$month][$day][$hour]['offerAmountLatestMinute'] = 0;
         }
-        $dataPoints[$title][$month][$day][$hour]['value']   += $transaction->value;
-        $dataPoints[$title][$month][$day][$hour]['amount']  += $transaction->amount;
-        if($dataPoints[$title][$month][$day][$hour][$amountType . 'LatestMinute'] === 0
+        $dataPoints[$identifier][$month][$day][$hour]['value']   += $transaction->value;
+        $dataPoints[$identifier][$month][$day][$hour]['amount']  += $transaction->amount;
+        if($dataPoints[$identifier][$month][$day][$hour][$amountType . 'LatestMinute'] === 0
             ||
-            ($minute > $dataPoints[$title][$month][$day][$hour][$amountType . 'LatestMinute'] && $transaction->amount > 0 )
+            ($minute > $dataPoints[$identifier][$month][$day][$hour][$amountType . 'LatestMinute'] && $transaction->amount > 0 )
         ) {
-            $dataPoints[$title][$month][$day][$hour][$amountType . 'LatestMinute']  = $minute;
-            $dataPoints[$title][$month][$day][$hour][$amountType]                   = $transaction->amount;
+            $dataPoints[$identifier][$month][$day][$hour][$amountType . 'LatestMinute']  = $minute;
+            $dataPoints[$identifier][$month][$day][$hour][$amountType]                   = $transaction->amount;
         } else {
-            $dataPoints[$title][$month][$day][$hour][$amountType] += $transaction->amount;
+            $dataPoints[$identifier][$month][$day][$hour][$amountType] += $transaction->amount;
         }
 
-        $dataPoints[$title][$month][$day][$hour]['average'] += $transaction->value * $transaction->amount;
-        $dataPoints[$title][$month][$day][$hour]['count']   += 1;
+        $dataPoints[$identifier][$month][$day][$hour]['average'] += $transaction->value * $transaction->amount;
+        $dataPoints[$identifier][$month][$day][$hour]['count']   += 1;
 
         return $dataPoints;
     }
@@ -335,28 +354,28 @@ class Trends extends Controller
     }
 
 
-    private function gatherDataPoints($goodTypeId, $goodId = null) {
-        $dataPoints = $this->gatherInActiveTransactions($goodTypeId, $goodId);
-        $active = $this->gatherTransactions($goodTypeId, $goodId);
-
+    private function gatherDataPoints($goodTypeId, $goodId = null, $useTitle = true) {
+        $dataPoints = $this->gatherInActiveTransactions($goodTypeId, $goodId, $useTitle);
+        $active = $this->gatherTransactions($goodTypeId, $goodId, $useTitle);
         foreach($active as $title => $goodData) {
+            $identifier = ($useTitle) ? $title : $goodId;
             foreach($goodData as $month => $monthData) {
                 foreach ($monthData as $day => $dayData) {
                     foreach($dayData as $hour => $hourData) {
-                        if (empty($dataPoints[$title][$month][$day][$hour])) {
-                            $dataPoints[$title][$month][$day][$hour]['value']       = 0;
-                            $dataPoints[$title][$month][$day][$hour]['amount']      = 0;
-                            $dataPoints[$title][$month][$day][$hour]['orderAmount'] = 0;
-                            $dataPoints[$title][$month][$day][$hour]['offerAmount'] = 0;
-                            $dataPoints[$title][$month][$day][$hour]['average']     = 0;
-                            $dataPoints[$title][$month][$day][$hour]['count']       = 0;
+                        if (empty($dataPoints[$identifier][$month][$day][$hour])) {
+                            $dataPoints[$identifier][$month][$day][$hour]['value']       = 0;
+                            $dataPoints[$identifier][$month][$day][$hour]['amount']      = 0;
+                            $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] = 0;
+                            $dataPoints[$identifier][$month][$day][$hour]['offerAmount'] = 0;
+                            $dataPoints[$identifier][$month][$day][$hour]['average']     = 0;
+                            $dataPoints[$identifier][$month][$day][$hour]['count']       = 0;
                         }
-                        $dataPoints[$title][$month][$day][$hour]['value']       += $hourData['value'];
-                        $dataPoints[$title][$month][$day][$hour]['amount']      += $hourData['amount'];
-                        $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $hourData['offerAmount'];
-                        $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $hourData['orderAmount'];
-                        $dataPoints[$title][$month][$day][$hour]['average']     += $hourData['value'] * $hourData['amount'];
-                        $dataPoints[$title][$month][$day][$hour]['count']       += $hourData['count'];
+                        $dataPoints[$identifier][$month][$day][$hour]['value']       += $hourData['value'];
+                        $dataPoints[$identifier][$month][$day][$hour]['amount']      += $hourData['amount'];
+                        $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] += $hourData['offerAmount'];
+                        $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] += $hourData['orderAmount'];
+                        $dataPoints[$identifier][$month][$day][$hour]['average']     += $hourData['value'] * $hourData['amount'];
+                        $dataPoints[$identifier][$month][$day][$hour]['count']       += $hourData['count'];
                     }
                 }
             }
