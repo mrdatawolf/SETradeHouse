@@ -1,6 +1,4 @@
-<?php
-
-namespace App;
+<?php namespace App;
 
 use App\Http\Traits\ScarcityAdjustment;
 use Illuminate\Database\Eloquent\Model;
