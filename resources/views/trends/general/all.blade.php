@@ -20,14 +20,14 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ ucfirst($title) }} Hourly (last 24)</h5>
-                    <canvas id="trend{{ $title }}Hourly"></canvas>
+                    <h5 class="card-title">{{ ucfirst($title) }} Daily (last 30)</h5>
+                    <canvas id="trend{{ $title }}DailyAmount"></canvas>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ ucfirst($title) }} Daily (last 30)</h5>
-                    <canvas id="trend{{ $title }}DailyAmount"></canvas>
+                    <h5 class="card-title">{{ ucfirst($title) }} Hourly (last 24)</h5>
+                    <canvas id="trend{{ $title }}Hourly"></canvas>
                 </div>
             </div>
         </div>

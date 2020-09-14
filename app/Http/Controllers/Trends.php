@@ -7,7 +7,7 @@ use App\InActiveTransactions;
 use App\Ingots;
 use App\Ores;
 use App\Tools;
-use App\TransactionTypes;
+use App\Transactions;
 use Carbon\Carbon;
 
 class Trends extends Controller
@@ -16,7 +16,7 @@ class Trends extends Controller
 
     public function ironOreIndex() {
         $pageTitle = "Iron Ore Trends";
-        $dataPoints = $this->gatherDataPoints(1, 3);
+        $dataPoints = $this->sessionDataPoints(1,3);
         $trendHourlyAvg = $this->trendingHourlyAvg($dataPoints);
         $trendHourlyAvgLabels = $this->trendingHourlyAvgLabels($dataPoints);
         $trendDailyAvg = $this->trendingDailyAvg($dataPoints);
@@ -33,35 +33,48 @@ class Trends extends Controller
 
 
     public function oreIndex() {
-        $pageTitle              = "Ore Trends";
-        $dataPoints             = $this->gatherDataPoints(1);
-        $compacted              = $this->makeGeneralCompact($dataPoints, $pageTitle);
+        $pageTitle  = "Ore Trends";
+        $dataPoints = $this->sessionDataPoints(1);
+        $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
     public function ingotIndex() {
-        $pageTitle              = "Ingot Trends";
-        $dataPoints             = $this->gatherDataPoints(2);
-        $compacted              = $this->makeGeneralCompact($dataPoints, $pageTitle);
+        $pageTitle  = "Ingot Trends";
+        $dataPoints = $this->sessionDataPoints(2);
+        $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
     public function componentIndex() {
-        $pageTitle              = "Component Trends";
-        $dataPoints             = $this->gatherDataPoints(3);
-        $compacted              = $this->makeGeneralCompact($dataPoints, $pageTitle);
+        $pageTitle  = "Component Trends";
+        $dataPoints = $this->sessionDataPoints(3);
+        $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
     public function toolIndex() {
-        $pageTitle              = "Tools Trends";
-        $dataPoints             = $this->gatherDataPoints(4);
-        $compacted              = $this->makeGeneralCompact($dataPoints, $pageTitle);
+        $pageTitle  = "Tools Trends";
+        $dataPoints = $this->sessionDataPoints(4);
+        $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
+    }
+
+
+    private function sessionDataPoints($goodTypeId, $goodId = 0) {
+
+        if(! \Session::has('dataPoints_' . $goodTypeId . '_' . $goodId)) {
+            $dataPoints = $this->gatherDataPoints($goodTypeId, $goodId);
+            \Session::put('dataPoints_' . $goodTypeId . '_' . $goodId);
+        } else {
+            $dataPoints = \Session::get('dataPoints_' . $goodTypeId . '_' . $goodId);
+        }
+
+        return $dataPoints;
     }
 
 
@@ -207,7 +220,7 @@ class Trends extends Controller
      *
      * @return mixed
      */
-    private function gatherDataPoints($goodTypeId, $goodId = null)
+    private function gatherInActiveTransactions($goodTypeId, $goodId = null)
     {
         $dataPoints          = [];
         $inActiveTransactons = InActiveTransactions::where('good_type_id', $goodTypeId)->where('updated_at', '>', Carbon::now()->subDays(30));
@@ -217,55 +230,134 @@ class Trends extends Controller
         $transactions = $inActiveTransactons->get();
         if(! empty($transactions)) {
             foreach ($transactions as $transaction) {
-                switch ($goodTypeId) {
-                    case 1:
-                        $title = Ores::find($transaction->good_id)->title;
-                        break;
-                    case 2:
-                        $title = Ingots::find($transaction->good_id)->title;
-                        break;
-                    case 3:
-                        $title = Components::find($transaction->good_id)->title;
-                        break;
-                    case 4:
-                        $title = Tools::find($transaction->good_id)->title;
-                        break;
-                    default:
-                        die('Invalid type');
-                }
-                $title = str_replace(' ','',$title);
-                $title = str_replace('.','',$title);
-                $title = str_replace('-','',$title);
-                $title = str_replace('[','',$title);
-                $title = str_replace(']','',$title);
-                $title = str_replace('(','',$title);
-                $title = str_replace(')','',$title);
-                $hour  = $transaction->updated_at->hour;
-                $day   = $transaction->updated_at->day;
-                $month = $transaction->updated_at->month;
-
-                if (empty($dataPoints[$month][$day][$hour])) {
-                    $dataPoints[$title][$month][$day][$hour]['value']       = 0;
-                    $dataPoints[$title][$month][$day][$hour]['amount']      = 0;
-                    $dataPoints[$title][$month][$day][$hour]['orderAmount'] = 0;
-                    $dataPoints[$title][$month][$day][$hour]['offerAmount'] = 0;
-                    $dataPoints[$title][$month][$day][$hour]['average']     = 0;
-                    $dataPoints[$title][$month][$day][$hour]['count']       = 0;
-                }
-                $dataPoints[$title][$month][$day][$hour]['value']       += $transaction->value;
-                $dataPoints[$title][$month][$day][$hour]['amount']      += $transaction->amount;
-                if($transaction->transaction_type_id === 1) {
-                    $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $transaction->amount;
-                } else {
-                    $dataPoints[$title][$month][$day][$hour]['offerAmount'] += $transaction->amount;
-                }
-                $dataPoints[$title][$month][$day][$hour]['average']     += $transaction->value * $transaction->amount;
-                $dataPoints[$title][$month][$day][$hour]['count']       += 1;
+                $dataPoints = $this->addDataPointRow($dataPoints, $goodTypeId, $transaction);
             }
         }
+        return $dataPoints;
+    }
+
+
+    /**
+     * note: take the active transactions and get a collection to work with.
+     * @param      $goodTypeId
+     * @param null $goodId
+     *
+     * @return mixed
+     */
+    private function gatherTransactions($goodTypeId, $goodId = null)
+    {
+        $dataPoints          = [];
+        $inActiveTransactons = Transactions::where('good_type_id', $goodTypeId)->where('updated_at', '>', Carbon::now()->subDays(30));
+        if ( ! empty($goodId)) {
+            $inActiveTransactons->where('good_id', $goodId);
+        }
+        $transactions = $inActiveTransactons->get();
+        if(! empty($transactions)) {
+            foreach ($transactions as $transaction) {
+                $dataPoints = $this->addDataPointRow($dataPoints, $goodTypeId, $transaction);
+            }
+        }
+        return $dataPoints;
+    }
+
+
+    /**
+     * @param $dataPoints
+     * @param $goodTypeId
+     * @param $transaction
+     *
+     * @return array
+     */
+    private function addDataPointRow($dataPoints, $goodTypeId, $transaction) {
+        $title      = $this->goodTitleById($goodTypeId, $transaction->good_id);
+        $hour       = $transaction->updated_at->hour;
+        $day        = $transaction->updated_at->day;
+        $month      = $transaction->updated_at->month;
+        $amountType = ($transaction->transaction_type_id === 1) ? 'orderAmount' : 'offerAmount';
+        if (empty($dataPoints[$title][$month][$day][$hour])) {
+            $dataPoints[$title][$month][$day][$hour]['value']       = 0;
+            $dataPoints[$title][$month][$day][$hour]['amount']      = 0;
+            $dataPoints[$title][$month][$day][$hour]['orderAmount'] = 0;
+            $dataPoints[$title][$month][$day][$hour]['offerAmount'] = 0;
+            $dataPoints[$title][$month][$day][$hour]['average']     = 0;
+            $dataPoints[$title][$month][$day][$hour]['count']       = 0;
+        }
+        $dataPoints[$title][$month][$day][$hour]['value']       += $transaction->value;
+        $dataPoints[$title][$month][$day][$hour]['amount']      += $transaction->amount;
+        $dataPoints[$title][$month][$day][$hour][$amountType]   += $transaction->amount;
+        $dataPoints[$title][$month][$day][$hour]['average']     += $transaction->value * $transaction->amount;
+        $dataPoints[$title][$month][$day][$hour]['count']       += 1;
+
+        return $dataPoints;
+    }
+
+    private function dataPointsToCollection($dataPoints) {
         $dataPointsJson = json_encode($dataPoints);
         $dataPointsObject = json_decode($dataPointsJson);
 
         return collect($dataPointsObject);
+    }
+
+
+    private function goodTitleById($goodTypeId, $goodId) {
+        switch ($goodTypeId) {
+            case 1:
+                $title = Ores::find($goodId)->title;
+                break;
+            case 2:
+                $title = Ingots::find($goodId)->title;
+                break;
+            case 3:
+                $title = Components::find($goodId)->title;
+                break;
+            case 4:
+                $title = Tools::find($goodId)->title;
+                break;
+            default:
+                die('Invalid type');
+        }
+        $title = str_replace(' ','',$title);
+        $title = str_replace('.','',$title);
+        $title = str_replace('-','',$title);
+        $title = str_replace('[','',$title);
+        $title = str_replace(']','',$title);
+        $title = str_replace('(','',$title);
+        $title = str_replace(')','',$title);
+
+        return $title;
+    }
+
+
+    private function gatherDataPoints($goodTypeId, $goodId = null) {
+        $dataPoints = $this->gatherInActiveTransactions($goodTypeId, $goodId);
+        $active = $this->gatherTransactions($goodTypeId, $goodId);
+
+        foreach($active as $title => $goodData) {
+            foreach($goodData as $month => $monthData) {
+                foreach ($monthData as $day => $dayData) {
+                    foreach($dayData as $hour => $hourData) {
+                        foreach($hourData as $key => $data) {
+                            if (empty($dataPoints[$title][$month][$day][$hour])) {
+                                $dataPoints[$title][$month][$day][$hour]['value']       = 0;
+                                $dataPoints[$title][$month][$day][$hour]['amount']      = 0;
+                                $dataPoints[$title][$month][$day][$hour]['orderAmount'] = 0;
+                                $dataPoints[$title][$month][$day][$hour]['offerAmount'] = 0;
+                                $dataPoints[$title][$month][$day][$hour]['average']     = 0;
+                                $dataPoints[$title][$month][$day][$hour]['count']       = 0;
+                            }
+                            $dataPoints[$title][$month][$day][$hour]['value']       += $data['value'];
+                            $dataPoints[$title][$month][$day][$hour]['amount']      += $data['amount'];
+                            $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $data['offerAmount'];
+                            $dataPoints[$title][$month][$day][$hour]['orderAmount'] += $data['orderAmount'];
+                            $dataPoints[$title][$month][$day][$hour]['average']     += $data['value'] * $data['amount'];
+                            $dataPoints[$title][$month][$day][$hour]['count']       += $data['count'];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this->dataPointsToCollection($dataPoints);
+
     }
 }
