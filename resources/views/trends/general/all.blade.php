@@ -139,7 +139,7 @@
                         data: {
                             labels: {!! $jsonDailyAvgLabels !!},
                             datasets: [{
-                                label: 'Amount in offer transactions',
+                                label: 'Rought amount in offer transactions',
                                 data: {!! $jsonDailyAvg !!}
                             }]
                         },

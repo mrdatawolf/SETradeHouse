@@ -183,11 +183,13 @@ class Trends extends Controller
                 foreach ($oreData as $month => $monthValue) {
                     foreach ($monthValue as $day => $dayValue) {
                         $rawAmount                      = 0;
+                        $rawCount                       = 0;
                         $trendDailyAvgLabels[$title][]  = $month."/".$day;
                         foreach ($dayValue as $hour => $hourValue) {
                             $rawAmount += $hourValue->offerAmount;
+                            $rawCount  +=1;
                         }
-                        $trendDailyAvg[$title][] = round($rawAmount, 2);
+                        $trendDailyAvg[$title][] = round($rawAmount/$rawCount, 2);
                     }
                 }
             }
