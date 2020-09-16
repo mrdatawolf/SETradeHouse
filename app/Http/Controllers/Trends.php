@@ -155,16 +155,11 @@ class Trends extends Controller
         $averages = [];
         if ( ! empty($dataPoints)) {
             foreach ($dataPoints as $title => $data) {
-                $carbon = Carbon::now()->subHours(24);
                 foreach ($data as $month => $monthData) {
-                    if ((int)$month >= (int)$carbon->month) {
-                        foreach ($monthData as $day => $dayData) {
-                            if ((int)$day >= (int)$carbon->day) {
-                                foreach ($dayData as $hour => $hourData) {
-                                    if ((int)$hour >= (int)$carbon->hour || $day > (int)$carbon->day) {
-                                        $averages[$title][] = round($hourData->average, 2);
-                                    }
-                                }
+                    foreach ($monthData as $day => $dayData) {
+                        foreach ($dayData as $hour => $hourData) {
+                            if ($this->isInHourRange($month, $day, $hour)) {
+                                $averages[$title][] = round($hourData->average, 2);
                             }
                         }
                     }
@@ -173,6 +168,24 @@ class Trends extends Controller
         }
 
         return $averages;
+    }
+
+
+    private function isInHourRange($month, $day, $hour)
+    {
+        $carbon = Carbon::now()->subHours(24);
+        $minMonth = (int)$carbon->month;
+        $minDay = (int)$carbon->day;
+        $minHour = (int)$carbon->hour;
+        if ((int)$month >= $minMonth) {
+            if ((int)$day >= $minDay) {
+                if ((int)$hour >= $minHour || (int)$day > $minDay) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 
@@ -186,16 +199,11 @@ class Trends extends Controller
         $labels = [];
         if ( ! empty($dataPoints)) {
             foreach ($dataPoints as $title => $data) {
-                $carbon = Carbon::now()->subHours(24);
                 foreach ($data as $month => $monthData) {
-                    if ((int)$month >= (int)$carbon->month) {
-                        foreach ($monthData as $day => $dayData) {
-                            if ((int)$day >= (int)$carbon->day) {
-                                foreach ($dayData as $hour => $hourData) {
-                                    if ((int)$hour >= (int)$carbon->hour || $day > (int)$carbon->day) {
-                                        $labels[$title][] = "d:" . $day. " h:" . $hour;
-                                    }
-                                }
+                    foreach ($monthData as $day => $dayData) {
+                        foreach ($dayData as $hour => $hourData) {
+                            if ($this->isInHourRange($month, $day, $hour)) {
+                                $labels[$title][] = "d:".$day." h:".$hour;
                             }
                         }
                     }
