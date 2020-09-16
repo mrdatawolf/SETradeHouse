@@ -24,6 +24,12 @@
         .dropdown-menu > li:hover > .submenu{
             display: block;
         }
+        .staleWarn {
+            color: #fcba33 !important;
+        }
+        .staleError {
+            color: #a51818 !important;
+        }
     }
 </style>
 
@@ -168,12 +174,41 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Other Info</a>
+                        @php
+                        $generalStaleness = 0;
+                        $syncStaleness = (int) Session::get('newest_sync_hours');
+                        $dbStaleness = (int) Session::get('newest_db_hours');
+                        if($dbStaleness > $generalStaleness) {
+                            $generalStaleness = (int) $dbStaleness;
+                        }
+                        if($syncStaleness > $generalStaleness) {
+                            $generalStaleness = (int) $syncStaleness;
+                        }
+                        $generalStaleClass = '';
+                        if($generalStaleness > 5 ) {
+                            $generalStaleClass = 'staleError';
+                        } elseif($generalStaleness > 2) {
+                             $generalStaleClass = 'staleWarn';
+                        }
+                        $dbStaleClass = '';
+                        if($dbStaleness > 5 ) {
+                            $dbStaleClass = 'staleError';
+                        } elseif($dbStaleness > 2) {
+                             $dbStaleClass = 'staleWarn';
+                        }
+                        $syncStaleClass = '';
+                        if($syncStaleness > 5 ) {
+                            $syncStaleClass = 'staleError';
+                        } elseif($syncStaleness > 2) {
+                             $syncStaleClass = 'staleWarn';
+                        }
+                        @endphp
+                        <a class="nav-link dropdown-toggle {{ $generalStaleClass }}" href="#" data-toggle="dropdown">Other Info</a>
                         <ul class="dropdown-menu">
                             <li class="font-weight-bold">Current Server: {{ \App\Servers::find($currentUser->server_id)->title ?? '' }}</li>
                             <li class="font-weight-bold">Current World: 'N/A'</li>
-                            <li class="font-weight-bold">Newest DB date: {{ Session::get('newest_db_record') }}</li>
-                            <li class="font-weight-bold">Newest sync date: {{ Session::get('newest_sync_record') }}</li>
+                            <li class="font-weight-bold {{ $dbStaleClass }}">Newest DB date: {{ Session::get('newest_db_record') }}</li>
+                            <li class="font-weight-bold {{ $syncStaleClass }}">Newest sync date: {{ Session::get('newest_sync_record') }}</li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

@@ -6,11 +6,13 @@ use App\Http\Controllers\Stocklevels;
 use App\Http\Controllers\Stores;
 use App\NpcStorageValues;
 use App\Transactions;
+use Carbon\Carbon;
 use Closure;
 use \Session;
 
 class CheckSessionData
 {
+    public $carbonNow;
     /**
      * Handle an incoming request.
      *
@@ -19,6 +21,7 @@ class CheckSessionData
      * @return mixed
      */
     public function handle($request, Closure $next) {
+        $this->carbonNow = Carbon::now();
         if(! Session::has('stockLevels')) {
             $this->setStockData();
         }
@@ -61,15 +64,19 @@ class CheckSessionData
 
     public function setNewestDBRecordedDate() {
         $npcStorageValue = NpcStorageValues::latest('origin_timestamp')->first();
-
         $originString = (empty($npcStorageValue->origin_timestamp)) ? 'N/A' : $npcStorageValue->origin_timestamp . ' -7';
         Session::put('newest_db_record', $originString);
+        $dbCarbonDate = Carbon::createFromFormat('Y-m-d H:i:s',$npcStorageValue->origin_timestamp, 'America/Los_Angeles');
+        $hoursOld = (int) $this->carbonNow->diff($dbCarbonDate)->format('%h');
+        Session::put('newest_db_hours', $hoursOld);
     }
-
 
     public function setNewestSyncRecordedDate() {
         $transaction = Transactions::latest('updated_at')->first();
         $updatedAtString = (empty($transaction->updated_at)) ? 'N/A' : $transaction->updated_at->toDateTimeString() . ' +0';
         Session::put('newest_sync_record', $updatedAtString);
+        $npcCarbonDate = Carbon::createFromFormat('Y-m-d H:i:s',$transaction->updated_at);
+        $hoursOld = $this->carbonNow->diff($npcCarbonDate)->format('%h');
+        Session::put('newest_sync_hours', (int) $hoursOld);
     }
 }
