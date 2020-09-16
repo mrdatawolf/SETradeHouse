@@ -36,7 +36,7 @@ class Trends extends Controller
     public function ingotOrderIndex()
     {
         $pageTitle  = "Ingot Order Trends";
-        $dataPoints = $this->gatherTrends('buy',2);
+        $dataPoints = $this->gatherTrends('buy', 2);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -46,7 +46,7 @@ class Trends extends Controller
     public function ingotOfferIndex()
     {
         $pageTitle  = "Ingot Offer Trends";
-        $dataPoints = $this->gatherTrends('sell',2);
+        $dataPoints = $this->gatherTrends('sell', 2);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -56,7 +56,7 @@ class Trends extends Controller
     public function componentOrderIndex()
     {
         $pageTitle  = "Component Order Trends";
-        $dataPoints = $this->gatherTrends('buy',3);
+        $dataPoints = $this->gatherTrends('buy', 3);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -66,7 +66,7 @@ class Trends extends Controller
     public function componentOfferIndex()
     {
         $pageTitle  = "Component Offer Trends";
-        $dataPoints = $this->gatherTrends('sell',3);
+        $dataPoints = $this->gatherTrends('sell', 3);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -76,7 +76,7 @@ class Trends extends Controller
     public function toolOrderIndex()
     {
         $pageTitle  = "Tools Order Trends";
-        $dataPoints = $this->gatherTrends('buy',4);
+        $dataPoints = $this->gatherTrends('buy', 4);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -86,7 +86,7 @@ class Trends extends Controller
     public function toolOfferIndex()
     {
         $pageTitle  = "Tools Offer Trends";
-        $dataPoints = $this->gatherTrends('sell',4);
+        $dataPoints = $this->gatherTrends('sell', 4);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -105,9 +105,15 @@ class Trends extends Controller
     {
         $transactionId = TransactionTypes::where('title', $transactionType)->first()->id;
         $dataPoints    = [];
-        $whereArray    = ($goodId > 0) ? ['transaction_type_id' => $transactionId, 'type_id' => $goodTypeId, 'good_id' => $goodId]
-            : ['transaction_type_id' => $transactionId, 'type_id' => $goodTypeId];
-        $trends        = \App\Trends::where($whereArray)->get();
+        $whereArray    = ($goodId > 0) ? [
+            'transaction_type_id' => $transactionId,
+            'type_id'             => $goodTypeId,
+            'good_id'             => $goodId
+        ] : ['transaction_type_id' => $transactionId, 'type_id' => $goodTypeId];
+        $trends        = \App\Trends::where($whereArray)->orderBy('month')
+            ->orderBy('day')
+            ->orderBy('hour')
+            ->get();
         foreach ($trends as $trend) {
             $title                                                        = $this->goodTitleById($goodTypeId,
                 $trend->good_id);
@@ -205,7 +211,8 @@ class Trends extends Controller
                         $currentDaysArray['sum']    += $hourData->sum;
                         $currentDaysArray['amount'] += $hourData->amount;
                     }
-                    $averages[$title][] = round($currentDaysArray['sum'] / $currentDaysArray['amount'], 2);
+                    $averages[$title][] = ($currentDaysArray['sum'] > 0 && $currentDaysArray['amount'] > 0)
+                        ? round($currentDaysArray['sum'] / $currentDaysArray['amount'], 2) : 0;
                 }
             }
         }
@@ -404,6 +411,7 @@ class Trends extends Controller
 
     private function dataPointsToCollection($dataPoints)
     {
+        dd($dataPoints);
         $dataPointsJson   = json_encode($dataPoints);
         $dataPointsObject = json_decode($dataPointsJson);
 
