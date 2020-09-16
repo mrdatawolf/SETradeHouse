@@ -110,10 +110,7 @@ class Trends extends Controller
             'type_id'             => $goodTypeId,
             'good_id'             => $goodId
         ] : ['transaction_type_id' => $transactionId, 'type_id' => $goodTypeId];
-        $trends        = \App\Trends::where($whereArray)->orderBy('month')
-            ->orderBy('day')
-            ->orderBy('hour')
-            ->get();
+        $trends        = \App\Trends::where($whereArray)->orderBy('month')->orderBy('day')->orderBy('hour')->get();
         foreach ($trends as $trend) {
             $title                                                        = $this->goodTitleById($goodTypeId,
                 $trend->good_id);
@@ -158,12 +155,18 @@ class Trends extends Controller
         $averages = [];
         if ( ! empty($dataPoints)) {
             foreach ($dataPoints as $title => $data) {
-                $carbon = Carbon::now();
-                $month  = $carbon->month;
-                $day    = $carbon->day;
-                if ( ! empty($data->$month->$day)) {
-                    foreach ($data->$month->$day as $hour => $hourData) {
-                        $averages[$title][] = round($hourData->average, 2);
+                $carbon = Carbon::now()->subHours(24);
+                foreach ($data as $month => $monthData) {
+                    if ((int)$month >= (int)$carbon->month) {
+                        foreach ($monthData as $day => $dayData) {
+                            if ((int)$day >= (int)$carbon->day) {
+                                foreach ($dayData as $hour => $hourData) {
+                                    if ((int)$hour >= (int)$carbon->hour || $day > (int)$carbon->day) {
+                                        $averages[$title][] = round($hourData->average, 2);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -183,12 +186,18 @@ class Trends extends Controller
         $labels = [];
         if ( ! empty($dataPoints)) {
             foreach ($dataPoints as $title => $data) {
-                $carbon = Carbon::now();
-                $month  = $carbon->month;
-                $day    = $carbon->day;
-                if ( ! empty($data->$month->$day)) {
-                    foreach ($data->$month->$day as $hour => $hourData) {
-                        $labels[$title][] = $hour;
+                $carbon = Carbon::now()->subHours(24);
+                foreach ($data as $month => $monthData) {
+                    if ((int)$month >= (int)$carbon->month) {
+                        foreach ($monthData as $day => $dayData) {
+                            if ((int)$day >= (int)$carbon->day) {
+                                foreach ($dayData as $hour => $hourData) {
+                                    if ((int)$hour >= (int)$carbon->hour || $day > (int)$carbon->day) {
+                                        $labels[$title][] = "d:" . $day. " h:" . $hour;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -448,6 +457,17 @@ class Trends extends Controller
     }
 
 
+    /**
+     * note: we are working with 2 tables of data. the historic (inactive) and the current (transactions)  so we get
+     * all the inactives and then add the active onto it.
+     *
+     * @param      $transactionTypeId
+     * @param      $goodTypeId
+     * @param null $goodId
+     * @param bool $useTitle
+     *
+     * @return array
+     */
     private function gatherSimplifiedDataPoints($transactionTypeId, $goodTypeId, $goodId = null, $useTitle = true)
     {
         $dataPoints = $this->gatherInActiveTransactions($transactionTypeId, $goodTypeId, $goodId = null,
