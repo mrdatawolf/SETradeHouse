@@ -48,18 +48,17 @@
                     <table class="table-striped table-responsive-xl transaction-table" style="width:100%">
                         <thead>
                             <tr class="transaction-table-groups">
-                                <th colspan="2"></th>
+                                <th colspan="5" class="serverGroup">Stores Data</th>
                                 <th colspan="2" class="serverGroup">Server</th>
-                                <th colspan="3" class="serverGroup">Stores Transactions</th>
                             </tr>
                             <tr class="text-center">
                                 <th>Name</th>
                                 <th>Avg Price</th>
-                                <th class="left-border">Average</th>
-                                <th># TZs found</th>
                                 <th class="left-border">Min Price</th>
                                 <th>Max Price</th>
                                 <th class="right-border">Total in Transaction(s)</th>
+                                <th class="left-border">Order/Offer Average Price</th>
+                                <th># of Other TZs its found</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,11 +66,11 @@
                             <tr class="text-right">
                                 <td>{{ ucfirst($item) }}</td>
                                 <td>{{ number_format($gridData['Averages'][$group][$transactionType][$item]['Price'] ?? 0) }}</td>
-                                <td class="left-border">{{ number_format($globalAverages[$group][$transactionType][$item]['average'] ?? 0) }}</td>
-                                <td>{{ number_format($globalAverages[$group][$transactionType][$item]['count'] ?? 0) }}</td>
                                 <td class="left-border">{{ number_format($gridData['Totals'][$group][$transactionType][$item]['MinPrice'] ?? 0) }}</td>
                                 <td>{{ number_format($gridData['Totals'][$group][$transactionType][$item]['MaxPrice'] ?? 0) }}</td>
                                 <td class="right-border">{{ number_format($gridData['Totals'][$group][$transactionType][$item]['Amount'] ?? 0) }}</td>
+                                <td class="left-border">{{ number_format($globalAverages[$group][$transactionType][$item]['average'] ?? 0) }}</td>
+                                <td>{{ number_format($globalAverages[$group][$transactionType][$item]['count'] ?? 0) }}</td>
                             </tr>
                         @endforeach
                         </tbody>

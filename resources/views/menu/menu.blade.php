@@ -115,23 +115,26 @@
                         */ ?>
                             <li><a class="dropdown-item" href="#"> Ores &raquo </a>
                                 <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ores') }}';">All</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ores.iron') }}';">Iron</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ores.offers') }}';">All Offers</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ores.orders') }}';">All Orders</button></li>
                                 </ul>
                             </li>
                             <li><a class="dropdown-item" href="#"> Ingots &raquo </a>
                                 <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ingots') }}';">All</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ingots.offers') }}';">All Offers</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ingots.orders') }}';">All Orders</button></li>
                                 </ul>
                             </li>
                             <li><a class="dropdown-item" href="#"> Components &raquo </a>
                                 <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.components') }}';">All</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.components.offers') }}';">All Offers</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.components.orders') }}';">All Orders</button></li>
                                 </ul>
                             </li>
                             <li><a class="dropdown-item" href="#"> Tools &raquo </a>
                                 <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.tools') }}';">All</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.tools.offers') }}';">All Offers</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.tools.orders') }}';">All Orders</button></li>
                                 </ul>
                             </li>
                         <?php /*
