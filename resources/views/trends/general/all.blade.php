@@ -15,13 +15,13 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">{{ ucfirst($title) }} Daily (last 30)</h5>
-                    <canvas id="trend{{ $title }}Daily"></canvas>
+                    <canvas id="trend{{ $title }}DailyAmount"></canvas>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">{{ ucfirst($title) }} Daily (last 30)</h5>
-                    <canvas id="trend{{ $title }}DailyAmount"></canvas>
+                    <canvas id="trend{{ $title }}Daily"></canvas>
                 </div>
             </div>
             <div class="card">
