@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Components;
-use App\GoodTypes;
 use App\Http\Controllers\Trends as TrendsController;
 use App\Ingots;
 use App\Ores;
@@ -18,7 +17,7 @@ class GatherTrendData extends Command
      *
      * @var string
      */
-    protected $signature = 'gather:trends { good_type_id }';
+    protected $signature = 'gather:trends { good_type_id } { --goodId=}';
 
     /**
      * The console command description.
@@ -47,25 +46,30 @@ class GatherTrendData extends Command
     public function handle()
     {
         $this->goodTypeId   = (int) $this->argument('good_type_id');
-        switch($this->goodTypeId) {
-            case 1 :
-            $ids = Ores::pluck('id');
-            break;
-            case 2 :
-                $ids = Ingots::pluck('id');
-                break;
-            case 3 :
-                $ids = Components::pluck('id');
-                break;
-            case 4 :
-                $ids = Tools::pluck('id');
-                break;
+        $this->goodId       = ($this->option('goodId')) ? $this->option('goodId') : null;
+        if(! empty($this->goodId)) {
+            $ids = [$this->goodId];
+        } else {
+            switch ($this->goodTypeId) {
+                case 1 :
+                    $ids = Ores::pluck('id');
+                    break;
+                case 2 :
+                    $ids = Ingots::pluck('id');
+                    break;
+                case 3 :
+                    $ids = Components::pluck('id');
+                    break;
+                case 4 :
+                    $ids = Tools::pluck('id');
+                    break;
+            }
         }
 
         foreach($ids as $id) {
             $trends     = new TrendsController();
-            $trendsData = $trends->getTrends($this->goodTypeId, $id, false);
-            foreach ($trendsData as $row) {
+            $trendsData = $trends->getRawTrends($this->goodTypeId, $id, false);
+            foreach ($trendsData as $goodId => $row) {
                 foreach ($row as $month => $rowdatum) {
                     foreach ($rowdatum as $day => $monthdatum) {
                         foreach ($monthdatum as $hour => $daydatum) {
@@ -76,14 +80,20 @@ class GatherTrendData extends Command
                                 'day'        => $day,
                                 'hour'       => $hour
                             ], [
-                                    'value'                   => $daydatum->value,
-                                    'amount'                  => $daydatum->value,
-                                    'orderAmount'             => $daydatum->orderAmount,
-                                    'offerAmount'             => $daydatum->offerAmount,
-                                    'average'                 => $daydatum->average,
+                                    'sum'                   => $daydatum->sum,
+                                    'amount'                  => $daydatum->amount,
+                                    'average'                 => $daydatum->sum/$daydatum->amount,
                                     'count'                   => $daydatum->count,
-                                    'orderAmountLatestMinute' => $daydatum->orderAmountLatestMinute,
-                                    'offerAmountLatestMinute' => $daydatum->offerAmountLatestMinute,
+                                    'orderSum'              => $daydatum->orderSum,
+                                    'orderAmount'             => $daydatum->orderAmount,
+                                    'orderAverage'            => ($daydatum->orderSum > 0 && $daydatum->orderAmount > 0) ? $daydatum->orderSum/$daydatum->orderAmount : 0,
+                                    'orderCount'              => $daydatum->orderCount,
+                                    'offerSum'              => $daydatum->offerSum,
+                                    'offerAmount'             => $daydatum->offerAmount,
+                                    'offerAverage'            => ($daydatum->offerSum > 0 && $daydatum->offerAmount > 0) ? $daydatum->offerSum/$daydatum->offerAmount : 0,
+                                    'offerCount'              => $daydatum->offerCount,
+                                    'orderLatestMinute'       => $daydatum->orderLatestMinute,
+                                    'offerLatestMinute'       => $daydatum->offerLatestMinute,
                                 ]);
                         }
                     }

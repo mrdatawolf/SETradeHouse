@@ -12,80 +12,92 @@ use Carbon\Carbon;
 
 class Trends extends Controller
 {
-    public function ironOreIndex() {
-        $pageTitle              = "Iron Ore Trends";
-        $dataPoints             = $this->getDataPoints(1,3);
-        $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
-        $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
-        $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
-        $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
-        $jsonDataPoints         = json_encode($dataPoints);
-        $jsonHourlyAvg          = json_encode($trendHourlyAvg, true);
-        $jsonHourlyAvgLabels    = json_encode($trendHourlyAvgLabels);
-        $jsonDailyAvg           = json_encode($trendDailyAvg, true);
-        $jsonDailyAvgLabels     = json_encode($trendDailyAvgLabels);
+    public function ironOreIndex()
+    {
+        $pageTitle            = "Iron Ore Trends";
+        $dataPoints           = $this->gatherTrends(1, 3);
+        $trendHourlyAvg       = $this->trendingHourlyAvg($dataPoints);
+        $trendHourlyAvgLabels = $this->trendingHourlyAvgLabels($dataPoints);
+        $trendDailyAvg        = $this->trendingDailyAvg($dataPoints);
+        $trendDailyAvgLabels  = $this->trendingDailyAvgLabels($dataPoints);
+        $jsonDataPoints       = json_encode($dataPoints);
+        $jsonHourlyAvg        = json_encode($trendHourlyAvg, true);
+        $jsonHourlyAvgLabels  = json_encode($trendHourlyAvgLabels);
+        $jsonDailyAvg         = json_encode($trendDailyAvg, true);
+        $jsonDailyAvgLabels   = json_encode($trendDailyAvgLabels);
 
-        return view('trends.ores.iron', compact('pageTitle','jsonDataPoints', 'jsonHourlyAvg', 'jsonHourlyAvgLabels', 'jsonDailyAvg', 'jsonDailyAvgLabels'));
+        return view('trends.ores.iron',
+            compact('pageTitle', 'jsonDataPoints', 'jsonHourlyAvg', 'jsonHourlyAvgLabels', 'jsonDailyAvg',
+                'jsonDailyAvgLabels'));
     }
 
 
-    public function oreIndex() {
+    public function oreIndex()
+    {
         $pageTitle  = "Ore Trends";
-        $dataPoints = $this->getDataPoints(1);
+        $dataPoints = $this->gatherTrends(1);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
-    public function ingotIndex() {
+
+    public function ingotIndex()
+    {
         $pageTitle  = "Ingot Trends";
-        $dataPoints = $this->getDataPoints(2);
+        $dataPoints = $this->gatherTrends(2);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
-    public function componentIndex() {
+
+    public function componentIndex()
+    {
         $pageTitle  = "Component Trends";
-        $dataPoints = $this->getDataPoints(3);
+        $dataPoints = $this->gatherTrends(3);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
-    public function toolIndex() {
+
+    public function toolIndex()
+    {
         $pageTitle  = "Tools Trends";
-        $dataPoints = $this->getDataPoints(4);
+        $dataPoints = $this->gatherTrends(4);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    public function getTrends($goodTypeId, $goodId, $usetitle) {
-        return $this->gatherDataPoints($goodTypeId, $goodId, $usetitle);
+    public function getRawTrends($goodTypeId, $goodId, $usetitle)
+    {
+        $array = $this->gatherSimplifiedDataPoints($goodTypeId, $goodId, $usetitle);
+        return $this->dataPointsToCollection($array);
     }
 
 
-    private function getDataPoints($goodTypeId, $goodId = 0) {
+    private function gatherTrends($goodTypeId, $goodId = 0)
+    {
         $dataPoints = [];
-        if($goodId > 0) {
-            $trends = \App\Trends::where(['goodTypeId' => $goodTypeId, 'goodId' => $goodId])->get();
-        } else {
-            $trends = \App\Trends::where(['goodTypeId' => $goodTypeId])->get();
-        }
-        foreach($trends as $trend) {
-            $title = $this->goodTitleById($goodTypeId, $trend->goodId);
+        $whereArray = ($goodId > 0) ? ['goodTypeId' => $goodTypeId, 'goodId' => $goodId]
+            : ['goodTypeId' => $goodTypeId];
+        $trends     = \App\Trends::where($whereArray)->get();
+        foreach ($trends as $trend) {
+            $title                                                        = $this->goodTitleById($goodTypeId,
+                $trend->goodId);
             $dataPoints[$title][$trend->month][$trend->day][$trend->hour] = [
-                'value'                     => $trend->value,
-                'amount'                    => $trend->amount,
-                'orderAmount'               => $trend->orderAmount,
-                'offerAmount'               => $trend->offerAmount,
-                'average'                   => $trend->average,
-                'count'                     => $trend->count,
-                'orderAmountLatestMinute'   => $trend->orderAmountLatestMinute,
-                'offerAmountLatestMinute'   => $trend->offerAmountLatestMinute
-                ];
+                'sum'               => $trend->sum,
+                'amount'            => $trend->amount,
+                'orderAmount'       => $trend->orderAmount,
+                'offerAmount'       => $trend->offerAmount,
+                'average'           => $trend->average,
+                'count'             => $trend->count,
+                'orderLatestMinute' => $trend->orderLatestMinute,
+                'offerLatestMinute' => $trend->offerLatestMinute
+            ];
         }
 
         return $this->dataPointsToCollection($dataPoints);
@@ -98,14 +110,16 @@ class Trends extends Controller
      *
      * @return array
      */
-    private function makeGeneralCompact($dataPoints, $pageTitle) {
-        $trendHourlyAvg         = $this->trendingHourlyAvg($dataPoints);
-        $trendHourlyAvgLabels   = $this->trendingHourlyAvgLabels($dataPoints);
-        $trendDailyAvg          = $this->trendingDailyAvg($dataPoints);
-        $trendDailyAvailable    = $this->trendingDailyAvailable($dataPoints);
-        $trendDailyAvgLabels    = $this->trendingDailyAvgLabels($dataPoints);
+    private function makeGeneralCompact($dataPoints, $pageTitle)
+    {
+        $trendHourlyAvg       = $this->trendingHourlyAvg($dataPoints);
+        $trendHourlyAvgLabels = $this->trendingHourlyAvgLabels($dataPoints);
+        $trendDailyAvg        = $this->trendingDailyAvg($dataPoints);
+        $trendDailyAvailable  = $this->trendingDailyAvailable($dataPoints);
+        $trendDailyAvgLabels  = $this->trendingDailyAvgLabels($dataPoints);
 
-        return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels', 'trendDailyAvailable');
+        return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels',
+            'trendDailyAvailable');
     }
 
 
@@ -114,27 +128,17 @@ class Trends extends Controller
      *
      * @return array
      */
-    private function trendingHourlyAvg($dataPoints) {
+    private function trendingHourlyAvg($dataPoints)
+    {
         $averages = [];
-        if(!empty($dataPoints)) {
-            foreach ($dataPoints as $title => $oreData) {
-                foreach ($oreData as $month => $monthData) {
-                    if((int)$month === Carbon::now()->month) {
-                        foreach ($monthData as $day => $dayData) {
-                            if ((int)$day === Carbon::now()->day) {
-                                $currentHoursArray = [];
-                                foreach ($dayData as $hour => $hourData) {
-                                    if(empty($currentHoursArray[$hour])) {
-                                        $currentHoursArray[$hour] = ['sum' => 0, 'amount' => 0];
-                                    }
-                                        $currentHoursArray[$hour]['sum'] += $hourData->value*$hourData->amount;
-                                        $currentHoursArray[$hour]['amount'] += $hourData->amount;
-                                }
-                                foreach($currentHoursArray as $hour => $hourValues) {
-                                    $averages[$title][] = round($hourValues['sum'] / $hourValues['amount'], 2);
-                                }
-                            }
-                        }
+        if ( ! empty($dataPoints)) {
+            foreach ($dataPoints as $title => $data) {
+                $carbon = Carbon::now();
+                $month  = $carbon->month;
+                $day    = $carbon->day;
+                if(! empty($data->$month->$day)) {
+                    foreach ($data->$month->$day as $hour => $hourData) {
+                        $averages[$title][] = round($hourData->average, 2);
                     }
                 }
             }
@@ -149,18 +153,17 @@ class Trends extends Controller
      *
      * @return array
      */
-    private function trendingHourlyAvgLabels($dataPoints) {
+    private function trendingHourlyAvgLabels($dataPoints)
+    {
         $labels = [];
-        if(!empty($dataPoints)) {
-            foreach ($dataPoints as $title => $oreData) {
-                foreach ($oreData as $month => $monthData) {
-                    if((int)$month === Carbon::now()->month) {
-                        foreach ($monthData as $day => $dayData) {
-                            foreach($dayData as $hour => $hourData)
-                            if ((int)$day === Carbon::now()->day) {
-                                $labels[$title][] = $hour;
-                            }
-                        }
+        if ( ! empty($dataPoints)) {
+            foreach ($dataPoints as $title => $data) {
+                $carbon = Carbon::now();
+                $month  = $carbon->month;
+                $day    = $carbon->day;
+                if(! empty($data->$month->$day)) {
+                    foreach ($data->$month->$day as $hour => $hourData) {
+                        $labels[$title][] = $hour;
                     }
                 }
             }
@@ -170,26 +173,20 @@ class Trends extends Controller
     }
 
 
-    private function trendingDailyAvg($dataPoints) {
+    private function trendingDailyAvg($dataPoints)
+    {
         $averages = [];
-        if(!empty($dataPoints)) {
-            foreach ($dataPoints as $title => $oreData) {
-                foreach ($oreData as $month => $monthData) {
-                    if((int)$month === Carbon::now()->month) {
-                        $currentDaysArray = [];
-                        foreach ($monthData as $day => $dayData) {
-                            foreach ($dayData as $hourData) {
-                                if(empty($currentDaysArray[$day])) {
-                                    $currentDaysArray[$day] = ['sum' => 0, 'amount' => 0];
-                                }
-                                $currentDaysArray[$day]['sum']    += $hourData->value * $hourData->amount;
-                                $currentDaysArray[$day]['amount'] += $hourData->amount;
-                            }
-                        }
-                        foreach ($currentDaysArray as $day => $dayValues) {
-                            $averages[$title][] = round($dayValues['sum'] / $dayValues['amount'], 2);
-                        }
+        $carbon = Carbon::now();
+        $month  = $carbon->month;
+        if ( ! empty($dataPoints)) {
+            foreach ($dataPoints as $title => $data) {
+                foreach ($data->$month as $day => $dayData) {
+                    $currentDaysArray = ['sum' => 0, 'amount' => 0];
+                    foreach ($dayData as $hourData) {
+                        $currentDaysArray['sum']    += $hourData->sum;
+                        $currentDaysArray['amount'] += $hourData->amount;
                     }
+                    $averages[$title][] = round($currentDaysArray['sum'] / $currentDaysArray['amount'], 2);
                 }
             }
         }
@@ -198,18 +195,20 @@ class Trends extends Controller
     }
 
 
-    private function trendingDailyAvailable($dataPoints) {
+    private function trendingDailyAvailable($dataPoints)
+    {
         $trendDailyAmount = [];
-        if(!empty($dataPoints)) {
-            foreach ($dataPoints as $title => $oreData) {
-                foreach ($oreData as $month => $monthValue) {
-                    foreach ($monthValue as $day => $dayValue) {
-                        $rawAmount                      = 0;
-                        foreach ($dayValue as $hour => $hourValue) {
-                            $rawAmount = $hourValue->offerAmount;
-                        }
-                        $trendDailyAmount[$title][] = round($rawAmount, 2);
+        $carbon = Carbon::now();
+        $month  = $carbon->month;
+        if ( ! empty($dataPoints)) {
+            foreach ($dataPoints as $title => $data) {
+                foreach ($data->$month as $day => $dayData) {
+                    $currentDaysArray = ['count' => 0, 'amount' => 0];
+                    foreach ($dayData as $hour => $hourData) {
+                        $currentDaysArray['amount'] += $hourData->offerAmount;
+                        $currentDaysArray['count'] += 1;
                     }
+                    $trendDailyAmount[$title][] = round($currentDaysArray['amount']/$currentDaysArray['count'], 2);
                 }
             }
         }
@@ -218,14 +217,15 @@ class Trends extends Controller
     }
 
 
-    private function trendingDailyAvgLabels($dataPoints) {
+    private function trendingDailyAvgLabels($dataPoints)
+    {
         $trendDailyAvgLabels = [];
-        if(!empty($dataPoints)) {
-            foreach ($dataPoints as $title => $oreData) {
-                foreach ($oreData as $month => $monthValue) {
-                    foreach ($monthValue as $day => $dayValue) {
-                        $trendDailyAvgLabels[$title][] = $month."/".$day;
-                    }
+        $carbon = Carbon::now();
+        $month  = $carbon->month;
+        if ( ! empty($dataPoints)) {
+            foreach ($dataPoints as $title => $data) {
+                foreach ($data->$month as $day => $dayData) {
+                    $trendDailyAvgLabels[$title][] = $month."/".$day;
                 }
             }
         }
@@ -236,6 +236,7 @@ class Trends extends Controller
 
     /**
      * note: take the inactive transactions and get a collection to work with.
+     *
      * @param      $goodTypeId
      * @param null $goodId
      * @param bool $useTitle
@@ -245,22 +246,25 @@ class Trends extends Controller
     private function gatherInActiveTransactions($goodTypeId, $goodId = null, $useTitle = true)
     {
         $dataPoints          = [];
-        $inActiveTransactons = InActiveTransactions::where('good_type_id', $goodTypeId)->where('updated_at', '>', Carbon::now()->subDays(30));
+        $inActiveTransactionModel = InActiveTransactions::where('good_type_id', $goodTypeId)
+                                                   ->where('updated_at', '>', Carbon::now()->subDays(30));
         if ( ! empty($goodId)) {
-            $inActiveTransactons->where('good_id', $goodId);
+            $inActiveTransactionModel->where('good_id', $goodId);
         }
-        $transactions = $inActiveTransactons->get();
-        if(! empty($transactions)) {
+        $transactions = $inActiveTransactionModel->get();
+        if ( ! empty($transactions)) {
             foreach ($transactions as $transaction) {
-                $dataPoints = $this->addDataPointRow($dataPoints, $goodTypeId, $transaction, $useTitle);
+                $dataPoints = $this->alignDataPoint($dataPoints, $goodTypeId, $transaction, $useTitle);
             }
         }
+
         return $dataPoints;
     }
 
 
     /**
      * note: take the active transactions and get a collection to work with.
+     *
      * @param      $goodTypeId
      * @param null $goodId
      * @param bool $useTitle
@@ -270,16 +274,18 @@ class Trends extends Controller
     private function gatherTransactions($goodTypeId, $goodId = null, $useTitle = true)
     {
         $dataPoints          = [];
-        $inActiveTransactons = Transactions::where('good_type_id', $goodTypeId)->where('updated_at', '>', Carbon::now()->subDays(30));
+        $transactonsModel = Transactions::where('good_type_id', $goodTypeId)
+                                           ->where('updated_at', '>', Carbon::now()->subDays(30));
         if ( ! empty($goodId)) {
-            $inActiveTransactons->where('good_id', $goodId);
+            $transactonsModel->where('good_id', $goodId);
         }
-        $transactions = $inActiveTransactons->get();
-        if(! empty($transactions)) {
+        $transactions = $transactonsModel->get();
+        if ( ! empty($transactions)) {
             foreach ($transactions as $transaction) {
-                $dataPoints = $this->addDataPointRow($dataPoints, $goodTypeId, $transaction, $useTitle);
+                $dataPoints = $this->alignDataPoint($dataPoints, $goodTypeId, $transaction, $useTitle);
             }
         }
+
         return $dataPoints;
     }
 
@@ -292,51 +298,102 @@ class Trends extends Controller
      *
      * @return array
      */
-    private function addDataPointRow($dataPoints, $goodTypeId, $transaction, $useTitle) {
-        $identifier = ($useTitle) ? $this->goodTitleById($goodTypeId, $transaction->good_id) : $transaction->good_id;
-        $minute     = $transaction->updated_at->minute;
-        $hour       = $transaction->updated_at->hour;
-        $day        = $transaction->updated_at->day;
-        $month      = $transaction->updated_at->month;
-        $amountType = ($transaction->transaction_type_id === 1) ? 'orderAmount' : 'offerAmount';
-        if (empty($dataPoints[$identifier][$month][$day][$hour])) {
-            $dataPoints[$identifier][$month][$day][$hour]['value']                   = 0;
-            $dataPoints[$identifier][$month][$day][$hour]['amount']                  = 0;
-            $dataPoints[$identifier][$month][$day][$hour]['orderAmount']             = 0;
-            $dataPoints[$identifier][$month][$day][$hour]['offerAmount']             = 0;
-            $dataPoints[$identifier][$month][$day][$hour]['sum']                     = 0;
-            $dataPoints[$identifier][$month][$day][$hour]['average']                 = 0;
-            $dataPoints[$identifier][$month][$day][$hour]['count']                   = 0;
-            $dataPoints[$identifier][$month][$day][$hour]['orderAmountLatestMinute'] = 0;
-            $dataPoints[$identifier][$month][$day][$hour]['offerAmountLatestMinute'] = 0;
-        }
-        $dataPoints[$identifier][$month][$day][$hour]['value']   += $transaction->value;
-        $dataPoints[$identifier][$month][$day][$hour]['amount']  += $transaction->amount;
-        if($dataPoints[$identifier][$month][$day][$hour][$amountType . 'LatestMinute'] === 0
-            ||
-            ($minute > $dataPoints[$identifier][$month][$day][$hour][$amountType . 'LatestMinute'] && $transaction->amount > 0 )
-        ) {
-            $dataPoints[$identifier][$month][$day][$hour][$amountType . 'LatestMinute']  = $minute;
-            $dataPoints[$identifier][$month][$day][$hour][$amountType]                   = $transaction->amount;
-        } else {
-            $dataPoints[$identifier][$month][$day][$hour][$amountType] += $transaction->amount;
-        }
-
-        $dataPoints[$identifier][$month][$day][$hour]['sum'] += $transaction->value * $transaction->amount;
-        $dataPoints[$identifier][$month][$day][$hour]['count']   += 1;
+    private function alignDataPoint($dataPoints, $goodTypeId, $transaction, $useTitle)
+    {
+        $identifier                                   = ($useTitle) ? $this->goodTitleById($goodTypeId,
+            $transaction->good_id) : $transaction->good_id;
+        $hour                                         = $transaction->updated_at->hour;
+        $day                                          = $transaction->updated_at->day;
+        $month                                        = $transaction->updated_at->month;
+        $currentData                                  = $this->setDataPoints($dataPoints, $hour, $day, $month,
+            $identifier, $transaction);
+        $dataPoints[$identifier][$month][$day][$hour] = $currentData;
 
         return $dataPoints;
     }
 
-    private function dataPointsToCollection($dataPoints) {
-        $dataPointsJson = json_encode($dataPoints);
+
+    private function setDataPoints($dataPoints, $hour, $day, $month, $identifier, $transaction)
+    {
+        if (empty($dataPoints[$identifier][$month][$day][$hour])) {
+            $currentData = [
+                'sum'               => 0,
+                'amount'            => 0,
+                'count'             => 0,
+                'orderSum'          => 0,
+                'orderAmount'       => 0,
+                'orderCount'        => 0,
+                'offerSum'          => 0,
+                'offerAmount'       => 0,
+                'offerCount'        => 0,
+                'orderLatestMinute' => 0,
+                'offerLatestMinute' => 0,
+            ];
+        } else {
+            $currentData = $dataPoints[$identifier][$month][$day][$hour];
+        }
+
+        $currentData = $this->setLatestMinute($currentData, $transaction);
+        $currentData = $this->setSums($currentData, $transaction);
+        $currentData = $this->setAmounts($currentData, $transaction);
+        $currentData = $this->setCounts($currentData, $transaction);
+
+        return $currentData;
+    }
+
+
+    private function setSums($currentData, $transaction)
+    {
+        $amountType               = ((int)$transaction->transaction_type_id === 1) ? 'orderSum' : 'offerSum';
+        $currentData['sum']       += $transaction->value*$transaction->amount;
+        $currentData[$amountType] += $transaction->value*$transaction->amount;
+        return $currentData;
+    }
+
+
+    private function setAmounts($currentData, $transaction)
+    {
+        $amountType               = ((int)$transaction->transaction_type_id === 1) ? 'orderAmount' : 'offerAmount';
+        $currentData['amount']    += $transaction->amount;
+        $currentData[$amountType] += $transaction->amount;
+
+        return $currentData;
+    }
+
+
+    private function setCounts($currentData, $transaction)
+    {
+        $amountType               = ((int)$transaction->transaction_type_id === 1) ? 'orderCount' : 'offerCount';
+        $currentData['count']     += 1;
+        $currentData[$amountType] += 1;
+
+        return $currentData;
+    }
+
+
+    private function setLatestMinute($currentData, $transaction)
+    {
+        $amountType = ((int)$transaction->transaction_type_id === 1) ? 'order' : 'offer';
+        $minute     = $transaction->updated_at->minute;
+        if ($currentData[$amountType.'LatestMinute'] === 0 || ($minute > $currentData[$amountType.'LatestMinute'] && $transaction->amount > 0)) {
+            $currentData[$amountType.'LatestMinute'] = $minute;
+        }
+
+        return $currentData;
+    }
+
+
+    private function dataPointsToCollection($dataPoints)
+    {
+        $dataPointsJson   = json_encode($dataPoints);
         $dataPointsObject = json_decode($dataPointsJson);
 
         return collect($dataPointsObject);
     }
 
 
-    private function goodTitleById($goodTypeId, $goodId) {
+    private function goodTitleById($goodTypeId, $goodId)
+    {
         switch ($goodTypeId) {
             case 1:
                 $title = Ores::find($goodId)->title;
@@ -353,40 +410,75 @@ class Trends extends Controller
             default:
                 die('Invalid type');
         }
-        $title = str_replace(' ','',$title);
-        $title = str_replace('.','',$title);
-        $title = str_replace('-','',$title);
-        $title = str_replace('[','',$title);
-        $title = str_replace(']','',$title);
-        $title = str_replace('(','',$title);
-        $title = str_replace(')','',$title);
+        $title = str_replace(' ', '', $title);
+        $title = str_replace('.', '', $title);
+        $title = str_replace('-', '', $title);
+        $title = str_replace('[', '', $title);
+        $title = str_replace(']', '', $title);
+        $title = str_replace('(', '', $title);
+        $title = str_replace(')', '', $title);
 
         return $title;
     }
 
 
-    private function gatherDataPoints($goodTypeId, $goodId = null, $useTitle = true) {
+    private function gatherSimplifiedDataPoints($goodTypeId, $goodId = null, $useTitle = true)
+    {
+        $dataPoints = $this->gatherInActiveTransactions($goodTypeId, $goodId = null, $useTitle = true);
+        $dataPoints = $this->addTransactions($dataPoints, $goodTypeId, $goodId, $useTitle);
+
+        return $dataPoints;
+    }
+
+
+    private function addTransactions($dataPoints, $goodTypeId, $goodId = null, $useTitle = true) {
+        $transactonsModel = Transactions::where('good_type_id', $goodTypeId)
+                                        ->where('updated_at', '>', Carbon::now()->subDays(30));
+        if ( ! empty($goodId)) {
+            $transactonsModel->where('good_id', $goodId);
+        }
+        $transactions = $transactonsModel->get();
+        if ( ! empty($transactions)) {
+            foreach ($transactions as $transaction) {
+                $dataPoints = $this->alignDataPoint($dataPoints, $goodTypeId, $transaction, $useTitle);
+            }
+        }
+
+        return $dataPoints;
+    }
+
+
+    private function gatherDataPoints($goodTypeId, $goodId = null, $useTitle = true)
+    {
         $dataPoints = $this->gatherInActiveTransactions($goodTypeId, $goodId, $useTitle);
-        $active = $this->gatherTransactions($goodTypeId, $goodId, $useTitle);
-        foreach($active as $title => $goodData) {
+        $active     = $this->gatherTransactions($goodTypeId, $goodId, $useTitle);
+        foreach ($active as $title => $goodData) {
             $identifier = ($useTitle) ? $title : $goodId;
-            foreach($goodData as $month => $monthData) {
+            foreach ($goodData as $month => $monthData) {
                 foreach ($monthData as $day => $dayData) {
-                    foreach($dayData as $hour => $hourData) {
+                    foreach ($dayData as $hour => $hourData) {
                         if (empty($dataPoints[$identifier][$month][$day][$hour])) {
-                            $dataPoints[$identifier][$month][$day][$hour]['value']       = 0;
-                            $dataPoints[$identifier][$month][$day][$hour]['amount']      = 0;
-                            $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] = 0;
-                            $dataPoints[$identifier][$month][$day][$hour]['offerAmount'] = 0;
-                            $dataPoints[$identifier][$month][$day][$hour]['average']     = 0;
-                            $dataPoints[$identifier][$month][$day][$hour]['count']       = 0;
+                            $dataPoints[$identifier][$month][$day][$hour] = [
+                                'sum'       => 0,
+                                'amount'      => 0,
+                                'count'       => 0,
+                                'orderSum'  => 0,
+                                'orderAmount' => 0,
+                                'orderCount'  => 0,
+                                'offerSum'  => 0,
+                                'offerAmount' => 0,
+                                'offerCount'  => 0
+                            ];
                         }
-                        $dataPoints[$identifier][$month][$day][$hour]['value']       += $hourData['value'];
+                        $dataPoints[$identifier][$month][$day][$hour]['sum']       += $hourData['sum'];
                         $dataPoints[$identifier][$month][$day][$hour]['amount']      += $hourData['amount'];
-                        $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] += $hourData['offerAmount'];
-                        $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] += $hourData['orderAmount'];
-                        $dataPoints[$identifier][$month][$day][$hour]['average']     += $hourData['sum'] / $hourData['amount'];
                         $dataPoints[$identifier][$month][$day][$hour]['count']       += $hourData['count'];
+                        $dataPoints[$identifier][$month][$day][$hour]['orderSum']  += $hourData['orderSum'];
+                        $dataPoints[$identifier][$month][$day][$hour]['orderAmount'] += $hourData['orderAmount'];
+                        $dataPoints[$identifier][$month][$day][$hour]['orderCount']  += $hourData['orderCount'];
+                        $dataPoints[$identifier][$month][$day][$hour]['offerSum']  += $hourData['offerSum'];
+                        $dataPoints[$identifier][$month][$day][$hour]['offerAmount'] += $hourData['offerAmount'];
+                        $dataPoints[$identifier][$month][$day][$hour]['offerCount']  += $hourData['offerCount'];
                     }
                 }
             }

@@ -20,14 +20,20 @@ class CreateTrendTable extends Migration
             $table->integer('month');
             $table->integer('day');
             $table->integer('hour');
-            $table->double('value');
             $table->double('amount');
-            $table->double('orderAmount');
-            $table->double('offerAmount');
-            $table->double('average');
+            $table->double('sum');
             $table->integer('count');
-            $table->integer('orderAmountLatestMinute');
-            $table->integer('offerAmountLatestMinute');
+            $table->double('average');
+            $table->double('orderAmount');
+            $table->double('orderSum');
+            $table->double('orderCount');
+            $table->double('orderAverage');
+            $table->integer('orderLatestMinute');
+            $table->double('offerAmount');
+            $table->double('offerSum');
+            $table->double('offerCount');
+            $table->double('offerAverage');
+            $table->integer('offerLatestMinute');
             $table->timestamps();
         });
     }

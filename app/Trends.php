@@ -12,20 +12,22 @@ use Illuminate\Database\Eloquent\Model;
  * @property int month
  * @property int day
  * @property int hour
- * @property double value
+ * @property double sum
  * @property double amount
  * @property double orderAmount
  * @property double offerAmount
+ * @property double orderSum
+ * @property double offerSum
  * @property double average
  * @property int count
- * @property int orderAmountLatestMinute
- * @property int offerAmountLatestMinute
+ * @property int orderLatestMinute
+ * @property int offerLatestMinute
  * @package Models
  */
 class Trends extends Model
 {
     use ScarcityAdjustment;
     protected $table = 'trends';
-    protected $fillable = ['goodTypeId', 'goodId', 'month', 'day', 'hour', 'value', 'amount', 'orderAmount', 'offerAmount', 'average', 'count', 'orderAmountLatestMinute', 'offerAmountLatestMinute'];
+    protected $fillable = ['goodTypeId', 'goodId', 'month', 'day', 'hour', 'sum', 'amount', 'orderAmount', 'orderSum', 'orderCount', 'orderAverage', 'offerAmount', 'offerSum', 'offerCount', 'offerAverage', 'average', 'count', 'orderLatestMinute', 'offerLatestMinute'];
     public $timestamps = true;
 }
