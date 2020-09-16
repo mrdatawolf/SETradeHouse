@@ -411,7 +411,6 @@ class Trends extends Controller
 
     private function dataPointsToCollection($dataPoints)
     {
-        dd($dataPoints);
         $dataPointsJson   = json_encode($dataPoints);
         $dataPointsObject = json_decode($dataPointsJson);
 
