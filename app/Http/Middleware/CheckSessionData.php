@@ -29,13 +29,8 @@ class CheckSessionData
             $this->setGeneralValues();
         }
 
-        if(! Session::has('newest_db_record')) {
-            $this->setNewestDBRecordedDate();
-        }
-
-        if(! Session::has('newest_sync_record')) {
-            $this->setNewestSyncRecordedDate();
-        }
+        $this->setNewestDBRecordedDate();
+        $this->setNewestSyncRecordedDate();
 
         return $next($request);
     }
