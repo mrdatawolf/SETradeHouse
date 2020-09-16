@@ -203,12 +203,12 @@
                              $syncStaleClass = 'staleWarn';
                         }
                         @endphp
-                        <a class="nav-link dropdown-toggle {{ $generalStaleClass }}" href="#" data-toggle="dropdown">Other Info</a>
+                        <a class="nav-link dropdown-toggle {{ $generalStaleClass }}" href="#" title="{{ $generalStaleness }} hours old" data-toggle="dropdown">Other Info</a>
                         <ul class="dropdown-menu">
                             <li class="font-weight-bold">Current Server: {{ \App\Servers::find($currentUser->server_id)->title ?? '' }}</li>
                             <li class="font-weight-bold">Current World: 'N/A'</li>
-                            <li class="font-weight-bold {{ $dbStaleClass }}">Newest DB date: {{ Session::get('newest_db_record') }}</li>
-                            <li class="font-weight-bold {{ $syncStaleClass }}">Newest sync date: {{ Session::get('newest_sync_record') }}</li>
+                            <li class="font-weight-bold {{ $dbStaleClass }}" title="{{ $dbStaleness }} hours old">Newest DB date: {{ Session::get('newest_db_record') }}</li>
+                            <li class="font-weight-bold {{ $syncStaleClass }}" title="{{ $syncStaleness }} hours old">Newest sync date: {{ Session::get('newest_sync_record') }}</li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
