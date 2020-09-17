@@ -1,6 +1,20 @@
 @extends('layouts.pl.store')
 @section('title', 'World Stores')
 
+@php
+function cleanString($input) {
+    $idName = str_replace(' ', '', $input);
+                        $idName = str_replace('[', '', $idName);
+                        $idName = str_replace(']', '', $idName);
+                        $idName = str_replace('(', '', $idName);
+                        $idName = str_replace(')', '', $idName);
+                        $idName = htmlentities($idName);
+                        $idName = htmlspecialchars($idName);
+
+    return $idName;
+}
+@endphp
+
 @section('content')
     <div id="app" class="flex-center position-ref full-height">
         @if(! empty($stores))
@@ -8,13 +22,7 @@
             <ul class="nav nav-tabs">
                 @foreach($stores as $gridName => $gridData)
                     @php
-                        $idName = str_replace(' ', '', $gridName);
-                        $idName = str_replace('[', '', $idName);
-                        $idName = str_replace(']', '', $idName);
-                        $idName = str_replace('(', '', $idName);
-                        $idName = str_replace(')', '', $idName);
-                        $idName = htmlentities($idName);
-                        $idName = htmlspecialchars($idName);
+                        $idName = cleanString($gridName);
                     @endphp
                     <li class="nav-item">
                         <a href="#{{ $idName }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $gridName }}</a>
@@ -26,13 +34,7 @@
                 @php $specialClasses = 'show active'; @endphp
                 @foreach($stores as $gridName => $gridData)
                     @php
-                        $idName = str_replace(' ', '', $gridName);
-                        $idName = str_replace('[', '', $idName);
-                        $idName = str_replace(']', '', $idName);
-                        $idName = str_replace('(', '', $idName);
-                        $idName = str_replace(')', '', $idName);
-                        $idName = htmlentities($idName);
-                        $idName = htmlspecialchars($idName);
+                        $idName = cleanString($gridName);
                     @endphp
                     <div class="tab-pane fade {{ $specialClasses }}" id="{{ $idName }}">
                         <div class="card">

@@ -87,16 +87,16 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#"> General &raquo </a>
                                 <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.server') }}';">Server</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores') }}';">Active Personal</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.world') }}';">Active World</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.server') }}';">Active Server</button></li>
                                 </ul>
                             </li>
                             <li><a class="dropdown-item" href="#"> Profit/Loss &raquo </a>
                                 <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss.server') }}';">Server</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss') }}';">Active Personal</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss.world') }}';">Active World</button></li>
+                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss.server') }}';">Active Server</button></li>
                                 </ul>
                             </li>
                         </ul>
@@ -208,8 +208,8 @@
                         @endphp
                         <a class="nav-link dropdown-toggle {{ $generalStaleClass }}" href="#" title="{{ $generalStaleness }} hours old" data-toggle="dropdown">Other Info</a>
                         <ul class="dropdown-menu">
-                            <li class="font-weight-bold">Current Server: {{ \App\Servers::find($currentUser->server_id)->title ?? '' }}</li>
-                            <li class="font-weight-bold">Current World: 'N/A'</li>
+                            <li class="font-weight-bold">Current Server: {{ \App\Servers::find((int) Session::get('serverId'))->title ?? '' }}</li>
+                            <li class="font-weight-bold">Current World: {{ \App\Worlds::find((int) Session::get('worldId'))->title ?? '' }}</li>
                             <li class="font-weight-bold {{ $dbStaleClass }}" title="{{ $dbStaleness }} hours old">Newest DB date: {{ Session::get('newest_db_record') }}</li>
                             <li class="font-weight-bold {{ $syncStaleClass }}" title="{{ $syncStaleness }} hours old">Newest sync date: {{ Session::get('newest_sync_record') }}</li>
                         </ul>

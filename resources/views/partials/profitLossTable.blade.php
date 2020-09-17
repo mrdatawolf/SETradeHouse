@@ -55,49 +55,44 @@
                     <table class="table-striped table-responsive-xl transaction-table" style="width:100%">
                         <thead>
                             <tr class="text-center">
+                                <th></th>
+                                <th colspan="3">Average Prices</th>
+                                <th></th>
+                                <th>Store</th>
+                                <th colspan="2"></th>
+                                <th></th>
+                            </tr>
+                            <tr class="text-center">
                                 <th class="text-left">Name</th>
-                                <th title="This stores averages price based on all of it's {{ $transactionType }}">Store Avg Price</th>
-                                <th title="Servers average price based on all of the {{ $transactionType }}">Server Avg Price</th>
-                                <th title="Difference between the store and server average price">Diff</th>
-                                <th title="How many of the goods the store has said it has put up" class="right-border">Store Transaction(s)</th>
-                                <th title="The stores average price versus the servers opposite transactions">Avg P/L</th>
-                                <th title="The average p/l times the amount of the good">Exposure</th>
+                                <th title="This stores average price based on all of it's {{ $transactionType }} transactions">Store</th>
+                                <th title="Servers average price based on all of the {{ $transactionType }} transactions">Server</th>
+                                <th title="Difference between the store and servers average transaction prices">+/-</th>
+                                <th title="How many of the goods the store has said it has put up" class="right-border">Transaction(s)</th>
+                                <th title="The stores average Offer transacations versus the stores Orders transactions">Avg Loss</th>
+                                <th title="If someone bought this from you and sold it back how much would you lose.">Exposure</th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($groupData[$transactionType] as $item => $itemData)
                             @php
-                                $diffPriceFormatted = "";
-                                $plValueFormatted = "";
-                                $exposureFormatted = "";
                                 $storeAmount            = $gridData['Totals'][$group][$transactionType][$item]['Amount'] ?? 0;
                                 $storeAvgPrice          = $gridData['Averages'][$group][$transactionType][$item]['Price']?? 0;
+                                $storeAvgOfferPrice     = $gridData['Averages'][$group]['Offer'][$item]['Price']?? 0;
+                                $storeAvgOrderPrice     = $gridData['Averages'][$group]['Order'][$item]['Price']?? 0;
                                 $groupAvgPrice          = $globalAverages[$group][$transactionType][$item]['average'] ?? 0;
                                 $globalOrdersAverages   = $globalAverages[$group]['Orders'][$item]['average'] ?? 0;
                                 $globalOffersAverages   = $globalAverages[$group]['Offers'][$item]['average'] ?? 0;
-                                $opositeAvgPrice        = ($transactionType === 'Offers') ? $globalOrdersAverages : $globalOffersAverages;
+                                $oppositeAvgPrice       = ($transactionType === 'Offers') ? $globalOrdersAverages : $globalOffersAverages;
                                 $diffPrice              = ($groupAvgPrice === 0) ? 0 : $storeAvgPrice - $groupAvgPrice;
-                                $plValue                = $storeAvgPrice - $opositeAvgPrice;
+                                $plValue                = $storeAvgOfferPrice - $storeAvgOrderPrice;
                                 $exposure               = $plValue * $storeAmount;
                                 $diffPriceClass         = ($diffPrice < 0)  ? 'negative' : '';
                                 $plPriceClass           = ($plValue   < 0)  ? 'negative' : '';
                                 $exposureClass          = ($exposure  < 0)  ? 'negative' : '';
                                 //format for display
-                                if($diffPrice < 0) {
-                                     $diffPriceFormatted = "(" . number_format(abs($diffPrice)) . ")";
-                                } elseif($diffPrice > 0) {
-                                    $diffPriceFormatted = number_format($diffPrice);
-                                }
-                                if($plValue < 0) {
-                                     $plValueFormatted = "(" . number_format(abs($plValue)) . ")";
-                                } elseif($plValue > 0) {
-                                    $plValueFormatted = number_format($plValue);
-                                }
-                                if($exposure < 0) {
-                                     $exposureFormatted = "(" . number_format(abs($exposure)) . ")";
-                                } elseif($exposure > 0) {
-                                    $exposureFormatted = number_format($exposure);
-                                }
+                                 $diffPriceFormatted    = ($diffPrice < 0) ? "(" . number_format(abs($diffPrice)) . ")" : number_format($diffPrice);
+                                 $plValueFormatted      = ($plValue < 0) ? "(" . number_format(abs($plValue)) . ")" : number_format($plValue);
+                                 $exposureFormatted     = ($exposure < 0) ? "(" . number_format(abs($exposure)) . ")" : 0;
                             @endphp
                             <tr class="text-right">
                                 <td class="text-left">{{ ucfirst($item) }}</td>
