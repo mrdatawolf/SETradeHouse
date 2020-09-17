@@ -93,7 +93,7 @@ class Stores extends Controller
     {
         $transactions = new Transactions();
         $this->data   = [];
-        $transactions->chunk(400, function ($transactions) {
+        $transactions->orderby('good_type_id','ASC')->orderby('transaction_type_id','DESC')->orderby('good_id','DESC')->chunk(400, function ($transactions) {
             foreach ($transactions as $transaction) {
                 $tradeZone       = TradeZones::find($transaction->trade_zone_id);
                 $goodType        = GoodTypes::find($transaction->good_type_id);
