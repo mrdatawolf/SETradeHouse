@@ -1,5 +1,6 @@
 <?php namespace App\Http\Traits;
 
+use App\Http\Controllers\Stores;
 use App\Servers;
 use \Session;
 
@@ -79,7 +80,8 @@ trait ScarcityAdjustment
      * @return int|mixed
      */
     private function getStoresAmount($level, $transaction) {
-        $stores = Session::get('stores');
+        $storeController = new Stores();
+        $stores = $storeController->getTransactionsUsingTitles();
         $amount  = 0;
         switch(get_class($this)) {
             case 'App\Ores' :
@@ -125,7 +127,8 @@ trait ScarcityAdjustment
      * @return int|mixed
      */
     private function getStoresTransactionSumPrice($level, $transaction) {
-        $stores = Session::get('stores');
+        $storeController = new Stores();
+        $stores = $storeController->getTransactionsUsingTitles();
         $sumPrice    = 0;
         switch(get_class($this)) {
             case 'App\Ores' :

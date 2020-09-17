@@ -37,7 +37,7 @@ class GeneralStoreData
                 if ( ! empty($good)) {
                     $tradeZone = $this->getTZ($transaction);
                     $this->updateStoreLocation($tradeZone, $transaction->GPSString);
-                    $this->addActiveTransactionToArray($tradeZone, $transaction, $goodType, $good);
+                    $this->addTransactionToArray($tradeZone, $transaction, $goodType, $good);
                 }
             }
         });
@@ -65,7 +65,7 @@ class GeneralStoreData
      * @param $goodType
      * @param $good
      */
-    private function addActiveTransactionToArray($tradeZone, $transaction, $goodType, $good) {
+    private function addTransactionToArray($tradeZone, $transaction, $goodType, $good) {
         $currentTransaction    = [
             'trade_zone_id'       => $tradeZone->id,
             'server_id'           => $this->serverId,

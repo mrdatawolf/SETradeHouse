@@ -10,33 +10,36 @@ class GeneralStorageData
 {
     use FindingGoods;
 
-
     protected $serverId;
     protected $worldId;
     protected $isInitial;
 
-    public function __construct($isInitial, $serverId, $worldId) {
+
+    public function __construct($isInitial, $serverId, $worldId)
+    {
         $this->isInitial = $isInitial;
-        $this->serverId = $serverId;
-        $this->worldId = $worldId;
+        $this->serverId  = $serverId;
+        $this->worldId   = $worldId;
     }
+
+
     public function upateUserAndNpcStorageValues()
     {
         $userItems = new UserItems();
         if ( ! $this->isInitial) {
-            $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subDay());
+            $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subhours(6));
         }
         if ($userItems->count() >= 1) {
             $runningTotals = [];
             $userItems->chunk(400, function ($userItems) use ($runningTotals) {
                 foreach ($userItems as $row) {
-                    $owner           = $row['Owner'];
-                    $goodType        = $this->seNameToGoodType($row['Item']);
+                    $owner    = $row['Owner'];
+                    $goodType = $this->seNameToGoodType($row['Item']);
                     if ( ! empty($goodType->id) && ! empty($owner)) {
                         $amount          = $row['Qty'];
                         $originTimestamp = $row['Timestamp'];
-                        $good  = $this->seNameToGood($row['Item']);
-                        $isNpc = (substr($owner, 0, 4) === 'NPC ');
+                        $good            = $this->seNameToGood($row['Item']);
+                        $isNpc           = (substr($owner, 0, 4) === 'NPC ');
                         if ( ! empty($good->id)) {
                             $storages                                        = ($isNpc) ? new NpcStorageValues()
                                 : new UserStorageValues();
@@ -70,8 +73,10 @@ class GeneralStorageData
      *
      * @return int
      */
-    private function getCurrentAmount($owner, $groupId, $itemId, $runningTotals, $amount) {
+    private function getCurrentAmount($owner, $groupId, $itemId, $runningTotals, $amount)
+    {
 
-        return empty($runningTotals[$owner][$groupId][$itemId]) ? $amount : $runningTotals[$owner][$groupId][$itemId] + $amount;
+        return empty($runningTotals[$owner][$groupId][$itemId]) ? $amount
+            : $runningTotals[$owner][$groupId][$itemId] + $amount;
     }
 }
