@@ -16,7 +16,8 @@ class ProfitLoss extends Controller
     public function index() {
         $title      = "Stores P/L";
         $storeType  = "personal";
-        $stores     = Session::get('stores');
+        $storeController = new Stores();
+        $stores = $storeController->getTransactionsUsingTitles();
         $globalAverages = $this->getGlobalAveragesForGoods('server',$stores);
 
 
@@ -30,7 +31,8 @@ class ProfitLoss extends Controller
     public function worldIndex() {
         $title      = "Stores P/L";
         $storeType  = "world";
-        $stores     = Session::get('stores');
+        $storeController = new Stores();
+        $stores = $storeController->getTransactionsUsingTitles();
         $globalAverages = $this->getGlobalAveragesForGoods('server',$stores);
 
         return view('stores.pl.world', compact('stores','storeType', 'title', 'globalAverages'));
@@ -43,7 +45,8 @@ class ProfitLoss extends Controller
     public function serverIndex() {
         $title          = "Stores P/L";
         $storeType      = "server";
-        $stores         = Session::get('stores');
+        $storeController = new Stores();
+        $stores = $storeController->getTransactionsUsingTitles();
         $globalAverages = $this->getGlobalAveragesForGoods('server',$stores);
 
         return view('stores.pl.server', compact('stores','storeType', 'title', 'globalAverages'));

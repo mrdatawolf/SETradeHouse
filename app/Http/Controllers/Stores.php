@@ -19,7 +19,8 @@ class Stores extends Controller
     {
         $title          = "Stores";
         $storeType      = "personal";
-        $stores         = Session::get('stores');
+        $storeController = new Stores();
+        $stores = $storeController->getTransactionsUsingTitles();
         $globalAverages = $this->getGlobalAveragesForGoods('server', $stores);
 
         return view('stores.personal', compact('stores', 'storeType', 'title', 'globalAverages'));
@@ -33,7 +34,8 @@ class Stores extends Controller
     {
         $title          = "Stores";
         $storeType      = "world";
-        $stores         = Session::get('stores');
+        $storeController = new Stores();
+        $stores = $storeController->getTransactionsUsingTitles();
         $globalAverages = $this->getGlobalAveragesForGoods('server', $stores);
 
         return view('stores.world', compact('stores', 'storeType', 'title', 'globalAverages'));
@@ -47,7 +49,8 @@ class Stores extends Controller
     {
         $title          = "Stores";
         $storeType      = "server";
-        $stores         = Session::get('stores');
+        $storeController = new Stores();
+        $stores = $storeController->getTransactionsUsingTitles();
         $globalAverages = $this->getGlobalAveragesForGoods('server', $stores);
 
         return view('stores.server', compact('stores', 'storeType', 'title', 'globalAverages'));

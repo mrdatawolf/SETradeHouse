@@ -25,9 +25,6 @@ class CheckSessionData
         if(! Session::has('stockLevels')) {
             $this->setStockData();
         }
-        if(! Session::has('stores')) {
-            $this->setStoreData();
-        }
         if(! Session::has('serverId')) {
             $this->setGeneralValues();
         }
@@ -44,11 +41,6 @@ class CheckSessionData
         Session::put('stockLevels', $stockLevels);
     }
 
-    public function setStoreData() {
-        $storeController = new Stores();
-        $stores = $storeController->getTransactionsUsingTitles();
-        Session::put('stores', $stores);
-    }
 
     public function setGeneralValues() {
         //these are placeholders.  It should be stored retrieved based on the players last selection
