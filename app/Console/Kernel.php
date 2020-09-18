@@ -25,14 +25,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('gather:nebulon')->everyThirtyMinutes();
-        $schedule->command('gather:trends', ['transaction_type_id' => 1, 'type_id' => 1])->cron('5 * * * *');
-        $schedule->command('gather:trends', ['transaction_type_id' => 1, 'type_id' => 2])->cron('10 * * * *');
-        $schedule->command('gather:trends', ['transaction_type_id' => 1, 'type_id' => 3])->cron('15 * * * *');
-        $schedule->command('gather:trends', ['transaction_type_id' => 1, 'type_id' => 4])->cron('20 * * * *');
-        $schedule->command('gather:trends', ['transaction_type_id' => 2, 'type_id' => 1])->cron('35 * * * *');
-        $schedule->command('gather:trends', ['transaction_type_id' => 2, 'type_id' => 2])->cron('40 * * * *');
-        $schedule->command('gather:trends', ['transaction_type_id' => 2, 'type_id' => 3])->cron('45 * * * *');
-        $schedule->command('gather:trends', ['transaction_type_id' => 2, 'type_id' => 4])->cron('50 * * * *');
+        $schedule->command('align:trends', ['transaction_type_id' => 1, 'type_id' => 1])->cron('5 * * * *');
+        $schedule->command('align:trends', ['transaction_type_id' => 1, 'type_id' => 2])->cron('10 * * * *');
+        $schedule->command('align:trends', ['transaction_type_id' => 1, 'type_id' => 3])->cron('15 * * * *');
+        $schedule->command('align:trends', ['transaction_type_id' => 1, 'type_id' => 4])->cron('20 * * * *');
+        $schedule->command('align:trends', ['transaction_type_id' => 2, 'type_id' => 1])->cron('35 * * * *');
+        $schedule->command('align:trends', ['transaction_type_id' => 2, 'type_id' => 2])->cron('40 * * * *');
+        $schedule->command('align:trends', ['transaction_type_id' => 2, 'type_id' => 3])->cron('45 * * * *');
+        $schedule->command('align:trends', ['transaction_type_id' => 2, 'type_id' => 4])->cron('50 * * * *');
     }
 
     /**
