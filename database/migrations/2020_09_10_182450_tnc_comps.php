@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use \App\Components;
 
 class TncComps extends Migration
@@ -28,6 +26,7 @@ class TncComps extends Migration
         $components->iron       = 18;
         $components->nickel     = 21;
         $components->trinium    = 90;
+        $components->save();
 
         $components             = new Components();
         $components->title      = 'Neutronium Crate';
@@ -35,6 +34,7 @@ class TncComps extends Migration
         $components->platinum   = 30;
         $components->silicon    = 45;
         $components->neutronium = 105;
+        $components->save();
     }
 
     /**
