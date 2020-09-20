@@ -13,11 +13,13 @@ class GeneralStorageData
     protected $serverId;
     protected $worldId;
     protected $isInitial;
+    protected $extended;
 
 
-    public function __construct($isInitial, $serverId, $worldId)
+    public function __construct($isInitial, $extended, $serverId, $worldId)
     {
         $this->isInitial = $isInitial;
+        $this->extended  = $extended;
         $this->serverId  = $serverId;
         $this->worldId   = $worldId;
     }
@@ -25,9 +27,10 @@ class GeneralStorageData
 
     public function upateUserAndNpcStorageValues()
     {
+        $oldestHourToPull = ($this->extended) ? $this->extended : 6;
         $userItems = new UserItems();
         if ( ! $this->isInitial) {
-            $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subhours(6));
+            $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subhours($oldestHourToPull));
         }
         if ($userItems->count() >= 1) {
             $runningTotals = [];

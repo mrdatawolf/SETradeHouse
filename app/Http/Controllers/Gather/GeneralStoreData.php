@@ -15,10 +15,12 @@ class GeneralStoreData
     protected $serverId;
     protected $worldId;
     protected $isInitial;
+    protected $extended;
     protected $transactionArray;
 
-    public function __construct($isInitial, $serverId, $worldId) {
+    public function __construct($isInitial, $extended, $serverId, $worldId) {
         $this->isInitial = $isInitial;
+        $this->extended = $extended;
         $this->serverId = $serverId;
         $this->worldId = $worldId;
         $this->transactionArray = [];

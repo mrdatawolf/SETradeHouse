@@ -15,7 +15,7 @@ class GatherNebulonData extends Command
      *
      * @var string
      */
-    protected $signature = 'gather:nebulon {--initial}';
+    protected $signature = 'gather:nebulon {--initial} {--extended=}';
 
     /**
      * The console command description.
@@ -54,11 +54,11 @@ class GatherNebulonData extends Command
         if(!empty($this->server) && !empty($this->world)) {
             $this->output->note('Server: ' . $this->server->title);
             $this->output->note('World : ' . $this->world->title);
-            $gatherGeneralStorageData = new GeneralStorageData($this->option('initial'), $this->server->id,
+            $gatherGeneralStorageData = new GeneralStorageData($this->option('initial'), $this->option('extended'), $this->server->id,
                 $this->world->id);
             $gatherGeneralStorageData->upateUserAndNpcStorageValues();
 
-            $gatherGeneralStoreData = new GeneralStoreData($this->option('initial'), $this->server->id,
+            $gatherGeneralStoreData = new GeneralStoreData($this->option('initial'), $this->option('extended'), $this->server->id,
                 $this->world->id);
             $gatherGeneralStoreData->updateTransactionValues();
         }
