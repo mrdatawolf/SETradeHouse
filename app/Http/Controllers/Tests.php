@@ -11,43 +11,50 @@ class Tests extends Controller
     public function test1() {
         $pageTitle  = "Ore Tests";
         //ore test:
-        $storeTransactions = new Stores();
-        $transactions = $storeTransactions->get();
-        $orders = [];
-        $offers = [];
-        foreach($transactions as $transaction) {
-            $goodType = $this->seNameToGoodType($transaction->Item);
-            $good = $this->seNameAndGoodTypeToGood($goodType, $transaction->Item);
+        $stores = new Stores();
+        $storeRows = $stores->get();
+        $transactions = [
+            'orders' => [
+                1 => [],
+                2 => [],
+                3 => [],
+                4 => []
+            ],
+            'offers' => [
+                1 => [],
+                2 => [],
+                3 => [],
+                4 => []
+            ]
+        ];
+        foreach($storeRows as $row) {
+            $goodType = $this->seNameToGoodType($row->Item);
+            $good = $this->seNameAndGoodTypeToGood($goodType, $row->Item);
             if(! empty($goodType) && ! empty($good)) {
-                if ($transaction->offerOrOrder = "Order") {
-                    if (empty($orders[$goodType->id][$good->id])) {
-                        $orders[$goodType->id][$good->id] = [
-                            'title'     => $good->title,
-                            'sumPrice'  => 0,
-                            'sumAmount' => 0
-                        ];
-                    } else {
-                        $orders[$goodType->id][$good->id]['sumPrice']  += $good->pricePerUnit;
-                        $orders[$goodType->id][$good->id]['sumAmount'] += $good->Qty;
-                    }
+            $transType = ($row->offerOrOrder === "Order") ? 'orders' : 'offers';
+                if (empty($transactions[$transType][$goodType->id][$good->id])) {
+                    $transactions[$transType][$goodType->id][$good->id] = [
+                        'title'         => $good->title,
+                        'prices'        => [],
+                        'qtys'          => [],
+                        'sum'           => 0,
+                        'totalAmount'   => 0,
+                        'average'       => 0,
+                        'count'         => 0
+                    ];
                 } else {
-                    if (empty($offers[$goodType->id][$good->id])) {
-                        $offers[$goodType->id][$good->id] = [
-                            'title'     => $good->title,
-                            'sumPrice'  => 0,
-                            'sumAmount' => 0
-                        ];
-                    } else {
-                        $offers[$goodType->id][$good->id]['sumPrice']  += $good->pricePerUnit;
-                        $offers[$goodType->id][$good->id]['sumAmount'] += $good->Qty;
-                    }
+                    $transactions[$transType][$goodType->id][$good->id]['prices'][] = $row->pricePerUnit;
+                    $transactions[$transType][$goodType->id][$good->id]['qtys'][] = $row->Qty;
+                    $transactions[$transType][$goodType->id][$good->id]['sum'] += $row->pricePerUnit*$row->Qty;
+                    $transactions[$transType][$goodType->id][$good->id]['totalAmount'] += $row->Qty;
+                    $transactions[$transType][$goodType->id][$good->id]['average'] = ($transactions[$transType][$goodType->id][$good->id] > 0) ? $transactions[$transType][$goodType->id][$good->id]['sum'] / $transactions[$transType][$goodType->id][$good->id]['totalAmount'] : 0;
+                    $transactions[$transType][$goodType->id][$good->id]['count'] ++;
                 }
             }
         }
-        ksort($orders);
-        ksort($offers);
+        ($transactions);
 
-        $compacted = compact('pageTitle', 'orders', 'offers');
+        $compacted = compact('pageTitle', 'transactions');
 
         return view('tests.test1', $compacted);
     }
