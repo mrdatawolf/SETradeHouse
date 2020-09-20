@@ -56,11 +56,12 @@ class GatherNebulonData extends Command
             $this->output->note('World : ' . $this->world->title);
             $gatherGeneralStorageData = new GeneralStorageData($this->option('initial'), $this->option('extended'), $this->server->id,
                 $this->world->id);
-            $gatherGeneralStorageData->upateUserAndNpcStorageValues();
-
+            $result = $gatherGeneralStorageData->upateUserAndNpcStorageValues();
+            $this->output->note($result);
             $gatherGeneralStoreData = new GeneralStoreData($this->option('initial'), $this->option('extended'), $this->server->id,
                 $this->world->id);
-            $gatherGeneralStoreData->updateTransactionValues();
+           $result = $gatherGeneralStoreData->updateTransactionValues();
+            $this->output->note($result);
         }
     }
 

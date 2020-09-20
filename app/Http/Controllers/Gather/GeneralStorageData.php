@@ -14,7 +14,7 @@ class GeneralStorageData
     protected $worldId;
     protected $isInitial;
     protected $extended;
-
+    protected $result;
 
     public function __construct($isInitial, $extended, $serverId, $worldId)
     {
@@ -27,7 +27,8 @@ class GeneralStorageData
 
     public function upateUserAndNpcStorageValues()
     {
-        $oldestHourToPull = ($this->extended) ? $this->extended : 6;
+        $this->result = 'upateUserAndNpcStorageValues : Success';
+        $oldestHourToPull = ($this->extended) ? $this->extended : 12;
         $userItems = new UserItems();
         if ( ! $this->isInitial) {
             $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subhours($oldestHourToPull));
@@ -60,10 +61,16 @@ class GeneralStorageData
                                     'origin_timestamp' => $originTimestamp
                                 ]);
                         }
+                    } else {
+                        $this->result = 'upateUserAndNpcStorageValues : goodtype not found or owner was empty';
                     }
                 }
             });
+        } else {
+            $this->result = 'upateUserAndNpcStorageValues : No useritems found inside the last ' . $oldestHourToPull;
         }
+
+        return $this->result;
     }
 
 

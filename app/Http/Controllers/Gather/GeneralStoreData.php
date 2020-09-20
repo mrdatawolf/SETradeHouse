@@ -17,6 +17,7 @@ class GeneralStoreData
     protected $isInitial;
     protected $extended;
     protected $transactionArray;
+    protected $result;
 
     public function __construct($isInitial, $extended, $serverId, $worldId) {
         $this->isInitial = $isInitial;
@@ -31,6 +32,7 @@ class GeneralStoreData
      * note: take the current stores values and replace the active transactiosn with the new values. this also moves all old data to the inactive table.
      */
     public function updateTransactionValues() {
+        $this->result = 'updateTransactionValues: Success';
         $storeTransactions = new Stores();
         $storeTransactions->chunk(400, function ($storeTransactions) {
             foreach ($storeTransactions as $transaction) {
@@ -40,11 +42,15 @@ class GeneralStoreData
                     $tradeZone = $this->getTZ($transaction);
                     $this->updateStoreLocation($tradeZone, $transaction->GPSString);
                     $this->addTransactionToArray($tradeZone, $transaction, $goodType, $good);
+                } else {
+                    $this->result = 'updateTransactionValues: good was empty';
                 }
             }
         });
         $this->moveActiveTransactionsToInactive();
         $this->addActiveTransactions();
+
+        return $this->result;
     }
 
 
