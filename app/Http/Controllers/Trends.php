@@ -23,234 +23,6 @@ class Trends extends Controller
     }
 
 
-    private function gatherTrends($transactionType, $goodTypeId, $goodId = 0)
-    {
-        $transactionTypeId = TransactionTypes::where('title', $transactionType)->first()->id;
-        $dataPoints        = [];
-        $whereArray        = ($goodId > 0) ? [
-            'transaction_type_id' => $transactionTypeId,
-            'type_id'             => $goodTypeId,
-            'good_id'             => $goodId
-        ] : ['transaction_type_id' => $transactionTypeId, 'type_id' => $goodTypeId];
-        $trends            = \App\Trends::where($whereArray)->orderBy('month')->orderBy('day')->orderBy('hour')->get();
-        foreach ($trends as $trend) {
-            $title        = $this->goodTitleById($goodTypeId, $trend->good_id);
-            $dataPoints[] = [
-                'title'   => $title,
-                'month'   => $trend->month,
-                'day'     => $trend->day,
-                'hour'    => $trend->hour,
-                'sum'     => $trend->sum,
-                'amount'  => $trend->amount,
-                'average' => $trend->average,
-                'count'   => $trend->count,
-            ];
-        }
-
-        return $this->dataPointsToCollection($dataPoints);
-    }
-
-
-    private function goodTitleById($goodTypeId, $goodId)
-    {
-        switch ($goodTypeId) {
-            case 1:
-                $title = Ores::find($goodId)->title;
-                break;
-            case 2:
-                $title = Ingots::find($goodId)->title;
-                break;
-            case 3:
-                $title = Components::find($goodId)->title;
-                break;
-            case 4:
-                $title = Tools::find($goodId)->title;
-                break;
-            default:
-                die('Invalid type');
-        }
-        $title = str_replace(' ', '', $title);
-        $title = str_replace('.', '', $title);
-        $title = str_replace('-', '', $title);
-        $title = str_replace('[', '', $title);
-        $title = str_replace(']', '', $title);
-        $title = str_replace('(', '', $title);
-        $title = str_replace(')', '', $title);
-
-        return $title;
-    }
-
-
-    private function dataPointsToCollection($dataPoints)
-    {
-        $dataPointsJson   = json_encode($dataPoints);
-        $dataPointsObject = json_decode($dataPointsJson);
-
-        return collect($dataPointsObject);
-    }
-
-
-    /**
-     * @param $dataPoints
-     * @param $pageTitle
-     *
-     * @return array
-     */
-    private function makeGeneralCompact($dataPoints, $pageTitle)
-    {
-        $trendHourlyAvg       = $this->trendingHourlyAvg($dataPoints);
-        $trendHourlyAvgLabels = $this->trendingHourlyAvgLabels($dataPoints);
-        $trendDailyAvg        = $this->trendingDailyAvg($dataPoints);
-        $trendDailyAvailable  = $this->trendingDailyAvailable($dataPoints);
-        $trendDailyAvgLabels  = $this->trendingDailyAvgLabels($dataPoints);
-
-        return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels',
-            'trendDailyAvailable');
-    }
-
-
-    /**
-     * @param $dataPoints
-     *
-     * @return array
-     */
-    private function trendingHourlyAvg($dataPoints)
-    {
-        $averages = [];
-        if ( ! empty($dataPoints)) {
-            foreach ($dataPoints as $data) {
-                if ($this->isInHourRange($data)) {
-                    $averages[$data->title][] = round($data->average, 2);
-                }
-            }
-        }
-
-        return $averages;
-    }
-
-
-    private function isInHourRange($data)
-    {
-        $carbon   = Carbon::now()->subHours(24);
-        $minMonth = (int)$carbon->month;
-        $minDay   = (int)$carbon->day;
-        $minHour  = (int)$carbon->hour;
-        if ((int)$data->month >= $minMonth) {
-            if ((int)$data->day >= $minDay) {
-                if ((int)$data->day > $minDay || (int)$data->hour >= $minHour) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * @param $dataPoints
-     *
-     * @return array
-     */
-    private function trendingHourlyAvgLabels($dataPoints)
-    {
-        $labels = [];
-        if ( ! empty($dataPoints)) {
-            foreach ($dataPoints as $data) {
-                if ($this->isInHourRange($data)) {
-                    $labels[$data->title][] = "d:".$data->day." h:".$data->hour;
-                }
-            }
-        }
-
-        return $labels;
-    }
-
-
-    private function trendingDailyAvg($dataPoints)
-    {
-        $averages = [];
-        $carbon   = Carbon::now();
-        $month    = (int)$carbon->month;
-        if ( ! empty($dataPoints)) {
-            $dataRows = $dataPoints->where('month', '>', $month - 1)->groupBy(['title', 'day']);
-            foreach ($dataRows as $title => $data) {
-                $current = ['sum' => 0, 'amount' => 0];
-                foreach ($data as $day => $dayData) {
-                    if ($this->isInMonthRange($month, $day)) {
-                        foreach ($dayData as $hourData) {
-                            $current['sum']    += $hourData->sum;
-                            $current['amount'] += $hourData->amount;
-                        }
-                        $averages[$title][] = ($current['sum'] > 0 && $current['amount'] > 0)
-                            ? round($current['sum'] / $current['amount'], 2) : 0;
-                    }
-                }
-            }
-        }
-
-        return $averages;
-    }
-
-
-    private function isInMonthRange($month, $day)
-    {
-        $carbon   = Carbon::now()->subDays(30);
-        $minMonth = (int)$carbon->month;
-        $minDay   = (int)$carbon->day;
-
-        if ((int)$month >= $minMonth) {
-            if ((int)$month > $minMonth || (int)$day >= $minDay) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    private function trendingDailyAvailable($dataPoints)
-    {
-        $trendDailyAmount = [];
-        $carbon           = Carbon::now();
-        $month            = (int)$carbon->month;
-
-        if ( ! empty($dataPoints)) {
-            $dataRows = $dataPoints->where('month', '>', $month - 1)->groupBy(['title', 'day']);
-            foreach ($dataRows as $title => $data) {
-                $current = ['amount' => 0, 'count' => 0];
-                foreach ($data as $day => $dayData) {
-                    foreach ($dayData as $hourData) {
-                        $current['amount'] += $hourData->amount;
-                        $current['count']  += 1;
-                    }
-                    $trendDailyAmount[$title][] = round($current['amount'] / $current['count'], 2);
-                }
-            }
-        }
-
-        return $trendDailyAmount;
-    }
-
-
-    private function trendingDailyAvgLabels($dataPoints)
-    {
-        $trendDailyAvgLabels = [];
-        $carbon              = Carbon::now();
-        $month               = (int)$carbon->month;
-        if ( ! empty($dataPoints)) {
-            $dataRows = $dataPoints->where('month', '>', $month - 1)->groupBy(['title', 'day']);
-            foreach ($dataRows as $title => $data) {
-                foreach ($data as $day => $dayData) {
-                    $trendDailyAvgLabels[$title][] = $month."/".$day;
-                }
-            }
-        }
-
-        return $trendDailyAvgLabels;
-    }
-
-
     public function oreOfferIndex()
     {
         $pageTitle  = "Ore Offer Trends";
@@ -326,6 +98,151 @@ class Trends extends Controller
         $array = $this->gatherTransactionData($transactionTypeId, $goodTypeId, $goodId, $usetitle);
 
         return $this->dataPointsToCollection($array);
+    }
+
+
+    private function gatherTrends($transactionType, $goodTypeId, $goodId = 0)
+    {
+        //todo: trends should be storing the carbon date so the year is made correctly.
+        $year              = 2020;
+        $transactionTypeId = TransactionTypes::where('title', $transactionType)->first()->id;
+        $dataPoints        = [];
+        $whereArray        = ($goodId > 0) ? [
+            'transaction_type_id' => $transactionTypeId,
+            'type_id'             => $goodTypeId,
+            'good_id'             => $goodId
+        ] : ['transaction_type_id' => $transactionTypeId, 'type_id' => $goodTypeId];
+        $trends            = \App\Trends::where($whereArray)->orderBy('month')->orderBy('day')->orderBy('hour')->get();
+        foreach ($trends as $trend) {
+            $title        = $this->goodTitleById($goodTypeId, $trend->good_id);
+            $dataPoints[] = [
+                'title'      => $title,
+                'updated_at' => Carbon::createFromFormat('Y-m-d H',
+                    $year.'-'.$trend->month.'-'.$trend->day.' '.$trend->hour)->toDateTimeString(),
+                'sum'        => $trend->sum,
+                'amount'     => $trend->amount,
+                'average'    => $trend->average,
+                'count'      => $trend->count,
+            ];
+        }
+
+        return $this->dataPointsToCollection($dataPoints);
+    }
+
+
+    private function goodTitleById($goodTypeId, $goodId)
+    {
+        switch ($goodTypeId) {
+            case 1:
+                $title = Ores::find($goodId)->title;
+                break;
+            case 2:
+                $title = Ingots::find($goodId)->title;
+                break;
+            case 3:
+                $title = Components::find($goodId)->title;
+                break;
+            case 4:
+                $title = Tools::find($goodId)->title;
+                break;
+            default:
+                die('Invalid type');
+        }
+        $title = str_replace(' ', '', $title);
+        $title = str_replace('.', '', $title);
+        $title = str_replace('-', '', $title);
+        $title = str_replace('[', '', $title);
+        $title = str_replace(']', '', $title);
+        $title = str_replace('(', '', $title);
+        $title = str_replace(')', '', $title);
+
+        return $title;
+    }
+
+
+    private function dataPointsToCollection($dataPoints)
+    {
+        $dataPointsJson   = json_encode($dataPoints);
+        $dataPointsObject = json_decode($dataPointsJson);
+
+        return collect($dataPointsObject);
+    }
+
+
+    /**
+     * @param $dataPoints
+     * @param $pageTitle
+     *
+     * @return array
+     */
+    private function makeGeneralCompact($dataPoints, $pageTitle)
+    {
+        $hourly = $this->trendingHourly($dataPoints);
+        $daily  = $this->trendingDaily($dataPoints);
+        $trendHourlyAvg       = $hourly[0];
+        $trendHourlyAvgLabels = $hourly[1];
+        $trendDailyAvg        = $daily[0];
+        $trendDailyAvailable  = $daily[1];
+        $trendDailyAvgLabels  = $daily[2];
+
+        return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels',
+            'trendDailyAvailable');
+    }
+
+
+    /**
+     * @param $dataPoints
+     *
+     * @return array
+     */
+    private function trendingHourly($dataPoints)
+    {
+        $averages = [];
+        $labels = [];
+        if ( ! empty($dataPoints)) {
+            foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subHours(24)) as $data) {
+                $updatedAt = Carbon::createFromDate($data->updated_at);
+                $day = $updatedAt->day;
+                $hour = $updatedAt->hour;
+                $averages[$data->title][] = round($data->average, 2);
+                $labels[$data->title][] = "d:".$day." h:".$hour;
+            }
+        }
+
+        return [$averages, $labels];
+    }
+
+
+    private function trendingDaily($dataPoints)
+    {
+        $averages = [];
+        $trendDailyAmount = [];
+        $trendDailyAvgLabels = [];
+        $current = [];
+        $carbon   = Carbon::now();
+        $month    = (int)$carbon->month;
+        if ( ! empty($dataPoints)) {
+            foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subDays(30)) as $data) {
+                $updatedAt = Carbon::createFromDate($data->updated_at);
+                $day = $updatedAt->day;
+                if(empty($current[$day])) {
+                    $current[$data->title][$day] = ['title' => $month."/".$day, 'internalTitle' => '', 'sum' => 0, 'amount' => 0, 'count' => 0];
+                }
+                $current[$data->title][$day]['sum']    += $data->sum;
+                $current[$data->title][$day]['amount'] += $data->amount;
+                $current[$data->title][$day]['count']  ++;
+            }
+            foreach($current as $title => $currentData) {
+                foreach($currentData as $day => $data) {
+                    $averages[$title][]            = ($data['amount'] > 0)
+                        ? round($data['sum'] / $data['amount'], 2) : 0;
+                    $trendDailyAmount[$title][]    = round($data['amount'] / $data['count'], 2);
+                    $trendDailyAvgLabels[$title][] = $data['title'];
+                }
+            }
+        }
+
+        return [$averages, $trendDailyAmount, $trendDailyAvgLabels];
     }
 
 

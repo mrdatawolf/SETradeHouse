@@ -9,18 +9,12 @@ class Tests extends Controller
 {
     use FindingGoods;
     public function test1() {
-        $pageTitle  = "Ore Tests";
-        //ore test:
+        $pageTitle  = "Testing numbers work";
+        //testing cobalt
         $stores = new Stores();
-        $storeRows = $stores->get();
+        $storeRows = $stores->where('offerOrOrder','Order')->where('Item', 'MyObjectBuilder_Ore/Cobalt')->orWhere('Item', 'MyObjectBuilder_Ingot/Cobalt')->get();
         $transactions = [
             'orders' => [
-                1 => [],
-                2 => [],
-                3 => [],
-                4 => []
-            ],
-            'offers' => [
                 1 => [],
                 2 => [],
                 3 => [],
@@ -31,25 +25,26 @@ class Tests extends Controller
             $goodType = $this->seNameToGoodType($row->Item);
             $good = $this->seNameAndGoodTypeToGood($goodType, $row->Item);
             if(! empty($goodType) && ! empty($good)) {
-            $transType = ($row->offerOrOrder === "Order") ? 'orders' : 'offers';
+                $transType = ($row->offerOrOrder === "Order") ? 'orders' : 'offers';
                 if (empty($transactions[$transType][$goodType->id][$good->id])) {
                     $transactions[$transType][$goodType->id][$good->id] = [
-                        'title'         => $good->title,
-                        'prices'        => [],
-                        'qtys'          => [],
-                        'sum'           => 0,
-                        'totalAmount'   => 0,
-                        'average'       => 0,
-                        'count'         => 0
+                        'title'       => $good->title,
+                        'prices'      => [],
+                        'qtys'        => [],
+                        'sum'         => 0,
+                        'totalAmount' => 0,
+                        'average'     => 0,
+                        'count'       => 0
                     ];
-                } else {
-                    $transactions[$transType][$goodType->id][$good->id]['prices'][] = $row->pricePerUnit;
-                    $transactions[$transType][$goodType->id][$good->id]['qtys'][] = $row->Qty;
-                    $transactions[$transType][$goodType->id][$good->id]['sum'] += $row->pricePerUnit*$row->Qty;
-                    $transactions[$transType][$goodType->id][$good->id]['totalAmount'] += $row->Qty;
-                    $transactions[$transType][$goodType->id][$good->id]['average'] = ($transactions[$transType][$goodType->id][$good->id] > 0) ? $transactions[$transType][$goodType->id][$good->id]['sum'] / $transactions[$transType][$goodType->id][$good->id]['totalAmount'] : 0;
-                    $transactions[$transType][$goodType->id][$good->id]['count'] ++;
                 }
+                $transactions[$transType][$goodType->id][$good->id]['prices'][]    = $row->pricePerUnit;
+                $transactions[$transType][$goodType->id][$good->id]['qtys'][]      = $row->Qty;
+                $transactions[$transType][$goodType->id][$good->id]['sum']         += $row->pricePerUnit * $row->Qty;
+                $transactions[$transType][$goodType->id][$good->id]['totalAmount'] += $row->Qty;
+                $transactions[$transType][$goodType->id][$good->id]['average']     = ($transactions[$transType][$goodType->id][$good->id]['totalAmount'] > 0)
+                    ? $transactions[$transType][$goodType->id][$good->id]['sum'] / $transactions[$transType][$goodType->id][$good->id]['totalAmount']
+                    : 0;
+                $transactions[$transType][$goodType->id][$good->id]['count']++;
             }
         }
         ($transactions);

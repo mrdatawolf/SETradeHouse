@@ -72,6 +72,7 @@ class AlignTrendData extends Command
 
         if(!empty($ids)) {
             foreach ($ids as $id) {
+                $this->output->note('goodTypeId: ' . $this->goodTypeId . ' goodId: ' . $id);
                 $trends     = new TrendsController();
                 $trendsData = $trends->getRawTrends($this->transactionTypeId, $this->goodTypeId, $id, false);
                 foreach ($trendsData as $row) {
