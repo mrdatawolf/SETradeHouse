@@ -70,25 +70,30 @@ class AlignTrendData extends Command
             }
         }
 
-        foreach ($ids as $id) {
-            $trends     = new TrendsController();
-            $trendsData = $trends->getRawTrends($this->transactionTypeId, $this->goodTypeId, $id, false);
-            foreach ($trendsData as $row) {
-                Trends::firstOrCreate([
-                    'transaction_type_id' => $this->transactionTypeId,
-                    'type_id'             => $this->goodTypeId,
-                    'good_id'             => $id,
-                    'month'               => $row->month,
-                    'day'                 => $row->day,
-                    'hour'                => $row->hour
-                ], [
-                    'sum'           => $row->sum,
-                    'amount'        => $row->amount,
-                    'average'       => ($row->sum === 0 && $row->amount === 0) ? 0 : $row->sum / $row->amount,
-                    'count'         => $row->count,
-                    'latest_minute' => 0,
-                ]);
+        if(!empty($ids)) {
+            foreach ($ids as $id) {
+                $trends     = new TrendsController();
+                $trendsData = $trends->getRawTrends($this->transactionTypeId, $this->goodTypeId, $id, false);
+                foreach ($trendsData as $row) {
+                    Trends::firstOrCreate([
+                        'transaction_type_id' => $this->transactionTypeId,
+                        'type_id'             => $this->goodTypeId,
+                        'good_id'             => $id,
+                        'month'               => $row->month,
+                        'day'                 => $row->day,
+                        'hour'                => $row->hour
+                    ], [
+                        'sum'           => $row->sum,
+                        'amount'        => $row->amount,
+                        'average'       => ($row->sum === 0 && $row->amount === 0) ? 0 : $row->sum / $row->amount,
+                        'count'         => $row->count,
+                        'latest_minute' => 0,
+                    ]);
+                }
             }
+        } else {
+            $message = 'No ids found for '. $this->goodTypeId . ' good id was '. $this->goodId;
+            \Log::error($message);
         }
     }
 
