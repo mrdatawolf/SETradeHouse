@@ -71,4 +71,9 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
         });
     });
 });
-
+//tests
+Route::group(['middleware' => ['auth', 'session.data']], function () {
+    Route::prefix('/test')->group(function () {
+        Route::get('/test1', 'Tests@test1')->name('test.test1');
+    });
+});

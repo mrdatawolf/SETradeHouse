@@ -32,7 +32,6 @@
         }
     }
 </style>
-
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
         <a  class="navbar-brand" href="#"><img src="/img/SETradeHouse_logo_core.png" alt="Logo" title="Logo" style="width: 4em;"></a>
@@ -178,42 +177,57 @@
                     </li>
                     <li class="nav-item dropdown">
                         @php
-                        $generalStaleness = 0;
-                        $syncStaleness = (int) Session::get('newest_sync_hours');
-                        $dbStaleness = (int) Session::get('newest_db_hours');
-                        if($dbStaleness > $generalStaleness) {
-                            $generalStaleness = (int) $dbStaleness;
-                        }
-                        if($syncStaleness > $generalStaleness) {
-                            $generalStaleness = (int) $syncStaleness;
-                        }
-                        $generalStaleClass = '';
-                        if($generalStaleness > 5 ) {
-                            $generalStaleClass = 'staleError';
-                        } elseif($generalStaleness > 2) {
-                             $generalStaleClass = 'staleWarn';
-                        }
-                        $dbStaleClass = '';
-                        if($dbStaleness > 5 ) {
-                            $dbStaleClass = 'staleError';
-                        } elseif($dbStaleness > 2) {
-                             $dbStaleClass = 'staleWarn';
-                        }
-                        $syncStaleClass = '';
-                        if($syncStaleness > 5 ) {
-                            $syncStaleClass = 'staleError';
-                        } elseif($syncStaleness > 2) {
-                             $syncStaleClass = 'staleWarn';
-                        }
+                            $npcStorageValue = \App\NpcStorageValues::latest('origin_timestamp')->first();
+                            $newestDbRecord = (empty($npcStorageValue->origin_timestamp)) ? 'N/A' : $npcStorageValue->origin_timestamp . ' -7';
+                            $dbCarbonDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$npcStorageValue->origin_timestamp, 'America/Los_Angeles');
+                            $dbStaleness = (int) \Carbon\Carbon::now()->diffInHours($dbCarbonDate);
+                            $transaction = \App\Transactions::latest('updated_at')->first();
+                            $newestSyncRecord = (empty($transaction->updated_at)) ? 'N/A' : $transaction->updated_at->toDateTimeString() . ' +0';
+                            $npcCarbonDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$transaction->updated_at);
+                            $syncStaleness = (int) \Carbon\Carbon::now()->diffInHours($npcCarbonDate);
+                            $generalStaleness = 0;
+                            if($dbStaleness > $generalStaleness) {
+                                $generalStaleness = (int) $dbStaleness;
+                            }
+                            if($syncStaleness > $generalStaleness) {
+                                $generalStaleness = (int) $syncStaleness;
+                            }
+                            $generalStaleClass = '';
+                            if($generalStaleness > 5 ) {
+                                $generalStaleClass = 'staleError';
+                            } elseif($generalStaleness > 2) {
+                                 $generalStaleClass = 'staleWarn';
+                            }
+                            $dbStaleClass = '';
+                            if($dbStaleness > 5 ) {
+                                $dbStaleClass = 'staleError';
+                            } elseif($dbStaleness > 2) {
+                                 $dbStaleClass = 'staleWarn';
+                            }
+                            $syncStaleClass = '';
+                            if($syncStaleness > 5 ) {
+                                $syncStaleClass = 'staleError';
+                            } elseif($syncStaleness > 2) {
+                                 $syncStaleClass = 'staleWarn';
+                            }
+
                         @endphp
                         <a class="nav-link dropdown-toggle {{ $generalStaleClass }}" href="#" title="{{ $generalStaleness }} hours old" data-toggle="dropdown">Other Info</a>
                         <ul class="dropdown-menu">
                             <li class="font-weight-bold">Current Server: {{ \App\Servers::find((int) Session::get('serverId'))->title ?? '' }}</li>
                             <li class="font-weight-bold">Current World: {{ \App\Worlds::find((int) Session::get('worldId'))->title ?? '' }}</li>
-                            <li class="font-weight-bold {{ $dbStaleClass }}" title="{{ $dbStaleness }} hours old">Newest DB date: {{ Session::get('newest_db_record') }}</li>
-                            <li class="font-weight-bold {{ $syncStaleClass }}" title="{{ $syncStaleness }} hours old">Newest sync date: {{ Session::get('newest_sync_record') }}</li>
+                            <li class="font-weight-bold {{ $dbStaleClass }}" title="{{ $dbStaleness }} hours old">Newest DB date: {{ $newestDbRecord }}</li>
+                            <li class="font-weight-bold {{ $syncStaleClass }}" title="{{ $syncStaleness }} hours old">Newest sync date: {{ $newestSyncRecord }}</li>
                         </ul>
                     </li>
+                    @if($currentUser->roles->contains(6) || $currentUser->roles->contains(8))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Testing Data</a>
+                            <ul class="dropdown-menu">
+                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('test.test1') }}';">Test1</button></li>
+                            </ul>
+                        </li>
+                    @endif
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ $currentUser->username }}</a>
                         <ul class="dropdown-menu">
