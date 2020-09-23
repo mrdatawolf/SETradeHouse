@@ -11,9 +11,12 @@
                 $maxCount       = 5;
                 $count          = $maxCount+1;
                 $stringedData   = "Gathering Data from around the Cluster...";
-                $allowEntities = ($currentUser->roles->contains(8)) ? ['npc', 'user'] : ['npc'];
+                $allowedEntities = ['npc'];
+                if($currentUser->roles->contains(8)) {
+                    $allowedEntities[] = 'user';
+                }
                 foreach($stockLevels as $entityType => $entityData) {
-                    if(in_array($entityType, $allowEntities)) {
+                    if(in_array($entityType, $allowedEntities)) {
                         foreach($entityData as $type => $data) {
                             if($count > 0) {
                                 $tickerData[]   = $stringedData;
