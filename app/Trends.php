@@ -2,28 +2,27 @@
 
 use App\Http\Traits\ScarcityAdjustment;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class Tools
+ * Class Trends
  *
- * @property int id
- * @property int type_id
  * @property int transaction_type_id
+ * @property int good_type_id
  * @property int good_id
- * @property int month
- * @property int day
- * @property int hour
+ * @property string dated_at
  * @property double sum
  * @property double amount
  * @property double average
  * @property int count
- * @property int latestMinute
  * @package Models
+ * @mixin Builder
  */
 class Trends extends Model
 {
     use ScarcityAdjustment;
     protected $table = 'trends';
-    protected $fillable = ['transaction_type_id', 'type_id', 'good_id', 'month', 'day', 'hour', 'sum', 'amount', 'average', 'count', 'latest_minute'];
-    public $timestamps = true;
+    protected $fillable = ['transaction_type_id', 'good_type_id', 'good_id', 'dated_at', 'sum', 'amount', 'average', 'count'];
+    protected $dates = ['dated_at'];
+    public $timestamps = false;
 }

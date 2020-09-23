@@ -8,6 +8,7 @@ use App\Ingots;
 use App\Ores;
 use App\Tools;
 use App\Trends;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class AlignTrendData extends Command
@@ -17,7 +18,10 @@ class AlignTrendData extends Command
      *
      * @var string
      */
-    protected $signature = 'align:trends { transactionTypeId } { goodTypeId } { --goodId=}';
+    protected $signature = 'align:trends
+    { transactionTypeId  : If all it will align all goods. Otherwise use the transaction id you want to limit the alignment too.}
+    { --goodTypeId=  : Limit to the goodtype of this id.}
+    { --goodId= : Limit to the good with this id.}';
 
     /**
      * The console command description.
@@ -48,53 +52,56 @@ class AlignTrendData extends Command
      */
     public function handle()
     {
-        $this->transactionTypeId = (int)$this->argument('transactionTypeId');
-        $this->goodTypeId        = (int)$this->argument('goodTypeId');
+        $this->transactionTypeId = $this->argument('transactionTypeId');
+        $this->goodTypeId        = $this->option('goodTypeId');
         $this->goodId            = ($this->option('goodId')) ?? null;
-        if ( ! empty($this->goodId)) {
-            $ids = [$this->goodId];
-        } else {
-            switch ($this->goodTypeId) {
-                case 1 :
-                    $ids = Ores::pluck('id');
-                    break;
-                case 2 :
-                    $ids = Ingots::pluck('id');
-                    break;
-                case 3 :
-                    $ids = Components::pluck('id');
-                    break;
-                case 4 :
-                    $ids = Tools::pluck('id');
-                    break;
-            }
-        }
+        $transactionTypeIds = ($this->transactionTypeId === 'all') ? [1, 2] : [(int) $this->transactionTypeId];
+        $goodTypeIds = ($this->transactionTypeId === 'all') ? [1, 2, 3, 4] : [(int) $this->goodTypeId];
+        foreach ($transactionTypeIds as $transactionTypeId) {
+            foreach ($goodTypeIds as $goodTypeId) {
+                if ( ! empty($this->goodId)) {
+                    $ids = [$this->goodId];
+                } else {
+                    switch ($goodTypeId) {
+                        case 1 :
+                            $ids = Ores::pluck('id');
+                            break;
+                        case 2 :
+                            $ids = Ingots::pluck('id');
+                            break;
+                        case 3 :
+                            $ids = Components::pluck('id');
+                            break;
+                        case 4 :
+                            $ids = Tools::pluck('id');
+                            break;
+                    }
+                }
 
-        if(!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->output->note('goodTypeId: ' . $this->goodTypeId . ' goodId: ' . $id);
-                $trends     = new TrendsController();
-                $trendsData = $trends->getRawTrends($this->transactionTypeId, $this->goodTypeId, $id, false);
-                foreach ($trendsData as $row) {
-                    Trends::firstOrCreate([
-                        'transaction_type_id' => $this->transactionTypeId,
-                        'type_id'             => $this->goodTypeId,
-                        'good_id'             => $id,
-                        'month'               => $row->month,
-                        'day'                 => $row->day,
-                        'hour'                => $row->hour
-                    ], [
-                        'sum'           => $row->sum,
-                        'amount'        => $row->amount,
-                        'average'       => ($row->sum === 0 && $row->amount === 0) ? 0 : $row->sum / $row->amount,
-                        'count'         => $row->count,
-                        'latest_minute' => 0,
-                    ]);
+                if ( ! empty($ids)) {
+                    foreach ($ids as $id) {
+                        $this->output->note('transactionTypeId: ' . $transactionTypeId . ' goodTypeId: '.$goodTypeId.' goodId: '.$id);
+                        $trends     = new TrendsController();
+                        $trendsData = $trends->getRawTrends($transactionTypeId, $goodTypeId, $id, false);
+                        foreach ($trendsData as $row) {
+                            Trends::updateOrCreate([
+                                'transaction_type_id' => $transactionTypeId,
+                                'good_type_id'        => $goodTypeId,
+                                'good_id'             => $id,
+                                'dated_at'            => Carbon::createFromDate($row->dated_at),
+                            ], [
+                                'sum'     => $row->sum,
+                                'amount'  => $row->amount,
+                                'average' => ($row->sum === 0 && $row->amount === 0) ? 0 : $row->sum / $row->amount,
+                                'count'   => $row->count,
+                            ]);
+                        }
+                    }
+                } else {
+                    $message = 'No ids found for '.$goodTypeId.' good id was '.$this->goodId;
+                    \Log::error($message);
                 }
             }
-        } else {
-            $message = 'No ids found for '. $this->goodTypeId . ' good id was '. $this->goodId;
-            \Log::error($message);
         }
     }
 

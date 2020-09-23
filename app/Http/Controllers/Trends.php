@@ -101,24 +101,28 @@ class Trends extends Controller
     }
 
 
-    private function gatherTrends($transactionType, $goodTypeId, $goodId = 0)
+    public function gatherTrends($transactionType, $hoursAgo, $goodTypeId = 0, $goodId = 0)
     {
         //todo: trends should be storing the carbon date so the year is made correctly.
-        $year              = 2020;
-        $transactionTypeId = TransactionTypes::where('title', $transactionType)->first()->id;
+        $transactionTypeId =(is_int($transactionType)) ? $transactionType : TransactionTypes::where('title', $transactionType)->first()->id;
+        $trends = \App\Trends::where('dated_at', '>', Carbon::now()->subHours($hoursAgo));
+        if($transactionTypeId !== 0) {
+            $trends = $trends->where('transaction_type_id', $transactionTypeId);
+            $trends = $trends->where('good_type_id', $goodTypeId);
+            if($goodId > 0) {
+                $trends = $trends->where('good_id', $goodId);
+            }
+        }
         $dataPoints        = [];
-        $whereArray        = ($goodId > 0) ? [
-            'transaction_type_id' => $transactionTypeId,
-            'type_id'             => $goodTypeId,
-            'good_id'             => $goodId
-        ] : ['transaction_type_id' => $transactionTypeId, 'type_id' => $goodTypeId];
-        $trends            = \App\Trends::where($whereArray)->orderBy('month')->orderBy('day')->orderBy('hour')->get();
-        foreach ($trends as $trend) {
-            $title        = $this->goodTitleById($goodTypeId, $trend->good_id);
+        $trends = $trends->orderBy('transaction_type_id')->orderBy('dated_at');
+        foreach ($trends->get() as $trend) {
+            $title        = $this->goodTitleById($trend->good_type_id, $trend->good_id);
             $dataPoints[] = [
                 'title'      => $title,
-                'updated_at' => Carbon::createFromFormat('Y-m-d H',
-                    $year.'-'.$trend->month.'-'.$trend->day.' '.$trend->hour)->toDateTimeString(),
+                'transaction_type_id' => $trend->transaction_type_id,
+                'good_type_id' => $trend->good_type_id,
+                'good_id' => $trend->good_id,
+                'updated_at' => $trend->dated_at,
                 'sum'        => $trend->sum,
                 'amount'     => $trend->amount,
                 'average'    => $trend->average,
@@ -128,6 +132,7 @@ class Trends extends Controller
 
         return $this->dataPointsToCollection($dataPoints);
     }
+
 
 
     private function goodTitleById($goodTypeId, $goodId)
@@ -146,7 +151,7 @@ class Trends extends Controller
                 $title = Tools::find($goodId)->title;
                 break;
             default:
-                die('Invalid type');
+                die('Invalid type: ' . $goodTypeId . ' on good id' . $goodId);
         }
         $title = str_replace(' ', '', $title);
         $title = str_replace('.', '', $title);
@@ -271,6 +276,7 @@ class Trends extends Controller
                             'month'             => $month,
                             'day'               => $day,
                             'hour'              => $hour,
+                            'dated_at'          => $hourdata['dated_at'],
                             'sum'               => $hourdata['sum'],
                             'amount'            => $hourdata['amount'],
                             'count'             => $hourdata['count']
@@ -332,30 +338,19 @@ class Trends extends Controller
             'sum'          => 0,
             'amount'       => 0,
             'count'        => 0,
-            'latestMinute' => 0,
+            'dated_at'   => $transaction->updated_at
         ];
         if ( ! empty($dataPoints[$id][$month][$day][$hour])) {
             $currentData = $dataPoints[$id][$month][$day][$hour];
         }
 
-        $currentData                          = $this->setLatestMinute($currentData, $transaction);
         $currentData                          = $this->setSums($currentData, $transaction);
         $currentData                          = $this->setAmounts($currentData, $transaction);
         $currentData                          = $this->setCounts($currentData);
+        $currentData                          = $this->setDatedAt($currentData, $transaction);
         $dataPoints[$id][$month][$day][$hour] = $currentData;
 
         return $dataPoints;
-    }
-
-
-    private function setLatestMinute($currentData, $transaction)
-    {
-        $minute = $transaction->updated_at->minute;
-        if ($minute > $currentData['latestMinute'] && $transaction->amount > 0) {
-            $currentData['latestMinute'] = $minute;
-        }
-
-        return $currentData;
     }
 
 
@@ -378,6 +373,15 @@ class Trends extends Controller
     private function setCounts($currentData)
     {
         $currentData['count'] += 1;
+
+        return $currentData;
+    }
+
+
+    private function setDatedAt($currentData, $transaction) {
+        if($transaction->updated_at->gt($currentData['dated_at'])) {
+            $currentData['dated_at'] = $transaction->updated_at;
+        }
 
         return $currentData;
     }

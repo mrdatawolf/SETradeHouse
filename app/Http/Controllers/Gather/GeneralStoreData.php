@@ -36,14 +36,14 @@ class GeneralStoreData
         $storeTransactions = new Stores();
         $storeTransactions->chunk(400, function ($storeTransactions) {
             foreach ($storeTransactions as $transaction) {
-                $good = $this->seNameToGood($transaction->Item);
                 $goodType = $this->seNameToGoodType($transaction->Item);
+                $good = $this->seNameAndGoodTypeToGood($goodType, $transaction->Item);
                 if ( ! empty($good)) {
                     $tradeZone = $this->getTZ($transaction);
                     $this->updateStoreLocation($tradeZone, $transaction->GPSString);
                     $this->addTransactionToArray($tradeZone, $transaction, $goodType, $good);
                 } else {
-                    $this->result = 'updateTransactionValues: good was empty';
+                    $this->result = 'updateTransactionValues: good was empty transaction Item:' . $transaction->Item . ' goodType: ' . $goodType->title;
                 }
             }
         });

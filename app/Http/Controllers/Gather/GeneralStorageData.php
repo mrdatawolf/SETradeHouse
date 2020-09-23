@@ -28,10 +28,11 @@ class GeneralStorageData
     public function upateUserAndNpcStorageValues()
     {
         $this->result = 'upateUserAndNpcStorageValues : Success';
-        $oldestHourToPull = ($this->extended) ? $this->extended : 12;
+        $oldestHourToPull = ($this->extended) ? $this->extended : 6;
+        $utcOffset = 7;
         $userItems = new UserItems();
         if ( ! $this->isInitial) {
-            $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subhours($oldestHourToPull));
+            $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subhours($oldestHourToPull+$utcOffset));
         }
         if ($userItems->count() >= 1) {
             $runningTotals = [];

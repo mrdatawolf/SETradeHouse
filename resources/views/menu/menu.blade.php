@@ -84,20 +84,9 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Stores</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"> General &raquo </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores') }}';">Active Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.world') }}';">Active World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.server') }}';">Active Server</button></li>
-                                </ul>
-                            </li>
-                            <li><a class="dropdown-item" href="#"> Profit/Loss &raquo </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss') }}';">Active Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss.world') }}';">Active World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('profitvsloss.server') }}';">Active Server</button></li>
-                                </ul>
-                            </li>
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores') }}';">Personal</button></li>
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.world') }}';">World</button></li>
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('stores.server') }}';">Server</button></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

@@ -11,23 +11,26 @@
                 $maxCount       = 5;
                 $count          = $maxCount+1;
                 $stringedData   = "Gathering Data from around the Cluster...";
+                $allowEntities = ($currentUser->roles->contains(8)) ? ['npc', 'user'] : ['npc'];
                 foreach($stockLevels as $entityType => $entityData) {
-                    foreach($entityData as $type => $data) {
-                        if($count > 0) {
-                            $tickerData[]   = $stringedData;
-                            $stringedData   = $entityType . " - " . $type;
-                            $count          = 0;
-                        }
-                        foreach($data as $name => $value) {
-                            if($count > 5) {
+                    if(in_array($entityType, $allowEntities)) {
+                        foreach($entityData as $type => $data) {
+                            if($count > 0) {
                                 $tickerData[]   = $stringedData;
                                 $stringedData   = $entityType . " - " . $type;
                                 $count          = 0;
                             }
-                            $stringedData .=" | ".$name." ".$value." ";
-                            $count++;
+                            foreach($data as $name => $value) {
+                                if($count > 5) {
+                                    $tickerData[]   = $stringedData;
+                                    $stringedData   = $entityType . " - " . $type;
+                                    $count          = 0;
+                                }
+                                $stringedData .=" | ".$name." ".$value." ";
+                                $count++;
+                            }
+                            $tickerData[] = $stringedData;
                         }
-                        $tickerData[] = $stringedData;
                     }
                 }
             }

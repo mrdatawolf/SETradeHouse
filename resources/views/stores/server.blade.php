@@ -6,47 +6,29 @@
         @if(! empty($stores))
             @php $active = 'active'; @endphp
             <ul class="nav nav-tabs">
-            @foreach($stores as $gridName => $gridData)
-                    @php
-                        $idName = str_replace(' ', '', $gridName);
-                        $idName = str_replace('[', '', $idName);
-                        $idName = str_replace(']', '', $idName);
-                        $idName = str_replace('(', '', $idName);
-                        $idName = str_replace(')', '', $idName);
-                        $idName = htmlentities($idName);
-                        $idName = htmlspecialchars($idName);
-                    @endphp
+                @foreach($stores as $gridName => $gridData)
                     <li class="nav-item">
-                        <a href="#{{ $idName }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $gridName }}</a>
+                        <a href="#{{ $gridData->jsid }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $gridName }}</a>
                     </li>
                     @php $active = ''; @endphp
-            @endforeach
+                @endforeach
             </ul>
             <div class="tab-content">
-            @php $specialClasses = 'show active'; @endphp
-            @foreach($stores as $gridName => $gridData)
-                @php
-                    $idName = str_replace(' ', '', $gridName);
-                    $idName = str_replace('[', '', $idName);
-                    $idName = str_replace(']', '', $idName);
-                    $idName = str_replace('(', '', $idName);
-                    $idName = str_replace(')', '', $idName);
-                    $idName = htmlentities($idName);
-                    $idName = htmlspecialchars($idName);
-                @endphp
-                <div class="tab-pane fade {{ $specialClasses }}" id="{{ $idName }}">
-                    <div class="card">
-                        <div class="card-header">{{ $gridData['Info']['Owner'] }}</div>
-                        <div class="card-body">
-                            @include('partials.transactionTable')
-                        </div>
-                        <div class="card-footer">
-                            {{ $gridData['Info']['GPS'] }}
+                @php $specialClasses = 'show active'; @endphp
+                @foreach($stores as $gridName => $gridData)
+                    <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}">
+                        <div class="card">
+                            <div class="card-header">{{ $gridData->owner }}</div>
+                            <div class="card-body">
+                                @include('partials.transactionTable')
+                            </div>
+                            <div class="card-footer">
+                                {{ $gridData->GPS }}
+                            </div>
                         </div>
                     </div>
-                </div>
-                @php $specialClasses = ''; @endphp
-            @endforeach
+                    @php $specialClasses = ''; @endphp
+                @endforeach
             </div>
         @endif
     </div>

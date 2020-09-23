@@ -143,6 +143,32 @@ trait FindingGoods {
 
 
     /**
+     * @param $goodType
+     * @param $goodTitle
+     *
+     * @return Ingots|Ores|Components|Tools|null
+     */
+    private function getGoodFromGoodTypeAndGoodTitle($goodType, $goodTitle) {
+        switch($goodType->id) {
+            case '2' :
+                $model = Ingots::where('title',$goodTitle)->first();
+                break;
+            case '1' :
+                $model = Ores::where('title',$goodTitle)->first();
+                break;
+            case '3' :
+                $model = Components::where('title',$goodTitle)->first();
+                break;
+            default:
+                $model = Tools::where('title',$goodTitle)->first();
+
+        }
+
+        return (! empty($model)) ? $model : null;
+    }
+
+
+    /**
      * @param $typeId
      *
      * @return mixed

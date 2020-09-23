@@ -24,7 +24,6 @@ class Stocklevels extends Controller
     public function getStockLevels() {
         $usersStorage       = new UserStorageValues();
         $npcsStorage        = new NpcStorageValues();
-        $newestRecord       = $npcsStorage->latest('origin_timestamp')->first();
         $summedUserTotals   = $usersStorage->select('server_id','world_id','group_id','item_id', \DB::raw('sum(amount) amount'))->groupBy('server_id','world_id','group_id','item_id')->get();
         $summedNpcTotals    = $npcsStorage->select('server_id','world_id','group_id','item_id', \DB::raw('sum(amount) amount'))->groupBy('server_id','world_id','group_id','item_id')->get();
 

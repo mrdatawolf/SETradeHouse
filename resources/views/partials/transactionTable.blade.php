@@ -3,83 +3,92 @@
     td {
         padding-right: 1em;
     }
-    .serverGroup, .left-border, .right-border {
-        border: 1px solid #ccc;
-    }
-    .left-border, .right-border {
-        border-top: 0;
-        border-bottom: 0;
-    }
-    .serverGroup {
-        border-bottom: 0;
+    .serverGroup, .storeGroup {
         text-align: center;
     }
+    .serverGroup, .left-border, .right-border {
+        border: 0;
+    }
     .left-border {
-        border-right: 0;
+        border-left: 1px solid #ccc;
 
     }
     .right-border {
-        border-left: 0;
+        border-right: 1px solid #ccc;
+    }
+    .exposureAlert {
+        color: #9a1313;
     }
 </style>
 <ul class="nav nav-tabs">
     @php $active = 'active'; @endphp
-    @foreach($gridData['Data'] as $group => $groupData)
-            <li class="nav-item">
-                <a href="#{{ $idName }}_{{ $group }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $group }}</a>
-            </li>
-            @php $active = ''; @endphp
+    @foreach(['Ore', 'Ingot','Component','Tool'] as $group)
+        <li class="nav-item">
+            <a href="#{{ $gridData->jsid }}_{{ $group }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $group }}</a>
+        </li>
+        @php $active = ''; @endphp
     @endforeach
 </ul>
 <div class="tab-content">
-@foreach($gridData['Data'] as $group => $groupData)
-    <div class="tab-pane fade {{ $specialClasses }}" id="{{ $idName }}_{{ $group }}">
-        <ul class="nav nav-pills">
-            <li class="nav-item">
-                <a href="#{{ $idName}}_{{ $group }}_Offers" class="nav-link active" data-toggle="pill">Offers</a>
-            </li>
-            <li class="nav-item">
-                <a href="#{{ $idName}}_{{ $group }}_Orders" class="nav-link" data-toggle="pill">Orders</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            @foreach(['Offers', 'Orders'] as $transactionType)
-                <div class="tab-pane fade {{ $specialClasses2 }}" id="{{ $idName }}_{{ $group }}_{{ $transactionType }}">
+    @foreach(['Ore', 'Ingot','Component','Tool'] as $group)
+        <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $group }}">
+            <div class="tab-content">
+                @if(! empty($gridData->$group))
                     <table class="table-striped table-responsive-xl transaction-table" style="width:100%">
                         <thead>
-                            <tr class="transaction-table-groups">
-                                <th colspan="5" class="serverGroup">Stores Data</th>
-                                <th colspan="2" class="serverGroup">Server</th>
-                            </tr>
-                            <tr class="text-center">
-                                <th>Name</th>
-                                <th>Avg Price</th>
-                                <th class="left-border">Min Price</th>
-                                <th>Max Price</th>
-                                <th class="right-border">Total in Transaction(s)</th>
-                                <th class="left-border">Order/Offer Average Price</th>
-                                <th># of Other TZs its found</th>
-                            </tr>
+                        <tr class="transaction-table-groups">
+                            <th class="left-border"></th>
+                            <th colspan="4" class="left-border right-border storeGroup">Stores Data</th>
+                            <th colspan="3" class="left-border right-border serverGroup">Server</th>
+                        </tr>
+                        <tr class="transaction-table-groups text-center">
+                            <th class="left-border">Name</th>
+                            <th class="left-border">Average Prices</th>
+                            <th>Lowest Prices</th>
+                            <th>Highest Prices</th>
+                            <th class="right-border" title=" Difference from the average market price">Variances</th>
+                            <th class="left-border" colspan="2">Total Amounts</th>
+                            <th class="right-border">Average Prices</th>
+                        </tr>
+                        <tr class="text-center">
+                            <th class="left-border"></th>
+                            <th class="left-border">Orders : Offers</th>
+                            <th>Orders : Offers</th>
+                            <th>Orders : Offers</th>
+                            <th class="right-border" title="If order is a + number then they are paying more then the average selling price of the market. If offer is + they are selling below the avg order market price">Order : Offer</th>
+                            <th class="left-border">Orders</th>
+                            <th>Offers</th>
+                            <th class="right-border">Orders : Offers</th>
+                        </tr>
                         </thead>
                         <tbody>
-                        @foreach($groupData[$transactionType] as $item => $itemData)
-                            <tr class="text-right">
-                                <td>{{ ucfirst($item) }}</td>
-                                <td>{{ number_format($gridData['Averages'][$group][$transactionType][$item]['Price'] ?? 0) }}</td>
-                                <td class="left-border">{{ number_format($gridData['Totals'][$group][$transactionType][$item]['MinPrice'] ?? 0) }}</td>
-                                <td>{{ number_format($gridData['Totals'][$group][$transactionType][$item]['MaxPrice'] ?? 0) }}</td>
-                                <td class="right-border">{{ number_format($gridData['Totals'][$group][$transactionType][$item]['Amount'] ?? 0) }}</td>
-                                <td class="left-border">{{ number_format($globalAverages[$group][$transactionType][$item]['average'] ?? 0) }}</td>
-                                <td>{{ number_format($globalAverages[$group][$transactionType][$item]['count'] ?? 0) }}</td>
+                        @foreach($gridData->$group as $good => $goodData)
+                            @php
+                                $storeOrders = new \App\Http\Controllers\Stores();
+                                $globalOrderAverages = $storeOrders->getGlobalDataForGood(1, $group, $good, $hoursAgo = 36);
+                                $storeOffers = new \App\Http\Controllers\Stores();
+                                $globalOfferAverages = $storeOffers->getGlobalDataForGood(2, $group, $good, $hoursAgo = 36);
+                                $globalOrder = $globalOrderAverages->where('title',strtolower($good))->first();
+                                $globalOffer = $globalOfferAverages->where('title',strtolower($good))->first();
+                                $orderVariance = (empty($goodData->Orders) || empty($globalOffer)) ? 'n/a' : round($goodData->Orders->avgPrice - $globalOffer->average, 2);
+                                $offerVariance = (empty($goodData->Offers) || empty($globalOrder)) ? 'n/a' : round($globalOrder->average - $goodData->Offers->avgPrice, 2);
+                            @endphp
+                            <tr class="text-center">
+                                <td class="left-border">{{ ucfirst($good) }}</td>
+                                <td class="left-border">{{ number_format($goodData->Orders->avgPrice ?? 0) }} : {{ number_format($goodData->Offers->avgPrice ?? 0) }}</td>
+                                <td>{{ number_format($goodData->Orders->minPrice ?? 0) }} : {{ number_format($goodData->Offers->minPrice ?? 0) }}</td>
+                                <td>{{ number_format($goodData->Orders->maxPrice ?? 0) }} : {{ number_format($goodData->Offers->maxPrice ?? 0) }}</td>
+                                <td class="right-border">{{ (is_int($orderVariance)) ? number_format($orderVariance) : $orderVariance }} : {{ (is_int($offerVariance)) ? number_format($offerVariance) : $offerVariance }}</td>
+                                <td class="left-border">{{ number_format($globalOrder->amount ?? 0) }}</td>
+                                <td>{{ number_format($globalOffer->amount ?? 0) }}</td>
+                                <td class="right-border">{{ number_format($globalOrder->average ?? 0) }} : {{ number_format($globalOffer->average ?? 0) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
-                </div>
-                @php $specialClasses2 = 'hide'; @endphp
-            @endforeach
+                @endif
+            </div>
         </div>
-    </div>
-    @php $specialClasses = 'hide'; @endphp
-@endforeach
+        @php $specialClasses = 'hide'; @endphp
+    @endforeach
 </div>
