@@ -119,8 +119,16 @@ class Trends extends Controller
 
         $dataPoints = [];
         $trends     = $trends->orderBy('transaction_type_id')->orderBy('dated_at');
+        $goodTitles = $this->goodTitlesByTypeId($goodTypeId);
         foreach ($trends->get() as $trend) {
-            $title        = $this->goodTitleById($trend->good_type_id, $trend->good_id);
+            $title        = $goodTitles[$trend->good_id];
+            $title = str_replace(' ', '', $title);
+            $title = str_replace('.', '', $title);
+            $title = str_replace('-', '', $title);
+            $title = str_replace('[', '', $title);
+            $title = str_replace(']', '', $title);
+            $title = str_replace('(', '', $title);
+            $title = str_replace(')', '', $title);
             $dataPoints[] = [
                 'title'               => $title,
                 'transaction_type_id' => $trend->transaction_type_id,
@@ -165,6 +173,29 @@ class Trends extends Controller
         $title = str_replace(')', '', $title);
 
         return $title;
+    }
+
+
+    private function goodTitlesByTypeId($goodTypeId)
+    {
+        switch ($goodTypeId) {
+            case 1:
+                $titles = Ores::pluck('title', 'id');
+                break;
+            case 2:
+                $titles = Ingots::pluck('title', 'id');
+                break;
+            case 3:
+                $titles = Components::pluck('title', 'id');
+                break;
+            case 4:
+                $titles = Tools::pluck('title', 'id');
+                break;
+            default:
+                die('Invalid type: '.$goodTypeId);
+        }
+
+        return $titles;
     }
 
 
