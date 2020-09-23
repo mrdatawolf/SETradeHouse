@@ -19,7 +19,7 @@ class AlignTrendData extends Command
      * @var string
      */
     protected $signature = 'align:trends
-    { transactionTypeId  : If all it will align all goods. Otherwise use the transaction id you want to limit the alignment too.}
+    { --transactionTypeId=  : If all it will align all goods. Otherwise use the transaction id you want to limit the alignment too.}
     { --goodTypeId=  : Limit to the goodtype of this id.}
     { --goodId= : Limit to the good with this id.}';
 
@@ -52,11 +52,11 @@ class AlignTrendData extends Command
      */
     public function handle()
     {
-        $this->transactionTypeId = $this->argument('transactionTypeId');
+        $this->transactionTypeId = $this->option('transactionTypeId');
         $this->goodTypeId        = $this->option('goodTypeId');
         $this->goodId            = ($this->option('goodId')) ?? null;
-        $transactionTypeIds = ($this->transactionTypeId === 'all') ? [1, 2] : [(int) $this->transactionTypeId];
-        $goodTypeIds = ($this->transactionTypeId === 'all') ? [1, 2, 3, 4] : [(int) $this->goodTypeId];
+        $transactionTypeIds      = $this->option('transactionTypeId') ? [(int)$this->transactionTypeId] : [1, 2];
+        $goodTypeIds             = ($this->option('goodTypeId')) ? [1, 2, 3, 4] : [(int)$this->goodTypeId];
         foreach ($transactionTypeIds as $transactionTypeId) {
             foreach ($goodTypeIds as $goodTypeId) {
                 if ( ! empty($this->goodId)) {
@@ -80,7 +80,7 @@ class AlignTrendData extends Command
 
                 if ( ! empty($ids)) {
                     foreach ($ids as $id) {
-                        $this->output->note('transactionTypeId: ' . $transactionTypeId . ' goodTypeId: '.$goodTypeId.' goodId: '.$id);
+                        $this->output->note('transactionTypeId: '.$transactionTypeId.' goodTypeId: '.$goodTypeId.' goodId: '.$id);
                         $trends     = new TrendsController();
                         $trendsData = $trends->getRawTrends($transactionTypeId, $goodTypeId, $id, false);
                         foreach ($trendsData as $row) {
