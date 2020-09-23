@@ -13,80 +13,80 @@ use Carbon\Carbon;
 
 class Trends extends Controller
 {
-    public function oreOrderIndex()
+    public function oresOrderIndex()
     {
         $pageTitle  = "Ore Order Trends";
-        $dataPoints = $this->gatherTrends('buy', 1);
+        $dataPoints = $this->gatherTrends(1, 720, 1);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    public function oreOfferIndex()
+    public function oresOfferIndex()
     {
         $pageTitle  = "Ore Offer Trends";
-        $dataPoints = $this->gatherTrends('sell', 1);
+        $dataPoints = $this->gatherTrends(2, 720, 1);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    public function ingotOrderIndex()
+    public function ingotsOrderIndex()
     {
         $pageTitle  = "Ingot Order Trends";
-        $dataPoints = $this->gatherTrends('buy', 2);
+        $dataPoints = $this->gatherTrends(1, 720, 2);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    public function ingotOfferIndex()
+    public function ingotsOfferIndex()
     {
         $pageTitle  = "Ingot Offer Trends";
-        $dataPoints = $this->gatherTrends('sell', 2);
+        $dataPoints = $this->gatherTrends(2, 720, 2);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    public function componentOrderIndex()
+    public function componentsOrderIndex()
     {
         $pageTitle  = "Component Order Trends";
-        $dataPoints = $this->gatherTrends('buy', 3);
+        $dataPoints = $this->gatherTrends(1, 720, 3);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    public function componentOfferIndex()
+    public function componentsOfferIndex()
     {
         $pageTitle  = "Component Offer Trends";
-        $dataPoints = $this->gatherTrends('sell', 3);
+        $dataPoints = $this->gatherTrends(2, 720, 3);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    public function toolOrderIndex()
+    public function toolsOrderIndex()
     {
         $pageTitle  = "Tools Order Trends";
-        $dataPoints = $this->gatherTrends('buy', 4);
+        $dataPoints = $this->gatherTrends(1, 720, 4);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
     }
 
 
-    public function toolOfferIndex()
+    public function toolsOfferIndex()
     {
         $pageTitle  = "Tools Offer Trends";
-        $dataPoints = $this->gatherTrends('sell', 4);
+        $dataPoints = $this->gatherTrends(2, 4, 4);
         $compacted  = $this->makeGeneralCompact($dataPoints, $pageTitle);
 
         return view('trends.general.all', $compacted);
@@ -116,6 +116,7 @@ class Trends extends Controller
         if ($goodId !== 0) {
             $trends = $trends->where('good_id', $goodId);
         }
+
         $dataPoints = [];
         $trends     = $trends->orderBy('transaction_type_id')->orderBy('dated_at');
         foreach ($trends->get() as $trend) {
@@ -186,11 +187,11 @@ class Trends extends Controller
     {
         $hourly               = $this->trendingHourly($dataPoints);
         $daily                = $this->trendingDaily($dataPoints);
-        $trendHourlyAvg       = $hourly[0];
-        $trendHourlyAvgLabels = $hourly[1];
-        $trendDailyAvg        = $daily[0];
-        $trendDailyAvailable  = $daily[1];
-        $trendDailyAvgLabels  = $daily[2];
+        $trendHourlyAvg       = $hourly[0] ?? [];
+        $trendHourlyAvgLabels = $hourly[1] ?? [];
+        $trendDailyAvg        = $daily[0] ?? [];
+        $trendDailyAvailable  = $daily[1] ?? [];
+        $trendDailyAvgLabels  = $daily[2] ?? [];
 
         return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels',
             'trendDailyAvailable');
@@ -198,16 +199,18 @@ class Trends extends Controller
 
 
     /**
-     * @param $dataPoints
+     * @param     $dataPoints
+     * @param int $totalHours
      *
-     * @return array
+     * @return array[]
      */
-    private function trendingHourly($dataPoints)
+    private function trendingHourly($dataPoints, $totalHours = 24)
     {
         $averages = [];
         $labels   = [];
+
         if ( ! empty($dataPoints)) {
-            foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subHours(24)) as $data) {
+            foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subHours($totalHours)) as $data) {
                 $updatedAt                = Carbon::createFromDate($data->updated_at);
                 $day                      = $updatedAt->day;
                 $hour                     = $updatedAt->hour;
@@ -220,7 +223,13 @@ class Trends extends Controller
     }
 
 
-    private function trendingDaily($dataPoints)
+    /**
+     * @param     $dataPoints
+     * @param int $totalDays
+     *
+     * @return array[]
+     */
+    private function trendingDaily($dataPoints, $totalDays = 30)
     {
         $averages            = [];
         $trendDailyAmount    = [];
@@ -229,7 +238,7 @@ class Trends extends Controller
         $carbon              = Carbon::now();
         $month               = (int)$carbon->month;
         if ( ! empty($dataPoints)) {
-            foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subDays(30)) as $data) {
+            foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subDays($totalDays)) as $data) {
                 $updatedAt = Carbon::createFromDate($data->updated_at);
                 $day       = $updatedAt->day;
                 if (empty($current[$day])) {
