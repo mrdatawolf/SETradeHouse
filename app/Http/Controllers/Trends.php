@@ -121,7 +121,7 @@ class Trends extends Controller
         $trends     = $trends->orderBy('transaction_type_id')->orderBy('dated_at');
         $goodTitles = $this->goodTitlesByTypeId($goodTypeId);
         foreach ($trends->get() as $trend) {
-            $title        = $goodTitles[$trend->good_id];
+            $title        = ($goodTitles) ?  $this->goodTitleByIds($goodTypeId, $goodId) : $goodTitles[$trend->good_id];
             $title = str_replace(' ', '', $title);
             $title = str_replace('.', '', $title);
             $title = str_replace('-', '', $title);
@@ -145,8 +145,13 @@ class Trends extends Controller
         return $this->dataPointsToCollection($dataPoints);
     }
 
-
-    private function goodTitleById($goodTypeId, $goodId)
+    /**
+     * @param $goodTypeId
+     * @param $goodId
+     *
+     * @return Ores|Ingots|Components|Tools
+     */
+    private function goodTitleByIds($goodTypeId, $goodId)
     {
         switch ($goodTypeId) {
             case 1:
@@ -176,6 +181,11 @@ class Trends extends Controller
     }
 
 
+    /**
+     * @param $goodTypeId
+     *
+     * @return Ores|Ingots|Components|Tools|null
+     */
     private function goodTitlesByTypeId($goodTypeId)
     {
         switch ($goodTypeId) {
@@ -192,7 +202,7 @@ class Trends extends Controller
                 $titles = Tools::pluck('title', 'id');
                 break;
             default:
-                die('Invalid type: '.$goodTypeId);
+                $titles = null;
         }
 
         return $titles;
@@ -378,7 +388,7 @@ class Trends extends Controller
      */
     private function alignDataPoint($dataPoints, $goodTypeId, $transaction, $useTitle)
     {
-        $id          = ($useTitle) ? $this->goodTitleById($goodTypeId, $transaction->good_id) : $transaction->good_id;
+        $id          = ($useTitle) ? $this->goodTitleByIds($goodTypeId, $transaction->good_id) : $transaction->good_id;
         $hour        = $transaction->updated_at->hour;
         $day         = $transaction->updated_at->day;
         $month       = $transaction->updated_at->month;
