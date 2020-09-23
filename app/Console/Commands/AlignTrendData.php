@@ -54,9 +54,9 @@ class AlignTrendData extends Command
     {
         $this->transactionTypeId = $this->option('transactionTypeId');
         $this->goodTypeId        = $this->option('goodTypeId');
-        $this->goodId            = ($this->option('goodId')) ?? null;
-        $transactionTypeIds      = $this->option('transactionTypeId') ? [(int)$this->transactionTypeId] : [1, 2];
-        $goodTypeIds             = ($this->option('goodTypeId')) ? [1, 2, 3, 4] : [(int)$this->goodTypeId];
+        $this->goodId            = $this->option('goodId');
+        $transactionTypeIds      = ($this->option('transactionTypeId')) ? [(int)$this->transactionTypeId] : [1, 2];
+        $goodTypeIds             = ($this->option('goodTypeId')) ? [(int)$this->goodTypeId] :  [1, 2, 3, 4] ;
         foreach ($transactionTypeIds as $transactionTypeId) {
             foreach ($goodTypeIds as $goodTypeId) {
                 if ( ! empty($this->goodId)) {
@@ -98,7 +98,7 @@ class AlignTrendData extends Command
                         }
                     }
                 } else {
-                    $message = 'No ids found for '.$goodTypeId.' good id was '.$this->goodId;
+                    $message = 'No ids found for '.$goodTypeId.' good id was '.json_encode($this->goodId);
                     \Log::error($message);
                 }
             }
