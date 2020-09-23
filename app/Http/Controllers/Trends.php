@@ -104,35 +104,37 @@ class Trends extends Controller
     public function gatherTrends($transactionType, $hoursAgo, $goodTypeId = 0, $goodId = 0)
     {
         //todo: trends should be storing the carbon date so the year is made correctly.
-        $transactionTypeId =(is_int($transactionType)) ? $transactionType : TransactionTypes::where('title', $transactionType)->first()->id;
-        $trends = \App\Trends::where('dated_at', '>', Carbon::now()->subHours($hoursAgo));
-        if($transactionTypeId !== 0) {
+        $transactionTypeId = (is_int($transactionType)) ? $transactionType
+            : TransactionTypes::where('title', $transactionType)->first()->id;
+        $trends            = \App\Trends::where('dated_at', '>', Carbon::now()->subHours($hoursAgo));
+        if ($transactionTypeId !== 0) {
             $trends = $trends->where('transaction_type_id', $transactionTypeId);
-            $trends = $trends->where('good_type_id', $goodTypeId);
-            if($goodId > 0) {
-                $trends = $trends->where('good_id', $goodId);
-            }
         }
-        $dataPoints        = [];
-        $trends = $trends->orderBy('transaction_type_id')->orderBy('dated_at');
+        if ($goodTypeId !== 0) {
+            $trends = $trends->where('good_type_id', $goodTypeId);
+        }
+        if ($goodId !== 0) {
+            $trends = $trends->where('good_id', $goodId);
+        }
+        $dataPoints = [];
+        $trends     = $trends->orderBy('transaction_type_id')->orderBy('dated_at');
         foreach ($trends->get() as $trend) {
             $title        = $this->goodTitleById($trend->good_type_id, $trend->good_id);
             $dataPoints[] = [
-                'title'      => $title,
+                'title'               => $title,
                 'transaction_type_id' => $trend->transaction_type_id,
-                'good_type_id' => $trend->good_type_id,
-                'good_id' => $trend->good_id,
-                'updated_at' => $trend->dated_at,
-                'sum'        => $trend->sum,
-                'amount'     => $trend->amount,
-                'average'    => $trend->average,
-                'count'      => $trend->count,
+                'good_type_id'        => $trend->good_type_id,
+                'good_id'             => $trend->good_id,
+                'updated_at'          => $trend->dated_at,
+                'sum'                 => $trend->sum,
+                'amount'              => $trend->amount,
+                'average'             => $trend->average,
+                'count'               => $trend->count,
             ];
         }
 
         return $this->dataPointsToCollection($dataPoints);
     }
-
 
 
     private function goodTitleById($goodTypeId, $goodId)
@@ -151,7 +153,7 @@ class Trends extends Controller
                 $title = Tools::find($goodId)->title;
                 break;
             default:
-                die('Invalid type: ' . $goodTypeId . ' on good id' . $goodId);
+                die('Invalid type: '.$goodTypeId.' on good id'.$goodId);
         }
         $title = str_replace(' ', '', $title);
         $title = str_replace('.', '', $title);
@@ -182,8 +184,8 @@ class Trends extends Controller
      */
     private function makeGeneralCompact($dataPoints, $pageTitle)
     {
-        $hourly = $this->trendingHourly($dataPoints);
-        $daily  = $this->trendingDaily($dataPoints);
+        $hourly               = $this->trendingHourly($dataPoints);
+        $daily                = $this->trendingDaily($dataPoints);
         $trendHourlyAvg       = $hourly[0];
         $trendHourlyAvgLabels = $hourly[1];
         $trendDailyAvg        = $daily[0];
@@ -203,14 +205,14 @@ class Trends extends Controller
     private function trendingHourly($dataPoints)
     {
         $averages = [];
-        $labels = [];
+        $labels   = [];
         if ( ! empty($dataPoints)) {
             foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subHours(24)) as $data) {
-                $updatedAt = Carbon::createFromDate($data->updated_at);
-                $day = $updatedAt->day;
-                $hour = $updatedAt->hour;
+                $updatedAt                = Carbon::createFromDate($data->updated_at);
+                $day                      = $updatedAt->day;
+                $hour                     = $updatedAt->hour;
                 $averages[$data->title][] = round($data->average, 2);
-                $labels[$data->title][] = "d:".$day." h:".$hour;
+                $labels[$data->title][]   = "d:".$day." h:".$hour;
             }
         }
 
@@ -220,27 +222,33 @@ class Trends extends Controller
 
     private function trendingDaily($dataPoints)
     {
-        $averages = [];
-        $trendDailyAmount = [];
+        $averages            = [];
+        $trendDailyAmount    = [];
         $trendDailyAvgLabels = [];
-        $current = [];
-        $carbon   = Carbon::now();
-        $month    = (int)$carbon->month;
+        $current             = [];
+        $carbon              = Carbon::now();
+        $month               = (int)$carbon->month;
         if ( ! empty($dataPoints)) {
             foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subDays(30)) as $data) {
                 $updatedAt = Carbon::createFromDate($data->updated_at);
-                $day = $updatedAt->day;
-                if(empty($current[$day])) {
-                    $current[$data->title][$day] = ['title' => $month."/".$day, 'internalTitle' => '', 'sum' => 0, 'amount' => 0, 'count' => 0];
+                $day       = $updatedAt->day;
+                if (empty($current[$day])) {
+                    $current[$data->title][$day] = [
+                        'title'         => $month."/".$day,
+                        'internalTitle' => '',
+                        'sum'           => 0,
+                        'amount'        => 0,
+                        'count'         => 0
+                    ];
                 }
                 $current[$data->title][$day]['sum']    += $data->sum;
                 $current[$data->title][$day]['amount'] += $data->amount;
-                $current[$data->title][$day]['count']  ++;
+                $current[$data->title][$day]['count']++;
             }
-            foreach($current as $title => $currentData) {
-                foreach($currentData as $day => $data) {
-                    $averages[$title][]            = ($data['amount'] > 0)
-                        ? round($data['sum'] / $data['amount'], 2) : 0;
+            foreach ($current as $title => $currentData) {
+                foreach ($currentData as $day => $data) {
+                    $averages[$title][]            = ($data['amount'] > 0) ? round($data['sum'] / $data['amount'], 2)
+                        : 0;
                     $trendDailyAmount[$title][]    = round($data['amount'] / $data['count'], 2);
                     $trendDailyAvgLabels[$title][] = $data['title'];
                 }
@@ -335,10 +343,10 @@ class Trends extends Controller
         $day         = $transaction->updated_at->day;
         $month       = $transaction->updated_at->month;
         $currentData = [
-            'sum'          => 0,
-            'amount'       => 0,
-            'count'        => 0,
-            'dated_at'   => $transaction->updated_at
+            'sum'      => 0,
+            'amount'   => 0,
+            'count'    => 0,
+            'dated_at' => $transaction->updated_at
         ];
         if ( ! empty($dataPoints[$id][$month][$day][$hour])) {
             $currentData = $dataPoints[$id][$month][$day][$hour];
@@ -378,8 +386,9 @@ class Trends extends Controller
     }
 
 
-    private function setDatedAt($currentData, $transaction) {
-        if($transaction->updated_at->gt($currentData['dated_at'])) {
+    private function setDatedAt($currentData, $transaction)
+    {
+        if ($transaction->updated_at->gt($currentData['dated_at'])) {
             $currentData['dated_at'] = $transaction->updated_at;
         }
 
