@@ -27,7 +27,6 @@
             @foreach($trendHourlyAvg as $title => $hourlyAvg)
                 @if(! in_array($title, ['scrap']))
                     <div class="card">
-                        <div class="card-title">{{ ucfirst($title) }}</div>
                         <div class="card-body">
                             <canvas id="trend{{ $title }}Hourly"></canvas>
                         </div>
@@ -54,7 +53,6 @@
                 @foreach($trendDailyAvg as $title => $dailyAvg)
                     @if(! in_array($title, ['scrap']))
                         <div class="card">
-                            <div class="card-title">{{ ucfirst($title) }}</div>
                             <div class="card-body">
                                 <canvas id="trend{{ $title }}DailyAmount"></canvas>
                             </div>
