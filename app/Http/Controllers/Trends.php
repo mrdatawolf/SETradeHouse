@@ -121,7 +121,7 @@ class Trends extends Controller
         $trends     = $trends->orderBy('transaction_type_id')->orderBy('dated_at');
         $goodTitles = $this->goodTitlesByTypeId($goodTypeId);
         foreach ($trends->get() as $trend) {
-            $title        = ($goodTitles) ?  $this->goodTitleByIds($goodTypeId, $goodId) : $goodTitles[$trend->good_id];
+            $title        = (empty($goodTitles)) ?  $this->goodTitleByIds($goodTypeId, $goodId) : $goodTitles[$trend->good_id];
             $title = str_replace(' ', '', $title);
             $title = str_replace('.', '', $title);
             $title = str_replace('-', '', $title);

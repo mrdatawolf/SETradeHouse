@@ -32,6 +32,7 @@ class Stores extends Controller
         $storeType       = "personal";
         $storeController = new Stores();
         $username = \Auth::user()->username;
+        $username = 'hobobot';
         $stores       = $storeController->getTransactionsOfOwner($username);
         $globalAverages = $this->getGlobalAveragesForGoods(12);
 
