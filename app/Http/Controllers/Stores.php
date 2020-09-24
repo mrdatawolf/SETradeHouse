@@ -67,6 +67,16 @@ class Stores extends Controller
     }
 
 
+    public function storeIndex($id) {
+        $title           = "Store";
+        $storeType       = "server";
+        $storeController = new Stores();
+        $stores       = $storeController->getTransactionsOfStore($id);
+
+        return view('stores.server', compact('stores', 'storeType', 'title'));
+    }
+
+
     /**
      * note: this gets all the transactions for the stores and returns it with the ids converted to titles.
      *
@@ -107,6 +117,28 @@ class Stores extends Controller
                      ->orderBy('good_type_id', 'ASC')
                      ->orderBy('transaction_type_id', 'DESC')
                      ->orderBy('good_id', 'DESC');
+        foreach ($transactions->get() as $transaction) {
+            $this->updateOwnerStoreData($transaction);
+        }
+
+        return $this->convertToCollection($this->ownerStoreData);
+    }
+
+
+    /**
+     * note: this gets all the transactions for a given owners stores and returns it with the ids converted to titles.
+     * @param $tzId
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getTransactionsOfStore($tzId)
+    {
+        $this->ownerStoreData   = [];
+        $transactionsModel = new Transactions();
+        $transactions = $transactionsModel->where('trade_zone_id', $tzId)
+                                          ->orderBy('good_type_id', 'ASC')
+                                          ->orderBy('transaction_type_id', 'DESC')
+                                          ->orderBy('good_id', 'DESC');
         foreach ($transactions->get() as $transaction) {
             $this->updateOwnerStoreData($transaction);
         }
