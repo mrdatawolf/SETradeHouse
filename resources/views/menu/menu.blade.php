@@ -199,14 +199,12 @@
                             } elseif($syncStaleness > 2) {
                                  $syncStaleClass = 'staleWarn';
                             }
-
                         @endphp
                         <a class="nav-link dropdown-toggle {{ $generalStaleClass }}" href="#" title="{{ $generalStaleness }} hours old" data-toggle="dropdown">Other Info</a>
                         <ul class="dropdown-menu">
-                            <li class="font-weight-bold">Current Server: {{ \App\Servers::find((int) Session::get('serverId'))->title ?? '' }}</li>
-                            <li class="font-weight-bold">Current World: {{ \App\Worlds::find((int) Session::get('worldId'))->title ?? '' }}</li>
                             <li class="font-weight-bold {{ $dbStaleClass }}" title="{{ $dbStaleness }} hours old">Newest DB date: {{ $newestDbRecord }}</li>
                             <li class="font-weight-bold {{ $syncStaleClass }}" title="{{ $syncStaleness }} hours old">Newest sync date: {{ $newestSyncRecord }}</li>
+                            <li class="nav-item"><a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a></li>
                         </ul>
                     </li>
                     @if($currentUser->roles->contains(6) || $currentUser->roles->contains(8))
@@ -221,12 +219,11 @@
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ $currentUser->username }}</a>
                         <ul class="dropdown-menu">
                             <li>Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
+                            <li class="font-weight-bold">Current Server: {{ \App\Servers::find((int) Session::get('serverId'))->title ?? '' }}</li>
+                            <li class="font-weight-bold">Current World: {{ \App\Worlds::find((int) Session::get('worldId'))->title ?? '' }}</li>
                             <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('logout') }}';">{{ __('Logout') }}</button></li>
                         </ul>
                     </li>
-                    <!--<li class="nav-item">
-                        <a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a>
-                    </li>-->
                 @endif
             </ul>
         </div> <!-- navbar-collapse.// -->

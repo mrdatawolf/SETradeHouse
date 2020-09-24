@@ -16,7 +16,7 @@ class Stocklevels extends Controller
     use FindingGoods;
     public function index() {
         $title = "Stock Levels";
-        $stockLevels = \Session::get('stockLevels');
+        $stockLevels = $this->getStockLevels();
 
         return view('stocklevels', compact('stockLevels','title'));
     }

@@ -35,16 +35,13 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
         Route::get('tools', 'Offers@tools')->name('offers.tools');
     });
     Route::get('/stocklevels', 'Stocklevels@index')->name('stocklevels');
+    Route::get('store/{id}', 'Stores@storeIndex')->name('store');
     Route::prefix('/stores')->group(function () {
         Route::get('your', 'Stores@index')->name('stores');
         Route::get('world', 'Stores@worldIndex')->name('stores.world');
         Route::get('server', 'Stores@serverIndex')->name('stores.server');
     });
-    Route::prefix('/profitvsloss')->group(function () {
-        Route::get('your', 'ProfitLoss@index')->name('profitvsloss');
-        Route::get('world', 'ProfitLoss@worldIndex')->name('profitvsloss.world');
-        Route::get('server', 'ProfitLoss@serverIndex')->name('profitvsloss.server');
-    });
+
 });
 //trends
 Route::group(['middleware' => ['auth', 'session.data']], function () {
