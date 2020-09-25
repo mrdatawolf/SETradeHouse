@@ -72,7 +72,7 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
 Route::group(['middleware' => ['auth', 'session.data']], function () {
     Route::prefix('/maps')->group(function () {
         Route::get('/nebulonSystem', 'Maps@nebulonSystem')->name('maps.nebulonSystem');
-        Route::get('/nebulonSystem3d', 'Maps@nebulonSystem3d')->name('maps.nebulonSystem3d');
+        Route::get('/nebulonSystem3D', 'Maps@nebulonSystem3D')->name('maps.nebulonSystem3D');
     });
     Route::prefix('/test')->group(function () {
         Route::get('/test1', 'Tests@test1')->name('tests.test1');

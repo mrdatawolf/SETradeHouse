@@ -57,8 +57,8 @@ class Tests extends Controller
         return view('maps.nebulonSystem');
     }
 
-    public function nebulonSystem3d() {
-        return view('maps.nebulonSystem3d');
+    public function nebulonSystem3D() {
+        return view('maps.nebulonSystem3D');
     }
 
     public function solarSystem3d() {
