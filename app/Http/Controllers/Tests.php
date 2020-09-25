@@ -53,4 +53,19 @@ class Tests extends Controller
 
         return view('tests.test1', $compacted);
     }
+    public function nebulonSystem() {
+        return view('maps.nebulonSystem');
+    }
+
+    public function nebulonSystem3d() {
+        return view('maps.nebulonSystem3d');
+    }
+
+    public function solarSystem3d() {
+        return view('tests.solarSystem3d');
+    }
+
+    public function solarSystem() {
+        return view('tests.solarSystem');
+    }
 }

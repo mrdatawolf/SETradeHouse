@@ -61,6 +61,13 @@
                         </button>
                     </li>
                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">System Maps</a>
+                        <ul class="dropdown-menu">
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('maps.nebulonSystem3d') }}';">Nebulon 3d</button></li>
+                            <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('maps.nebulonSystem') }}';">Nebulon</button></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Transactions</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#"> Orders &raquo </a>
@@ -211,7 +218,9 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Testing Data</a>
                             <ul class="dropdown-menu">
-                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('test.test1') }}';">Test1</button></li>
+                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('tests.test1') }}';">Test1</button></li>
+                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('tests.solarSystem') }}';">solarSystem</button></li>
+                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('tests.solarSystem3d') }}';">solarSystem3d</button></li>
                             </ul>
                         </li>
                     @endif
