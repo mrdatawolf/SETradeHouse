@@ -70,7 +70,14 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
 });
 //tests
 Route::group(['middleware' => ['auth', 'session.data']], function () {
+    Route::prefix('/maps')->group(function () {
+        Route::get('/nebulonSystem', 'Maps@nebulonSystem')->name('maps.nebulonSystem');
+        Route::get('/nebulonSystem3d', 'Maps@nebulonSystem3d')->name('maps.nebulonSystem3d');
+    });
     Route::prefix('/test')->group(function () {
-        Route::get('/test1', 'Tests@test1')->name('test.test1');
+        Route::get('/test1', 'Tests@test1')->name('tests.test1');
+        Route::get('/solarSystem', 'Tests@solarSystem')->name('tests.solarSystem');
+        Route::get('/solarSystem3d', 'Tests@solarSystem3d')->name('tests.solarSystem3d');
+
     });
 });
