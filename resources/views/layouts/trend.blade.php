@@ -1,5 +1,7 @@
+<!doctype html>
 <html>
 <head>
+    <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon" />
     <title>@yield('title')</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/store.css') }}" rel="stylesheet">
