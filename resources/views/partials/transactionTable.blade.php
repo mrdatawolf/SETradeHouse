@@ -84,8 +84,8 @@
                         @endphp
                         <tr class="text-center">
                             <td class="left-border">{{ ucfirst($good) }}</td>
-                            <td class="left-border">{{ number_format($goodData->Offers->avgPrice ?? 0) }}</td>
-                            <td>{{ number_format($goodData->Orders->avgPrice ?? 0) }}</td>
+                            <td class="left-border">{{ number_format($goodData->Orders->avgPrice ?? 0) }}</td>
+                            <td>{{ number_format($goodData->Offers->avgPrice ?? 0) }}</td>
                             <td>{{ number_format($goodData->Orders->minPrice ?? 0) }}</td>
                             <td>{{ number_format($goodData->Offers->minPrice ?? 0) }}</td>
                             <td>{{ number_format($goodData->Orders->maxPrice ?? 0) }}</td>
