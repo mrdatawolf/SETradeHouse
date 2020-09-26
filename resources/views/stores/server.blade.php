@@ -20,7 +20,7 @@
                         <div class="card">
                             <div class="card-header">{{ $gridData->owner }}</div>
                             <div class="card-body">
-                                @include('partials.transactionTable')
+                                @include('stores.partials.transactionTable')
                             </div>
                             <div class="card-footer">
                                 {{ $gridData->GPS }}
