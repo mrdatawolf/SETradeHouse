@@ -31,9 +31,9 @@ class Stores extends Controller
         $title           = "Stores";
         $storeType       = "personal";
         $storeController = new Stores();
-        $username = \Auth::user()->server_username;
-        $stores       = $storeController->getTransactionsOfOwner($username);
-        $globalAverages = $this->getGlobalAveragesForGoods(12);
+        $username        = \Auth::user()->server_username;
+        $stores          = $storeController->getTransactionsOfOwner($username);
+        $globalAverages  = $this->getGlobalAveragesForGoods(12);
 
         return view('stores.personal', compact('stores', 'storeType', 'title', 'globalAverages'));
     }
@@ -67,11 +67,12 @@ class Stores extends Controller
     }
 
 
-    public function storeIndex($id) {
+    public function storeIndex($id)
+    {
         $title           = "Store";
         $storeType       = "server";
         $storeController = new Stores();
-        $stores       = $storeController->getTransactionsOfStore($id);
+        $stores          = $storeController->getTransactionsOfStore($id);
 
         return view('stores.server', compact('stores', 'storeType', 'title'));
     }
@@ -101,22 +102,23 @@ class Stores extends Controller
 
     /**
      * note: this gets all the transactions for a given owners stores and returns it with the ids converted to titles.
+     *
      * @param $owner
      *
      * @return \Illuminate\Support\Collection
      */
     public function getTransactionsOfOwner($owner)
     {
-        $serverId = \Session::get('serverId');
-        $worldId = \Session::get('worldId');
-        $this->ownerStoreData   = [];
-        $transactionsModel = new Transactions();
-        $transactions = $transactionsModel->where('owner', $owner)
-                     ->where('world_id', $worldId)
-                     ->where('server_id', $serverId)
-                     ->orderBy('good_type_id', 'ASC')
-                     ->orderBy('transaction_type_id', 'DESC')
-                     ->orderBy('good_id', 'DESC');
+        $serverId             = \Session::get('serverId');
+        $worldId              = \Session::get('worldId');
+        $this->ownerStoreData = [];
+        $transactionsModel    = new Transactions();
+        $transactions         = $transactionsModel->where('owner', $owner)
+                                                  ->where('world_id', $worldId)
+                                                  ->where('server_id', $serverId)
+                                                  ->orderBy('good_type_id', 'ASC')
+                                                  ->orderBy('transaction_type_id', 'DESC')
+                                                  ->orderBy('good_id', 'DESC');
         foreach ($transactions->get() as $transaction) {
             $this->updateOwnerStoreData($transaction);
         }
@@ -127,18 +129,19 @@ class Stores extends Controller
 
     /**
      * note: this gets all the transactions for a given owners stores and returns it with the ids converted to titles.
+     *
      * @param $tzId
      *
      * @return \Illuminate\Support\Collection
      */
     public function getTransactionsOfStore($tzId)
     {
-        $this->ownerStoreData   = [];
-        $transactionsModel = new Transactions();
-        $transactions = $transactionsModel->where('trade_zone_id', $tzId)
-                                          ->orderBy('good_type_id', 'ASC')
-                                          ->orderBy('transaction_type_id', 'DESC')
-                                          ->orderBy('good_id', 'DESC');
+        $this->ownerStoreData = [];
+        $transactionsModel    = new Transactions();
+        $transactions         = $transactionsModel->where('trade_zone_id', $tzId)
+                                                  ->orderBy('good_type_id', 'ASC')
+                                                  ->orderBy('transaction_type_id', 'DESC')
+                                                  ->orderBy('good_id', 'DESC');
         foreach ($transactions->get() as $transaction) {
             $this->updateOwnerStoreData($transaction);
         }
@@ -160,8 +163,11 @@ class Stores extends Controller
         $price           = $transaction->value;
         $amount          = $transaction->amount;
         $goodTypeTitle   = $goodType->title;
+        $goodTypeId      = $goodType->id;
         $goodTitle       = $good->title;
+        $goodId          = $good->id;
         $gridName        = $tradeZone->title;
+        $serverId        = 1;
 
         if ($tradeZone->count() > 0 && $goodType->count() > 0 && $good->count() > 0) {
             if (empty($this->data[$gridName])) {
@@ -171,12 +177,15 @@ class Stores extends Controller
             }
             if (empty($this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType])) {
                 $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType] = [
-                    'minPrice' => 0,
-                    'maxPrice' => 0,
-                    'amount'   => 0,
-                    'sum'      => 0,
-                    'avgPrice' => 0,
-                    'count'    => 0
+                    'serverId'   => $serverId,
+                    'goodTypeId' => $goodTypeId,
+                    'goodId'     => $goodId,
+                    'minPrice'   => 0,
+                    'maxPrice'   => 0,
+                    'amount'     => 0,
+                    'sum'        => 0,
+                    'avgPrice'   => 0,
+                    'count'      => 0
                 ];
             }
             $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['count']++;
@@ -203,13 +212,14 @@ class Stores extends Controller
     {
 
 
-        $tradeZone       = TradeZones::find($transaction->trade_zone_id);
+        $tradeZone = TradeZones::find($transaction->trade_zone_id);
         $this->updateGridInfo($transaction, $tradeZone);
         $this->updateTransactionData($transaction, $tradeZone);
     }
 
 
-    private function updateTransactionData($transaction, $tradeZone) {
+    private function updateTransactionData($transaction, $tradeZone)
+    {
         $goodType        = GoodTypes::find($transaction->good_type_id);
         $good            = $this->getGoodFromGoodTypeAndGoodId($goodType, $transaction->good_id);
         $transactionType = $this->getTransactionTypeFromId($transaction->transaction_type_id);
@@ -251,8 +261,9 @@ class Stores extends Controller
      * @param $transaction
      * @param $tradeZone
      */
-    private function updateGridInfo($transaction, $tradeZone) {
-        $gridName        = $tradeZone->title;
+    private function updateGridInfo($transaction, $tradeZone)
+    {
+        $gridName = $tradeZone->title;
         if (empty($this->ownerStoreData[$gridName])) {
             $this->ownerStoreData[$gridName]['owner'] = $transaction->owner;
             $this->ownerStoreData[$gridName]['GPS']   = $tradeZone->gps;
@@ -324,15 +335,17 @@ class Stores extends Controller
     public function getGlobalDataForGood(int $transactionTypeId, $goodTypeId, $goodId, int $hoursAgo = 12)
     {
         //todo: to actually limit to a personal/world/server levels we will have to refactor how we get the data
-        $globalData        = [];
-        $trends            = new Trends();
-        $goodType          = (is_int($goodTypeId)) ? GoodTypes::find($goodTypeId) : GoodTypes::where('title', ucfirst($goodTypeId))->first();
-        $goodTypeTitle     = strtolower($goodType->title);
-        $good = (is_int($goodId)) ? $this->getGoodFromGoodTypeAndGoodId($goodType, $goodId) : $this->getGoodFromGoodTypeAndGoodTitle($goodType, $goodId);
-        $goodTitle          = strtolower($good->title);
-        $trendData         = $trends->gatherTrends($transactionTypeId, $hoursAgo, $goodType->id, $good->id);
+        $globalData      = [];
+        $trends          = new Trends();
+        $goodType        = (is_int($goodTypeId)) ? GoodTypes::find($goodTypeId)
+            : GoodTypes::where('title', ucfirst($goodTypeId))->first();
+        $goodTypeTitle   = strtolower($goodType->title);
+        $good            = (is_int($goodId)) ? $this->getGoodFromGoodTypeAndGoodId($goodType, $goodId)
+            : $this->getGoodFromGoodTypeAndGoodTitle($goodType, $goodId);
+        $goodTitle       = strtolower($good->title);
+        $trendData       = $trends->gatherTrends($transactionTypeId, $hoursAgo, $goodType->id, $good->id);
         $transactionType = ($transactionTypeId === 1) ? 'orders' : 'offers';
-        $array             = [];
+        $array           = [];
         foreach ($trendData as $goodData) {
             if (empty($array[$goodTypeTitle][$goodTitle][$transactionType])) {
                 $array[$goodTypeTitle][$goodTitle][$transactionType] = [
@@ -397,5 +410,81 @@ class Stores extends Controller
         $idName = htmlentities($idName);
 
         return htmlspecialchars($idName);
+    }
+
+
+    /**
+     * note: if currentTradeZoneId is set then it will ignore those tradezones
+     *
+     * @param int       $goodId
+     * @param int       $goodTypeId
+     * @param int       $serverId
+     * @param array|int $currentTradeZoneId
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getHighestOrderForGoodOnServer(
+        int $goodId,
+        int $goodTypeId,
+        int $serverId,
+        $currentTradeZoneId = []
+    ) {
+        if ( ! is_int($currentTradeZoneId) && ! empty($currentTradeZoneId)) {
+            $currentTradeZoneId = [$currentTradeZoneId];
+        }
+        if (empty($currentTradeZoneId)) {
+            $bestValue = Transactions::where('server_id', $serverId)
+                                     ->where('transaction_type_id', 1)
+                                     ->where('good_type_id', $goodTypeId)
+                                     ->where('good_id', $goodId)
+                                     ->orderBy('value', 'DESC');
+        } else {
+            $bestValue = Transactions::where('server_id', $serverId)
+                                     ->whereNotIn('trade_zone_id', $currentTradeZoneId)
+                                     ->where('transaction_type_id', 1)
+                                     ->where('good_type_id', $goodTypeId)
+                                     ->where('good_id', $goodId)
+                                     ->orderBy('value', 'DESC');
+        }
+
+        return $this->convertToCollection($bestValue->first());
+    }
+
+
+    /**
+     * note: if currentTradeZoneId is set then it will ignore those tradezones
+     *
+     * @param int            $goodId
+     * @param int            $goodTypeId
+     * @param int            $serverId
+     * @param array|int|null $currentTradeZoneId
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getLowestOfferForGoodOnServer(
+        int $goodId,
+        int $goodTypeId,
+        int $serverId,
+        $currentTradeZoneId = null
+    ) {
+        if ( ! is_int($currentTradeZoneId) && ! empty($currentTradeZoneId)) {
+            $currentTradeZoneId = [$currentTradeZoneId];
+        }
+        if (empty($currentTradeZoneId)) {
+            $bestValue = Transactions::where('server_id', $serverId)
+                                     ->where('transaction_type_id', 2)
+                                     ->where('good_type_id', $goodTypeId)
+                                     ->where('good_id', $goodId)
+                                     ->orderBy('value', 'ASC');
+        } else {
+            $bestValue = Transactions::where('server_id', $serverId)
+                                     ->whereNotIn('trade_zone_id', $currentTradeZoneId)
+                                     ->where('transaction_type_id', 2)
+                                     ->where('good_type_id', $goodTypeId)
+                                     ->where('good_id', $goodId)
+                                     ->orderBy('value', 'ASC');
+        }
+
+        return $this->convertToCollection($bestValue->first());
     }
 }
