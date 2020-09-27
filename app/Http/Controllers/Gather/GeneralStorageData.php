@@ -32,7 +32,7 @@ class GeneralStorageData
         $utcOffset = 7;
         $userItems = new UserItems();
         if ( ! $this->isInitial) {
-            $userItems = $userItems->where('Timestamp', '>', Carbon::now()->subhours($oldestHourToPull+$utcOffset));
+            $userItems = $userItems->orderBy('Timestamp')->where('Timestamp', '>', Carbon::now()->subhours($oldestHourToPull+$utcOffset));
         }
         if ($userItems->count() >= 1) {
             $runningTotals = [];
