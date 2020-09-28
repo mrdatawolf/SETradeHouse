@@ -924,6 +924,10 @@ pre code {
   margin-left: 91.6666666667%;
 }
 
+.error {
+    color: red;
+}
+
 @media (min-width: 576px) {
   .col-sm {
     flex-basis: 0;

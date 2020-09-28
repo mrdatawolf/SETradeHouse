@@ -1,4 +1,4 @@
-<?php namespace Models;
+<?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class WorldTypes extends Model
 {
-    protected $table = 'server_types';
+    protected $table = 'world_types';
     protected $fillable = ['title'];
 }

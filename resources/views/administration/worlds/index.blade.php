@@ -1,5 +1,5 @@
-@extends('layouts.administration.worlds.worlds')
-@section('title', 'Your Stores')
+@extends('layouts.administration.worlds')
+@section('title', 'All Worlds')
 
 @section('content')
     <div id="app" class="flex-center position-ref full-height">
