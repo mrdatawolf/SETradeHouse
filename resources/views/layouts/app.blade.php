@@ -22,6 +22,16 @@
         @extends('menu.menu')
 
         <main class="py-4">
+            @if($errors->any())
+                <div class="col-md-8">
+                    <div class="card error">
+                        <div class="card-header">Errors</div>
+                        <div class="card-body">
+                            <h4>{{$errors->first()}}</h4>
+                        </div>
+                    </div>
+                </div>
+            @endif
             @yield('content')
         </main>
         @auth

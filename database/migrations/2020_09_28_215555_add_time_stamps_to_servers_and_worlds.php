@@ -13,9 +13,37 @@ class AddTimeStampsToServersAndWorlds extends Migration
      */
     public function up()
     {
-        Schema::table('servers_and_worlds', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasTable('servers')) {
+            if ( ! Schema::hasColumn('servers', 'updated_at')) {
+                Schema::table('servers', function (Blueprint $table) {
+                    $table->timestamps();
+                });
+            }
+            $server =\App\Servers::where('title', 'The Nebulon Cluster')->first();
+            $server->created_at = now();
+            $server->save();
+            $server->touch();
+        }
+
+        if (Schema::hasTable('worlds')) {
+            if ( ! Schema::hasColumn('worlds', 'updated_at')) {
+                Schema::table('worlds', function (Blueprint $table) {
+                    $table->timestamps();
+                });
+            }
+            $server = \App\Worlds::where('title', 'Nebulon')->first();
+            $server->created_at = now();
+            $server->save();
+            $server->touch();
+            $server = \App\Worlds::where('title', 'Nebulon-test')->first();
+            $server->created_at = now();
+            $server->save();
+            $server->touch();
+            $server = \App\Worlds::where('title', 'AAITN')->first();
+            $server->created_at = now();
+            $server->save();
+            $server->touch();
+        }
     }
 
     /**
@@ -25,8 +53,34 @@ class AddTimeStampsToServersAndWorlds extends Migration
      */
     public function down()
     {
-        Schema::table('servers_and_worlds', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasTable('servers')) {
+            if (Schema::hasColumn('servers','updated_at')) {
+                Schema::table('servers', function (Blueprint $table) {
+                    $table->dropColumn('updated_at');
+                });
+            }
+        }
+        if (Schema::hasTable('servers')) {
+            if (Schema::hasColumn('servers','created_at')) {
+                Schema::table('servers', function (Blueprint $table) {
+                    $table->dropColumn('created_at');
+                });
+            }
+        }
+
+        if (Schema::hasTable('worlds')) {
+            if (Schema::hasColumn('worlds','updated_at')) {
+                Schema::table('worlds', function (Blueprint $table) {
+                    $table->dropColumn('updated_at');
+                });
+            }
+        }
+        if (Schema::hasTable('worlds')) {
+            if (Schema::hasColumn('worlds','created_at')) {
+                Schema::table('worlds', function (Blueprint $table) {
+                    $table->dropColumn('created_at');
+                });
+            }
+        }
     }
 }

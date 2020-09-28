@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int                   $id
  * @property string                $title
- * @property                       $economy_ore
+ * @property                       $scarcity_id
+ * @property                       $economy_ore_id
  * @property                       $economy_stone_modifier
  * @property                       $scaling_modifier
  * @property                       $economy_ore_value
  * @property                       $asteroid_scarcity_modifier
- * @property                       $planet_scarcity_modifier
  * @property                       $base_modifier
- * @property                       $economyOre
+ * @property                       $planet_scarcity_modifier
+ * @property                       $short_name
  * @property                       $ores
  * @property                       $ingots
  * @property                       $servers
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 class Servers extends Model
 {
     protected $table = 'servers';
-    protected $fillable = ['title','economy_ore', 'economy_stone_modifier','scaling_modifier','economy_ore_value','asteroid_scarcity_modifier', 'planet_scarcity_modifier', 'base_modifier'];
+    protected $fillable = ['title', 'scarcity_id', 'economy_ore_id', 'economy_stone_modifier', 'scaling_modifier', 'economy_ore_value','asteroid_scarcity_modifier','planet_scarcity_modifier','base_modifier', 'short_name'];
 
 
     /**

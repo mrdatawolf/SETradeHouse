@@ -56,7 +56,7 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
             Route::get('/offers', 'Trends@oresOfferIndex')->name('trends.ores.offers');
         });
         Route::prefix('/ingots')->group(function () {
-            Route::get('/', 'Trends@ingotsOfferIndex')->name('trends.ingots.offers');
+            Route::get('/', 'Trends@ingotsOfferIndex')->name('trends.ingots');
             Route::get('/orders', 'Trends@ingotsOrderIndex')->name('trends.ingots.orders');
             Route::get('/offers', 'Trends@ingotsOfferIndex')->name('trends.ingots.offers');
         });
@@ -83,5 +83,21 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
         Route::get('/solarSystem', 'Tests@solarSystem')->name('tests.solarSystem');
         Route::get('/solarSystem3d', 'Tests@solarSystem3d')->name('tests.solarSystem3d');
 
+    });
+
+//admin tools
+    Route::group(['middleware' => ['auth', 'session.data']], function () {
+        Route::prefix('/admin')->group(function () {
+            Route::prefix('/worlds')->group(function () {
+                Route::get('/', 'Administration\Admin@worldIndex')->name('admin.worlds');
+                Route::get('/create', 'Administration\Admin@createWorld')->name('admin.worlds.create');
+                Route::post('/create', 'Administration\Admin@addWorld')->name('admin.worlds.add');
+            });
+            Route::prefix('/servers')->group(function () {
+                Route::get('/', 'Administration\Admin@serverIndex')->name('admin.servers');
+                Route::get('/create', 'Administration\Admin@createServer')->name('admin.servers.create');
+                Route::post('/create', 'Administration\Admin@addServer')->name('admin.servers.add');
+            });
+        });
     });
 });

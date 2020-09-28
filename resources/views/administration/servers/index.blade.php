@@ -1,10 +1,10 @@
-@extends('layouts.administration.worlds')
-@section('title', 'Your Stores')
+@extends('layouts.administration.servers')
+@section('title', 'All Severs')
 
 @section('content')
     <div id="app" class="flex-center position-ref full-height">
         <div class="card">
-            <div class="card-header">All Worlds</div>
+            <div class="card-header">All Servers</div>
             <div class="card-body">
                <table class="table-striped table-responsive table-bordered">
                    <thead>
@@ -12,20 +12,30 @@
                        <th>Id</th>
                        <th>Title</th>
                        <th>Short Name</th>
-                       <th>Server Id</th>
-                       <th>Type Id</th>
-                       <th>System Stock Weight</th>
+                       <th>Scarcity Id</th>
+                       <th>Economy Ore Id</th>
+                       <th>Economy Ore Value</th>
+                       <th>Economy Stone Modifier</th>
+                       <th>Scaling Modifier</th>
+                       <th>Asteroid Scarcity Modifier</th>
+                       <th>Planet Scarcity Modifier</th>
+                       <th>Base Modifier</th>
                    </tr>
                    </thead>
                    <tbody>
-                   @foreach($worlds as $world)
+                   @foreach($servers as $server)
                        <tr>
-                           <td>{{ $world->id }}</td>
-                           <td>{{ $world->title }}</td>
-                           <td>{{ $world->short_name }}</td>
-                           <td>{{ $world->server_id }}</td>
-                           <td>{{ $world->type_id }}</td>
-                           <td>{{ $world->system_stock_weight }}</td>
+                           <td>{{ $server->id }}</td>
+                           <td>{{ $server->title }}</td>
+                           <td>{{ $server->short_name }}</td>
+                           <td>{{ $server->scarcity_id }}</td>
+                           <td>{{ $server->economy_ore_id }}</td>
+                           <td>{{ $server->economy_ore_value }}</td>
+                           <td>{{ $server->economy_stone_modifier }}</td>
+                           <td>{{ $server->scaling_modifier }}</td>
+                           <td>{{ $server->asteroid_scarcity_modifier }}</td>
+                           <td>{{ $server->planet_scarcity_modifier }}</td>
+                           <td>{{ $server->base_modifier }}</td>
                        </tr>
                    @endforeach
                    </tbody>

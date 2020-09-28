@@ -222,6 +222,15 @@
                                 <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('tests.solarSystem3d') }}';">solarSystem3d</button></li>
                             </ul>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Administration</a>
+                            <ul class="dropdown-menu">
+                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.worlds') }}';">Worlds</button></li>
+                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.worlds.create') }}';">Create a world</button></li>
+                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.servers') }}';">Servers</button></li>
+                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.servers.create') }}';">Create a server</button></li>
+                            </ul>
+                        </li>
                     @endif
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ $currentUser->username }}</a>
