@@ -39,7 +39,6 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="main_nav">
-
             <ul class="navbar-nav">
                 @guest
                     <li class="nav-item">

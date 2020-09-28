@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Auth;
 Auth::routes();
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/', 'HomeController@index')->name('root');
+
+//routes to show server data for users who are not logged in
+Route::get('/nebulon', 'NotLoggedInController@index')->name('nebulon');
+
+//normally authenticated users.
 Route::group(['middleware' => ['auth', 'session.data']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/welcome', function () {
@@ -41,7 +46,6 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
         Route::get('world', 'Stores@worldIndex')->name('stores.world');
         Route::get('server', 'Stores@serverIndex')->name('stores.server');
     });
-
 });
 //trends
 Route::group(['middleware' => ['auth', 'session.data']], function () {
