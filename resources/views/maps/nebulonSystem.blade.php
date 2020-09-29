@@ -58,7 +58,7 @@
 
     .sun {
         left:10px;
-        top:390px;
+        top:380px;
         height: 90px;
         width: 90px;
         background-color: rgb(248,107,35);
@@ -67,13 +67,13 @@
         position: absolute;
         margin: 0;
         transform-origin: 390px 10px;
-        animation: rotate 1028.76s infinite linear;
+        animation: rotate 512s infinite linear;
     }
 
     .sunOrbit {
         left:50px;
         bottom:75px;
-        height: 600px;
+        height: 670px;
         width: 700px;
         background-color: transparent;
         border-radius: 50%;
@@ -98,7 +98,7 @@
         border-radius: 50%;
         position: absolute;
         transform-origin: 177.5px 7.5px;
-        animation: rotate 11.75s infinite linear;
+        /*animation: rotate 11.75s infinite linear;*/
     }
 
 

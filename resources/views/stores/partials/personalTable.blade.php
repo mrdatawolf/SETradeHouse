@@ -39,7 +39,7 @@
                 <tr class="transaction-table-groups">
                     <th class="left-border"></th>
                     <th colspan="9" class="left-border right-border storeGroup">Stores Data</th>
-                    <th colspan="4" class="left-border right-border serverGroup">Server</th>
+                    <th colspan="4" class="left-border right-border serverGroup">Server ( limited to last {{ $hoursWindow }} hours)</th>
                 </tr>
                 <tr class="transaction-table-groups text-center">
                     <th class="left-border">Name</th>
@@ -69,14 +69,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                @php
-                    $globalOrderAverages = $globalAverages->where('transactionType', 'orders')->where('goodType',strtolower($group));
-                    $globalOfferAverages = $globalAverages->where('transactionType', 'offers')->where('goodType',strtolower($group));
-                @endphp
                 @foreach($gridData->$group as $good => $goodData)
                     @php
-                        $order = $globalOrderAverages->where('title',strtolower($good))->first();
-                        $offer = $globalOfferAverages->where('title',strtolower($good))->first();
+                        $stores = new App\Http\Controllers\Stores();
+                        $order = $stores->getGlobalDataForGood(1, $group, $good, $hoursWindow)->first();
+                        $offer = $stores->getGlobalDataForGood(2, $group, $good, $hoursWindow)->first();
                         $priceExposure = (empty($goodData->Orders) || empty($goodData->Offers)) ? 'n/a' : $goodData->Offers->avgPrice - $goodData->Orders->avgPrice;
                         $exposure = ($priceExposure >= 0) ? 0 : $priceExposure * $goodData->Orders->amount;
                         $exposureClass = ($exposure > 0) ? "exposureAlert" : "";
@@ -92,9 +89,9 @@
                         <td>{{ number_format($goodData->Orders->amount ?? 0) }}</td>
                         <td>{{ number_format($goodData->Offers->amount ?? 0) }}</td>
                         <td class="right-border {{ $exposureClass }}">{{ number_format($exposure) }}</td>
-                        <td class="left-border">{{ number_format($goodData->Orders->avgPrice ?? 0) }}</td>
-                        <td>{{ number_format($order->amount ?? 0) }}</td>
-                        <td class="right-border">{{ number_format($order->average ?? 0) }}</td>
+                        <td class="left-border">{{ number_format($order->amount ?? 0) }}</td>
+                        <td>{{ number_format($offer->amount ?? 0) }}</td>
+                        <td>{{ number_format($order->average ?? 0) }}</td>
                         <td class="right-border">{{ number_format($offer->average ?? 0) }}</td>
                     </tr>
                     @endforeach

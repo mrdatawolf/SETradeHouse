@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\Controller;
 use App\Servers;
+use App\User;
 use App\Worlds;
 use Redirect;
 use \Illuminate\Http\Request;
 
 class Admin extends Controller
 {
-    public function worldIndex()
+    public function worldsIndex()
     {
         $worlds = Worlds::all();
 
@@ -27,7 +28,7 @@ class Admin extends Controller
     }
 
 
-    public function serverIndex()
+    public function serversIndex()
     {
         $servers = Servers::all();
 
@@ -109,5 +110,30 @@ class Admin extends Controller
         } else {
             return Redirect::back()->withErrors(['msg', 'Not Authorized!']);
         }
+    }
+
+
+    public function usersIndex() {
+        $isAdmin = \Auth::user()->roles()->where('title', 'Admin')->exists();
+        if ($isAdmin) {
+            $users = User::all();
+        }
+        return view('administration.users.index', compact('users'));
+    }
+
+    public function updateUser() {
+        $isAdmin = \Auth::user()->roles()->where('title', 'Admin')->exists();
+        if ($isAdmin) {
+            $users = User::all();
+        }
+        return view('administration.users.update', compact('users'));
+    }
+
+    public function doUpdateUser() {
+        $isAdmin = \Auth::user()->roles()->where('title', 'Admin')->exists();
+        if ($isAdmin) {
+            $users = User::all();
+        }
+        return view('administration.users.doUpdate', compact('users'));
     }
 }

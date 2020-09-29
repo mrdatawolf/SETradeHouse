@@ -28,14 +28,14 @@ class Stores extends Controller
      */
     public function index()
     {
+        $hoursWindow     = 12;
         $title           = "Stores";
         $storeType       = "personal";
         $storeController = new Stores();
         $username        = \Auth::user()->server_username;
         $stores          = $storeController->getTransactionsOfOwner($username);
-        $globalAverages  = $this->getGlobalAveragesForGoods(12);
 
-        return view('stores.personal', compact('stores', 'storeType', 'title', 'globalAverages'));
+        return view('stores.personal', compact('stores', 'storeType', 'title', 'hoursWindow'));
     }
 
 
