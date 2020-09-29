@@ -89,14 +89,19 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
     Route::group(['middleware' => ['auth', 'session.data']], function () {
         Route::prefix('/admin')->group(function () {
             Route::prefix('/worlds')->group(function () {
-                Route::get('/', 'Administration\Admin@worldIndex')->name('admin.worlds');
+                Route::get('/', 'Administration\Admin@worldsIndex')->name('admin.worlds');
                 Route::get('/create', 'Administration\Admin@createWorld')->name('admin.worlds.create');
                 Route::post('/create', 'Administration\Admin@addWorld')->name('admin.worlds.add');
             });
             Route::prefix('/servers')->group(function () {
-                Route::get('/', 'Administration\Admin@serverIndex')->name('admin.servers');
+                Route::get('/', 'Administration\Admin@serversIndex')->name('admin.servers');
                 Route::get('/create', 'Administration\Admin@createServer')->name('admin.servers.create');
                 Route::post('/create', 'Administration\Admin@addServer')->name('admin.servers.add');
+            });
+            Route::prefix('/users')->group(function () {
+                Route::get('/', 'Administration\Admin@usersIndex')->name('admin.users');
+                Route::get('/update', 'Administration\Admin@updateUser')->name('admin.users.update');
+                Route::post('/update', 'Administration\Admin@doUpdateUser')->name('admin.users.doUpdate');
             });
         });
     });

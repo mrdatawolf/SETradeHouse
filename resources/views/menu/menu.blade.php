@@ -98,15 +98,6 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Trends</a>
                         <ul class="dropdown-menu">
-                        <?php /*
-                            <li><a class="dropdown-item" href="#"> Stores &raquo </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
-                                </ul>
-                            </li>
-                        */ ?>
                             <li><a class="dropdown-item" href="#"> Ores &raquo </a>
                                 <ul class="submenu dropdown-menu">
                                     <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.ores.orders') }}';">All Orders</button></li>
@@ -131,43 +122,6 @@
                                     <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.tools.offers') }}';">All Offers</button></li>
                                 </ul>
                             </li>
-                        <?php /*
-                            <li><a class="dropdown-item" href="#"> Ingots &raquo </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
-                                </ul>
-                            </li>
-                            <li><a class="dropdown-item" href="#"> Components &raquo </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
-                                </ul>
-                            </li>
-                            <li><a class="dropdown-item" href="#"> Tools &raquo </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
-                                </ul>
-                            </li>
-                            <li><a class="dropdown-item" href="#"> Ammo &raquo </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
-                                </ul>
-                            </li>
-                            <li><a class="dropdown-item" href="#"> Bottles &raquo </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores') }}';">Personal</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.world') }}';">World</button></li>
-                                    <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('trends.stores.server') }}';">Server</button></li>
-                                </ul>
-                            </li>
-                        */ ?>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -225,10 +179,24 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Administration</a>
                             <ul class="dropdown-menu">
-                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.worlds') }}';">Worlds</button></li>
-                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.worlds.create') }}';">Create a world</button></li>
-                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.servers') }}';">Servers</button></li>
-                                <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.servers.create') }}';">Create a server</button></li>
+                                <li><a class="dropdown-item" href="#"> Worlds &raquo </a>
+                                    <ul class="submenu dropdown-menu">
+                                        <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.worlds') }}';">Worlds</button></li>
+                                        <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.worlds.create') }}';">Create a world</button></li>
+                                    </ul>
+                                </li>
+                                <li><a class="dropdown-item" href="#"> Servers &raquo </a>
+                                    <ul class="submenu dropdown-menu">
+                                        <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.servers') }}';">Servers</button></li>
+                                        <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.servers.create') }}';">Create a server</button></li>
+                                    </ul>
+                                </li>
+                                <li><a class="dropdown-item" href="#"> Users &raquo </a>
+                                    <ul class="submenu dropdown-menu">
+                                        <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.users') }}';">Users</button></li>
+                                        <!--<li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.users.update') }}';">Update User</button></li>-->
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                     @endif
