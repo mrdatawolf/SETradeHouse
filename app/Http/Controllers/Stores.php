@@ -103,6 +103,7 @@ class Stores extends Controller
 
     /**
      * note: condensing it to show useful row data.
+     *
      * @param $data
      *
      * @return array
@@ -116,14 +117,14 @@ class Stores extends Controller
             $rows[$gridName]['jsid']  = $gridData['jsid'];
             foreach ($gridData['goods'] as $goodType => $goodTypeData) {
                 foreach ($goodTypeData as $good => $goodData) {
-                    $orders = $goodData['Orders'] ?? null;
-                    $offers = $goodData['Offers'] ?? null;
+                    $orders         = $goodData['Orders'] ?? null;
+                    $offers         = $goodData['Offers'] ?? null;
                     $ordersAvgPrice = (empty($orders['avgPrice'])) ? 0 : $orders['avgPrice'];
                     $orderAmount    = (empty($orders['amount'])) ? 0 : $orders['amount'];
                     $offerAvgPrice  = (empty($offers['avgPrice'])) ? 0 : $offers['avgPrice'];
                     $offerAmount    = (empty($offers['amount'])) ? 0 : $offers['amount'];
 
-                    if ( empty($orders)) {
+                    if (empty($orders)) {
                         $bestOrderFromValue           = 0;
                         $bestOrderFromAmount          = 0;
                         $bestAvailableOrderFromAmount = 0;
@@ -141,14 +142,12 @@ class Stores extends Controller
                         $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $bestOrderFromAmount
                             : $offerAmount;
                         $orderFromTradeZone           = \App\TradeZones::find($bestOrderFrom->get('trade_zone_id'));
-
                     }
-                    if ( empty($offers)) {
+                    if (empty($offers)) {
                         $bestOfferToValue           = 0;
                         $bestOfferToAmount          = 0;
                         $bestAvailableOfferToAmount = 0;
                         $offerToTradeZone           = 'n/a';
-
                     } else {
                         $offerGoodId                = $offers['goodId'];
                         $offerGoodTypeId            = $offers['goodTypeId'];
@@ -165,8 +164,12 @@ class Stores extends Controller
                     }
                     $orderFromProfitRaw                         = ($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
                     $orderFromProfit                            = ($orderFromProfitRaw > 0) ? $orderFromProfitRaw : 0;
+                    $orderFromDistance                          = $this->getDistanceByGPS($gridData['GPS'],
+                        $orderFromTradeZone);
                     $offerToProfitRaw                           = ($bestOfferToValue - $offerAvgPrice) * $bestAvailableOfferToAmount;
                     $offerToProfit                              = ($offerToProfitRaw > 0) ? $offerToProfitRaw : 0;
+                    $offerToDistance                            = $this->getDistanceByGPS($gridData['GPS'],
+                        $offerToTradeZone);
                     $row                                        = [
                         'store'     => [
                             'orders' => [
@@ -183,12 +186,14 @@ class Stores extends Controller
                             'bestValue'      => (empty($bestOrderFromValue)) ? 0 : $bestOrderFromValue,
                             'bestAmount'     => (empty($bestOrderFromAmount)) ? 0 : $bestOrderFromAmount,
                             'profit'         => empty($orderFromProfit) ? 0 : $orderFromProfit,
+                            'distance'       => $orderFromDistance,
                         ],
                         'offerTo'   => [
                             'tradeZoneTitle' => $offerToTradeZone->title ?? 'n/a',
                             'bestValue'      => $bestOfferToValue ?? 0,
                             'bestAmount'     => $bestOfferToAmount ?? 0,
-                            'profit'         => empty($offerToProfit) ? 0 : $offerToProfit
+                            'profit'         => empty($offerToProfit) ? 0 : $offerToProfit,
+                            'distance'       => $offerToDistance
                         ]
 
                     ];
@@ -340,18 +345,18 @@ class Stores extends Controller
                     'serverId'   => $serverId,
                     'goodTypeId' => $goodTypeId,
                     'goodId'     => $goodId,
-                    'minPrice' => 0,
-                    'maxPrice' => 0,
-                    'amount'   => 0,
-                    'sum'      => 0,
-                    'avgPrice' => 0,
-                    'count'    => 0
+                    'minPrice'   => 0,
+                    'maxPrice'   => 0,
+                    'amount'     => 0,
+                    'sum'        => 0,
+                    'avgPrice'   => 0,
+                    'count'      => 0
                 ];
             }
             $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['count']++;
             $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['amount']   += $amount;
             $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['sum']      += $price * $amount;
-            $averagePrice                                                                              = ($amount <= 0)
+            $averagePrice                                                                                       = ($amount <= 0)
                 ? 0
                 : $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['sum'] / $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['amount'];
             $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['avgPrice'] = $averagePrice;
@@ -596,8 +601,33 @@ class Stores extends Controller
         return $this->convertToCollection($bestValue->first());
     }
 
+
     //because the active serve could change we should look at seesion id and find out where the user currently is.
-    private function getServerId() {
+    private function getServerId()
+    {
         return \Session::get('serverId');
+    }
+
+
+    private function getDistanceByGPS($localGPS, $remoteData)
+    {
+        $minimumDistance = 50000;
+        if ($localGPS !== 'n/a' && ! empty($remoteData->gps) && $remoteData->gps !== 'n/a') {
+            $remoteGPS       = $remoteData->gps;
+            $localArray      = explode(':', $localGPS);
+            $localx          = $localArray[2];
+            $localy          = $localArray[3];
+            $localz          = $localArray[4];
+            $remoteArray     = explode(':', $remoteGPS);
+            $remotex         = $remoteArray[2];
+            $remotey         = $remoteArray[3];
+            $remotez         = $remoteArray[4];
+
+            $distance = (($remotex - $localx) ^ 2 + (($remotey - $localy) ^ 2) + ($remotez - $localz) ^ 2) ^ (1 / 2);
+
+            return ($distance > $minimumDistance) ? $distance : 0;
+        } else {
+            return 0;
+        }
     }
 }

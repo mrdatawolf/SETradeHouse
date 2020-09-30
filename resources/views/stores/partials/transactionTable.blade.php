@@ -40,8 +40,8 @@
                     <tr class="transaction-table-groups">
                         <th class="left-border"></th>
                         <th colspan="4" class="left-border right-border storeGroup">This Store's Data</th>
-                        <th colspan="4" class="left-border right-border storeGroup" title="If you bought from this store and sold to the current store.">Best store to order from</th>
-                        <th colspan="4" class="left-border right-border storeGroup" title="If you sold to this store after buying from the current store.">Best store to offer to</th>
+                        <th colspan="5" class="left-border right-border storeGroup" title="If you bought from this store and sold to the current store.">Best store to order from</th>
+                        <th colspan="5" class="left-border right-border storeGroup" title="If you sold to this store after buying from the current store.">Best store to offer to</th>
                     </tr>
                     <tr class="transaction-table-groups text-center">
                         <th class="left-border">Name</th>
@@ -53,12 +53,14 @@
                         <th class="left-border">Name</th>
                         <th>Price</th>
                         <th>Amount</th>
-                        <th class="right-border">Profit</th>
+                        <th>Profit</th>
+                        <th class="right-border">Distance</th>
                         <!-- Offer -->
                         <th class="left-border">Name</th>
                         <th >Price</th>
                         <th>Amount</th>
-                        <th class="right-border">Profit</th>
+                        <th>Profit</th>
+                        <th class="right-border">Distance</th>
                     </tr>
                     <tr class="text-center">
                         <th colspan="8" class="left-border right-border"></th>
@@ -76,12 +78,14 @@
                             <td class="left-border">{{ $goodData->orderFrom->tradeZoneTitle }}</td>
                             <td>{{ number_format($goodData->orderFrom->bestValue)  }}</td>
                             <td>{{ number_format($goodData->orderFrom->bestAmount) }}</td>
-                            <td class="right-border">{{ number_format($goodData->orderFrom->profit) }}</td>
+                            <td>{{ number_format($goodData->orderFrom->profit) }}</td>
+                            <td class="right-border">{{ $goodData->orderFrom->distance }}</td>
                             <!-- offer to -->
                             <td class="left-border">{{ $goodData->offerTo->tradeZoneTitle }}</td>
                             <td>{{ number_format($goodData->offerTo->bestValue) }}</td>
                             <td>{{ number_format($goodData->offerTo->bestAmount) }}</td>
                             <td>{{ number_format($goodData->offerTo->profit) }}</td>
+                            <td class="right-border">{{ number_format(round($goodData->offerTo->distance/1000, 2)) }} KM</td>
                         </tr>
                     @endforeach
                     </tbody>
