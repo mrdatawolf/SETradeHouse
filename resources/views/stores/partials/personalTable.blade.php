@@ -23,17 +23,17 @@
 </style>
 <ul class="nav nav-tabs">
     @php $active = 'active'; @endphp
-    @foreach(['Ore', 'Ingot','Component','Tool'] as $group)
+    @foreach(['Ore', 'Ingot','Component','Tool'] as $goodType)
             <li class="nav-item">
-                <a href="#{{ $gridData->jsid }}_{{ $group }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $group }}</a>
+                <a href="#{{ $gridData->jsid }}_{{ $goodType }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $goodType }}</a>
             </li>
             @php $active = ''; @endphp
     @endforeach
 </ul>
 <div class="tab-content">
-@foreach(['Ore', 'Ingot','Component','Tool'] as $group)
-    <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $group }}">
-        @if(! empty($gridData->$group))
+@foreach(['Ore', 'Ingot','Component','Tool'] as $goodType)
+    <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $goodType }}">
+        @if(! empty($gridData->goods->$goodType))
             <table class="table-striped table-responsive-xl transaction-table" style="width:100%">
                 <thead>
                 <tr class="transaction-table-groups">
@@ -69,11 +69,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($gridData->$group as $good => $goodData)
+                @foreach($gridData->goods->$goodType as $good => $goodData)
                     @php
                         $stores = new App\Http\Controllers\Stores();
-                        $order = $stores->getGlobalDataForGood(1, $group, $good, $hoursWindow)->first();
-                        $offer = $stores->getGlobalDataForGood(2, $group, $good, $hoursWindow)->first();
+                        $order = $stores->getGlobalDataForGood(1, $goodType, $good, $hoursWindow)->first();
+                        $offer = $stores->getGlobalDataForGood(2, $goodType, $good, $hoursWindow)->first();
                         $priceExposure = (empty($goodData->Orders) || empty($goodData->Offers)) ? 'n/a' : $goodData->Offers->avgPrice - $goodData->Orders->avgPrice;
                         $exposure = ($priceExposure >= 0) ? 0 : $priceExposure * $goodData->Orders->amount;
                         $exposureClass = ($exposure > 0) ? "exposureAlert" : "";
