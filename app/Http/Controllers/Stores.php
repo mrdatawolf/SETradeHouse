@@ -48,7 +48,7 @@ class Stores extends Controller
         $storeType = "world";
         $stores    = $this->getTransactionsUsingTitles();
 
-        return view('stores.world', compact('stores', 'headers', 'storeType', 'title'));
+        return view('stores.world', compact('stores', 'storeType', 'title'));
     }
 
 
