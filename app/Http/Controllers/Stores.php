@@ -44,12 +44,11 @@ class Stores extends Controller
      */
     public function worldIndex()
     {
-        $title           = "Stores";
-        $storeType       = "world";
-        $storeController = new Stores();
-        $stores          = $storeController->getTransactionsUsingTitles();
+        $title     = "Stores";
+        $storeType = "world";
+        $stores    = $this->getTransactionsUsingTitles();
 
-        return view('stores.world', compact('stores', 'storeType', 'title'));
+        return view('stores.world', compact('stores', 'headers', 'storeType', 'title'));
     }
 
 
@@ -96,7 +95,109 @@ class Stores extends Controller
                          }
                      });
 
-        return $this->convertToCollection($this->data);
+        $rows = $this->condenseData($this->data);
+
+        return $this->convertToCollection($rows);
+    }
+
+
+    /**
+     * note: condensing it to show useful row data.
+     * @param $data
+     *
+     * @return array
+     */
+    public function condenseData($data)
+    {
+        $rows = [];
+        foreach ($data as $gridName => $gridData) {
+            $rows[$gridName]['owner'] = $gridData['owner'];
+            $rows[$gridName]['GPS']   = $gridData['GPS'];
+            $rows[$gridName]['jsid']  = $gridData['jsid'];
+            foreach ($gridData['goods'] as $goodType => $goodTypeData) {
+                foreach ($goodTypeData as $good => $goodData) {
+                    $orders = $goodData['Orders'] ?? null;
+                    $offers = $goodData['Offers'] ?? null;
+                    $ordersAvgPrice = (empty($orders['avgPrice'])) ? 0 : $orders['avgPrice'];
+                    $orderAmount    = (empty($orders['amount'])) ? 0 : $orders['amount'];
+                    $offerAvgPrice  = (empty($offers['avgPrice'])) ? 0 : $offers['avgPrice'];
+                    $offerAmount    = (empty($offers['amount'])) ? 0 : $offers['amount'];
+
+                    if ( empty($orders)) {
+                        $bestOrderFromValue           = 0;
+                        $bestOrderFromAmount          = 0;
+                        $bestAvailableOrderFromAmount = 0;
+                        $orderFromTradeZone           = 'n/a';
+                    } else {
+                        $orderGoodId                  = $orders['goodId'];
+                        $orderGoodTypeId              = $orders['goodTypeId'];
+                        $orderServerId                = $orders['serverId'];
+                        $bestOrderFrom                = $this->getLowestOfferForGoodOnServer($orderGoodId,
+                            $orderGoodTypeId, $orderServerId);
+                        $bestOrderFromValue           = (empty($bestOrderFrom->get('value'))) ? 0
+                            : (int)$bestOrderFrom->get('value');
+                        $bestOrderFromAmount          = (empty($bestOrderFrom->get('amount'))) ? 0
+                            : (int)$bestOrderFrom->get('amount');
+                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $bestOrderFromAmount
+                            : $offerAmount;
+                        $orderFromTradeZone           = \App\TradeZones::find($bestOrderFrom->get('trade_zone_id'));
+
+                    }
+                    if ( empty($offers)) {
+                        $bestOfferToValue           = 0;
+                        $bestOfferToAmount          = 0;
+                        $bestAvailableOfferToAmount = 0;
+                        $offerToTradeZone           = 'n/a';
+
+                    } else {
+                        $offerGoodId                = $offers['goodId'];
+                        $offerGoodTypeId            = $offers['goodTypeId'];
+                        $offerServerId              = $offers['serverId'];
+                        $bestOfferTo                = $this->getHighestOrderForGoodOnServer($offerGoodId,
+                            $offerGoodTypeId, $offerServerId);
+                        $bestOfferToValue           = (empty($bestOfferTo->get('value'))) ? 0
+                            : (int)$bestOfferTo->get('value');
+                        $bestOfferToAmount          = (empty($bestOfferTo->get('amount'))) ? 0
+                            : (int)$bestOfferTo->get('amount');
+                        $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $bestOfferToAmount
+                            : $orderAmount;
+                        $offerToTradeZone           = \App\TradeZones::find($bestOfferTo->get('trade_zone_id'));
+                    }
+                    $orderFromProfitRaw                         = ($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
+                    $orderFromProfit                            = ($orderFromProfitRaw > 0) ? $orderFromProfitRaw : 0;
+                    $offerToProfitRaw                           = ($bestOfferToValue - $offerAvgPrice) * $bestAvailableOfferToAmount;
+                    $offerToProfit                              = ($offerToProfitRaw > 0) ? $offerToProfitRaw : 0;
+                    $row                                        = [
+                        'store'     => [
+                            'orders' => [
+                                'avgPrice' => (empty($ordersAvgPrice)) ? 0 : $ordersAvgPrice,
+                                'amount'   => (empty($orderAmount)) ? 0 : $orderAmount
+                            ],
+                            'offers' => [
+                                'avgPrice' => (empty($offerAvgPrice)) ? 0 : $offerAvgPrice,
+                                'amount'   => (empty($offerAmount)) ? 0 : $offerAmount
+                            ]
+                        ],
+                        'orderFrom' => [
+                            'tradeZoneTitle' => $orderFromTradeZone->title ?? 'n/a',
+                            'bestValue'      => (empty($bestOrderFromValue)) ? 0 : $bestOrderFromValue,
+                            'bestAmount'     => (empty($bestOrderFromAmount)) ? 0 : $bestOrderFromAmount,
+                            'profit'         => empty($orderFromProfit) ? 0 : $orderFromProfit,
+                        ],
+                        'offerTo'   => [
+                            'tradeZoneTitle' => $offerToTradeZone->title ?? 'n/a',
+                            'bestValue'      => $bestOfferToValue ?? 0,
+                            'bestAmount'     => $bestOfferToAmount ?? 0,
+                            'profit'         => empty($offerToProfit) ? 0 : $offerToProfit
+                        ]
+
+                    ];
+                    $rows[$gridName]['goods'][$goodType][$good] = $row;
+                }
+            }
+        }
+
+        return $rows;
     }
 
 
@@ -145,8 +246,9 @@ class Stores extends Controller
         foreach ($transactions->get() as $transaction) {
             $this->updateOwnerStoreData($transaction);
         }
+        $rows = $this->condenseData($this->ownerStoreData);
 
-        return $this->convertToCollection($this->ownerStoreData);
+        return $this->convertToCollection($rows);
     }
 
 
@@ -166,17 +268,18 @@ class Stores extends Controller
         $goodTypeId      = $goodType->id;
         $goodTitle       = $good->title;
         $goodId          = $good->id;
-        $gridName        = $tradeZone->title;
-        $serverId        = 1;
+        $gridName        = trim($tradeZone->title);
+        $serverId        = $this->getServerId();
 
         if ($tradeZone->count() > 0 && $goodType->count() > 0 && $good->count() > 0) {
             if (empty($this->data[$gridName])) {
                 $this->data[$gridName]['owner'] = $transaction->owner;
                 $this->data[$gridName]['GPS']   = $tradeZone->gps;
                 $this->data[$gridName]['jsid']  = $this->cleanJsName($gridName);
+                $this->data[$gridName]['goods'] = [];
             }
-            if (empty($this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType])) {
-                $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType] = [
+            if (empty($this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType])) {
+                $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType] = [
                     'serverId'   => $serverId,
                     'goodTypeId' => $goodTypeId,
                     'goodId'     => $goodId,
@@ -188,17 +291,18 @@ class Stores extends Controller
                     'count'      => 0
                 ];
             }
-            $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['count']++;
-            $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['amount']   += $amount;
-            $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['sum']      += $price * $amount;
-            $averagePrice                                                                    = ($amount <= 0) ? 0
-                : $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['sum'] / $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['amount'];
-            $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['avgPrice'] = $averagePrice;
-            if ($this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] === 0 || $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] > $price) {
-                $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] = $price;
+            $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['count']++;
+            $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['amount']   += $amount;
+            $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['sum']      += $price * $amount;
+            $averagePrice                                                                             = ($amount <= 0)
+                ? 0
+                : $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['sum'] / $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['amount'];
+            $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['avgPrice'] = $averagePrice;
+            if ($this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] === 0 || $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] > $price) {
+                $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] = $price;
             }
-            if ($this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['maxPrice'] < $price) {
-                $this->data[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['maxPrice'] = $price;
+            if ($this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['maxPrice'] < $price) {
+                $this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['maxPrice'] = $price;
             }
         }
         $data[$gridName] = $this->data;
@@ -227,11 +331,17 @@ class Stores extends Controller
         $price           = $transaction->value;
         $amount          = $transaction->amount;
         $goodTypeTitle   = $goodType->title;
+        $goodTypeId      = $goodType->id;
         $goodTitle       = $good->title;
+        $goodId          = $good->id;
         $gridName        = $tradeZone->title;
+        $serverId        = $this->getServerId();
         if ($goodType->count() > 0 && $good->count() > 0) {
-            if (empty($this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType])) {
-                $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType] = [
+            if (empty($this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType])) {
+                $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType] = [
+                    'serverId'   => $serverId,
+                    'goodTypeId' => $goodTypeId,
+                    'goodId'     => $goodId,
                     'minPrice' => 0,
                     'maxPrice' => 0,
                     'amount'   => 0,
@@ -240,18 +350,18 @@ class Stores extends Controller
                     'count'    => 0
                 ];
             }
-            $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['count']++;
-            $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['amount']   += $amount;
-            $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['sum']      += $price * $amount;
+            $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['count']++;
+            $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['amount']   += $amount;
+            $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['sum']      += $price * $amount;
             $averagePrice                                                                              = ($amount <= 0)
                 ? 0
-                : $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['sum'] / $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['amount'];
-            $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['avgPrice'] = $averagePrice;
-            if ($this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] === 0 || $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] > $price) {
-                $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] = $price;
+                : $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['sum'] / $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['amount'];
+            $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['avgPrice'] = $averagePrice;
+            if ($this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] === 0 || $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] > $price) {
+                $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['minPrice'] = $price;
             }
-            if ($this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['maxPrice'] < $price) {
-                $this->ownerStoreData[$gridName][$goodTypeTitle][$goodTitle][$transactionType]['maxPrice'] = $price;
+            if ($this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['maxPrice'] < $price) {
+                $this->ownerStoreData[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType]['maxPrice'] = $price;
             }
         }
     }
@@ -486,5 +596,10 @@ class Stores extends Controller
         }
 
         return $this->convertToCollection($bestValue->first());
+    }
+
+    //because the active serve could change we should look at seesion id and find out where the user currently is.
+    private function getServerId() {
+        return \Session::get('serverId');
     }
 }

@@ -34,7 +34,7 @@
 </style>
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
-        <a  class="navbar-brand" href="#"><img src="/img/SETradeHouse_logo_core.png" alt="Logo" title="Logo" style="width: 4em;"></a>
+        <a  class="navbar-brand" href="{{ route("root") }}"><img src="/img/SETradeHouse_logo_core.png" alt="Logo" title="Logo" style="width: 4em;"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -56,7 +56,7 @@
                 @else
                     <li class="nav-item">
                         <button class="nav-link dropdown-item" onclick="window.location.href='{{ route('home') }}';">
-                            {{ __('Home') }}
+                            TZ List
                         </button>
                     </li>
                     <li class="nav-item dropdown">
