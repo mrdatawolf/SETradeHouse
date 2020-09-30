@@ -24,17 +24,17 @@
 </style>
 <ul class="nav nav-tabs">
     @php $active = 'active'; @endphp
-    @foreach(['Ore', 'Ingot','Component','Tool'] as $group)
+    @foreach(['Ore', 'Ingot','Component','Tool'] as $goodType)
         <li class="nav-item">
-            <a href="#{{ $gridData->jsid }}_{{ $group }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $group }}</a>
+            <a href="#{{ $gridData->jsid }}_{{ $goodType }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $goodType }}</a>
         </li>
         @php $active = ''; @endphp
     @endforeach
 </ul>
 <div class="tab-content">
-    @foreach(\App\GoodTypes::pluck('title') as $group)
-        <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $group }}">
-            @if(! empty($gridData->$group))
+    @foreach(\App\GoodTypes::pluck('title') as $goodType)
+        <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $goodType }}">
+            @if(! empty($gridData->goods->$goodType))
                 <table class="table-striped table-responsive-xl transaction-table" style="width:100%">
                     <thead>
                     <tr class="transaction-table-groups">
@@ -65,65 +65,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($gridData->$group as $good => $goodData)
-                        @php
-                        $stores = new \App\Http\Controllers\Stores();
-                        $ordersAvgPrice = (empty($goodData->Orders->avgPrice)) ? 0 : $goodData->Orders->avgPrice;
-                        $orderAmount = (empty($goodData->Orders->amount)) ? 0 : $goodData->Orders->amount;
-                        $offerAvgPrice = (empty($goodData->Offers->avgPrice)) ? 0 : $goodData->Offers->avgPrice;
-                        $offerAmount = (empty($goodData->Offers->amount)) ? 0 : $goodData->Offers->amount;
-                        if(! empty($goodData->Orders)) {
-                            $orderGoodId = $goodData->Orders->goodId;
-                            $orderGoodTypeId = $goodData->Orders->goodTypeId;
-                            $orderServerId = $goodData->Orders->serverId;
-                            $bestOrderFrom = $stores->getLowestOfferForGoodOnServer($orderGoodId, $goodData->Orders->goodTypeId, $orderServerId);
-                            $bestOrderFromValue = (empty($bestOrderFrom->get('value'))) ? 0 : (int) $bestOrderFrom->get('value');
-                            $bestOrderFromAmount = (empty($bestOrderFrom->get('amount'))) ? 0 : (int) $bestOrderFrom->get('amount');
-                            $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $bestOrderFromAmount : $offerAmount;
-                            $orderFromTradeZone = \App\TradeZones::find($bestOrderFrom->get('trade_zone_id'));
-                        } else {
-                            $bestOrderFromValue = 0;
-                            $bestOrderFromAmount = 0;
-                            $bestAvailableOrderFromAmount = 0;
-                            $orderFromTradeZone = 'n/a';
-                        }
-                        if(! empty($goodData->Offers)) {
-                            $offerGoodId = $goodData->Offers->goodId;
-                            $offerGoodTypeId = $goodData->Offers->goodTypeId;
-                            $offerServerId = $goodData->Offers->serverId;
-                            $bestOfferTo = $stores->getHighestOrderForGoodOnServer($offerGoodId, $offerGoodTypeId, $offerServerId);
-                            $bestOfferToValue = (empty($bestOfferTo->get('value'))) ? 0 : (int) $bestOfferTo->get('value');
-                            $bestOfferToAmount = (empty($bestOfferTo->get('amount'))) ? 0 : (int) $bestOfferTo->get('amount');
-                            $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $bestOfferToAmount : $orderAmount;
-                            $offerToTradeZone = \App\TradeZones::find($bestOfferTo->get('trade_zone_id'));
-                        }
-                        else {
-                            $bestOfferToValue = 0;
-                            $bestOfferToAmount = 0;
-                            $bestAvailableOfferToAmount = 0;
-                            $offerToTradeZone = 'n/a';
-                        }
-                        $orderFromProfitRaw =($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
-                        $orderFromProfit =($orderFromProfitRaw > 0) ? $orderFromProfitRaw : 0;
-                        $offerToProfitRaw = ($bestOfferToValue - $offerAvgPrice) * $bestAvailableOfferToAmount;
-                        $offerToProfit = ($offerToProfitRaw > 0) ? $offerToProfitRaw : 0;
-                        @endphp
+                    @foreach($gridData->goods->$goodType as $good => $goodData)
                         <tr class="text-center">
                             <td class="left-border">{{ ucfirst($good) }}</td>
-                            <td class="left-border">{{ (empty($ordersAvgPrice)) ? 'n/a' : number_format($ordersAvgPrice) }}</td>
-                            <td>{{ (empty($offerAvgPrice)) ? 'n/a' : number_format($offerAvgPrice) }}</td>
-                            <td>{{ (empty($orderAmount)) ? 'n/a' : number_format($orderAmount) }}</td>
-                            <td class="right-border">{{ (empty($offerAmount)) ? 'n/a' : number_format($offerAmount) }}</td>
+                            <td class="left-border">{{ number_format($goodData->store->orders->avgPrice) }}</td>
+                            <td>{{ number_format($goodData->store->offers->avgPrice) }}</td>
+                            <td>{{ number_format($goodData->store->orders->amount) }}</td>
+                            <td class="right-border">{{ number_format($goodData->store->offers->amount) }}</td>
                             <!-- order from -->
-                            <td class="left-border">{{ $orderFromTradeZone->title ?? 'n/a' }}</td>
-                            <td>{{ (empty($bestOrderFromValue)) ? 'n/a' : number_format($bestOrderFromValue)}}</td>
-                            <td>{{ $bestOrderFromValue ?? 'n/a'}}</td>
-                            <td class="right-border">{{ empty($orderFromProfit) ? 'n/a' : number_format($orderFromProfit) }}</td>
+                            <td class="left-border">{{ $goodData->orderFrom->tradeZoneTitle }}</td>
+                            <td>{{ number_format($goodData->orderFrom->bestValue)  }}</td>
+                            <td>{{ number_format($goodData->orderFrom->bestAmount) }}</td>
+                            <td class="right-border">{{ number_format($goodData->orderFrom->profit) }}</td>
                             <!-- offer to -->
-                            <td class="left-border">{{ $offerToTradeZone->title ?? 'n/a' }}</td>
-                            <td>{{ $bestOfferToValue ?? 'n/a'}}</td>
-                            <td>{{ $bestOfferToAmount ?? 'n/a'}}</td>
-                            <td>{{ empty($offerToProfit) ? 'n/a' : number_format($offerToProfit) }}</td>
+                            <td class="left-border">{{ $goodData->offerTo->tradeZoneTitle }}</td>
+                            <td>{{ number_format($goodData->offerTo->bestValue) }}</td>
+                            <td>{{ number_format($goodData->offerTo->bestAmount) }}</td>
+                            <td>{{ number_format($goodData->offerTo->profit) }}</td>
                         </tr>
                     @endforeach
                     </tbody>
