@@ -28,12 +28,11 @@ class Stores extends Controller
      */
     public function index()
     {
-        $hoursWindow     = 12;
-        $title           = "Stores";
-        $storeType       = "personal";
-        $storeController = new Stores();
-        $username        = \Auth::user()->server_username;
-        $stores          = $storeController->getTransactionsOfOwner($username);
+        $hoursWindow = 12;
+        $title       = "Stores";
+        $storeType   = "personal";
+        $username    = \Auth::user()->server_username;
+        $stores      = $this->getTransactionsOfOwner($username);
 
         return view('stores.personal', compact('stores', 'storeType', 'title', 'hoursWindow'));
     }
@@ -44,9 +43,10 @@ class Stores extends Controller
      */
     public function worldIndex()
     {
+        $serverId  = $this->getServerId();
         $title     = "Stores";
         $storeType = "world";
-        $stores    = $this->getTransactionsUsingTitles();
+        $stores    = $this->getTransactionsUsingTitles($serverId);
 
         return view('stores.world', compact('stores', 'storeType', 'title'));
     }
@@ -57,10 +57,10 @@ class Stores extends Controller
      */
     public function serverIndex()
     {
-        $title           = "Stores";
-        $storeType       = "server";
-        $storeController = new Stores();
-        $stores          = $storeController->getTransactionsUsingTitles();
+        $serverId  = $this->getServerId();
+        $title     = "Stores";
+        $storeType = "server";
+        $stores    = $this->getTransactionsUsingTitles($serverId);
 
         return view('stores.server', compact('stores', 'storeType', 'title'));
     }
@@ -68,10 +68,9 @@ class Stores extends Controller
 
     public function storeIndex($id)
     {
-        $title           = "Store";
-        $storeType       = "server";
-        $storeController = new Stores();
-        $stores          = $storeController->getTransactionsOfStore($id);
+        $title     = "Store";
+        $storeType = "server";
+        $stores    = $this->getTransactionsOfStore($id);
 
         return view('stores.server', compact('stores', 'storeType', 'title'));
     }
@@ -80,21 +79,36 @@ class Stores extends Controller
     /**
      * note: this gets all the transactions for the stores and returns it with the ids converted to titles.
      *
-     * @return object
+     * @param int      $serverId
+     * @param null|int $worldId
+     *
+     * @return \Illuminate\Support\Collection
      */
-    public function getTransactionsUsingTitles()
+    public function getTransactionsUsingTitles(int $serverId, $worldId = null)
     {
         $this->data   = [];
         $transactions = new Transactions();
-        $transactions->orderBy('good_type_id', 'ASC')
-                     ->orderBy('transaction_type_id', 'DESC')
-                     ->orderBy('good_id', 'DESC')
-                     ->chunk(400, function ($transactions) {
-                         foreach ($transactions as $transaction) {
-                             $this->updateData($transaction);
-                         }
-                     });
 
+        if ($serverId) {
+            $transactions->where('server_id', $serverId)
+                         ->orderBy('good_type_id', 'ASC')
+                         ->orderBy('transaction_type_id', 'DESC')
+                         ->orderBy('good_id', 'DESC')
+                         ->chunk(400, function ($transactions) use($serverId) {
+                             foreach ($transactions as $transaction) {
+                                 $this->updateData($transaction, $serverId);
+                             }
+                         });
+        } else {
+            $transactions->orderBy('good_type_id', 'ASC')
+                         ->orderBy('transaction_type_id', 'DESC')
+                         ->orderBy('good_id', 'DESC')
+                         ->chunk(400, function ($transactions) use($serverId) {
+                             foreach ($transactions as $transaction) {
+                                 $this->updateData($transaction, $serverId);
+                             }
+                         });
+        }
         $rows = $this->condenseData($this->data);
 
         return $this->convertToCollection($rows);
@@ -141,8 +155,8 @@ class Stores extends Controller
                             : (int)$bestOrderFrom->get('value');
                         $bestOrderFromAmount          = (empty($bestOrderFrom->get('amount'))) ? 0
                             : (int)$bestOrderFrom->get('amount');
-                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $offerAmount
-                            : $bestOrderFromAmount;
+                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $bestOrderFromAmount
+                            : $offerAmount;
                         $orderFromTradeZone           = \App\TradeZones::find($bestOrderFrom->get('trade_zone_id'));
                     }
                     if (empty($offers)) {
@@ -160,8 +174,8 @@ class Stores extends Controller
                             : (int)$bestOfferTo->get('value');
                         $bestOfferToAmount          = (empty($bestOfferTo->get('amount'))) ? 0
                             : (int)$bestOfferTo->get('amount');
-                        $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $orderAmount
-                            : $bestOfferToAmount;
+                        $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $bestOfferToAmount
+                            : $orderAmount;
                         $offerToTradeZone           = \App\TradeZones::find($bestOfferTo->get('trade_zone_id'));
                     }
                     $orderFromProfitRaw                         = ($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
@@ -262,11 +276,11 @@ class Stores extends Controller
     /**
      * @param $transaction
      */
-    private function updateData($transaction)
+    private function updateData($transaction, $serverId)
     {
         $tradeZone       = TradeZones::find($transaction->trade_zone_id);
         $goodType        = GoodTypes::find($transaction->good_type_id);
-        $tzId            = $transaction->trade_zone_id;
+        $tzId            = (int)$transaction->trade_zone_id;
         $good            = $this->getGoodFromGoodTypeAndGoodId($goodType, $transaction->good_id);
         $transactionType = $this->getTransactionTypeFromId($transaction->transaction_type_id);
         $transactionType = ($transactionType->title === 'buy') ? 'Orders' : 'Offers';
@@ -277,7 +291,6 @@ class Stores extends Controller
         $goodTitle       = $good->title;
         $goodId          = $good->id;
         $gridName        = trim($tradeZone->title);
-        $serverId        = $this->getServerId();
 
         if ($tradeZone->count() > 0 && $goodType->count() > 0 && $good->count() > 0) {
             if (empty($this->data[$gridName])) {

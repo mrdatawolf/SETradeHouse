@@ -104,8 +104,8 @@
                             <td class="left-border">{{ $goodData->orderFrom->tradeZoneTitle }}</td>
                             <td title="{{ $goodData->orderFrom->bestValue }}">{{ bd_nice_number($goodData->orderFrom->bestValue, true, 2)  }}</td>
                             <td title="{{ $goodData->orderFrom->bestAmount }}">{{ bd_nice_number($goodData->orderFrom->bestAmount) }}</td>
-                            <td title="{{ $goodData->orderFrom->profit }}">{{ bd_nice_number($goodData->orderFrom->profit, true, 2) }}</td>
-                            <td class="right-border @if($goodData->orderFrom->profit > 0) draw_attention @endif" title="{{ $goodData->orderFrom->distance }}">{{ bd_nice_number(round($goodData->orderFrom->distance), false) }}M</td>
+                            <td class=" @if($goodData->orderFrom->profit > 0) draw_attention @endif" title="{{ $goodData->orderFrom->profit }}">{{ bd_nice_number($goodData->orderFrom->profit, true, 2) }}</td>
+                            <td class="right-border" title="{{ $goodData->orderFrom->distance }}">{{ bd_nice_number(round($goodData->orderFrom->distance), false) }}M</td>
                             <!-- offer to -->
                             <td class="left-border">{{ $goodData->offerTo->tradeZoneTitle }}</td>
                             <td title="{{ $goodData->offerTo->bestValue }}">{{ bd_nice_number($goodData->offerTo->bestValue, true, 2) }}</td>
