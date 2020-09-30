@@ -115,6 +115,7 @@ class Stores extends Controller
             $rows[$gridName]['owner'] = $gridData['owner'];
             $rows[$gridName]['GPS']   = $gridData['GPS'];
             $rows[$gridName]['jsid']  = $gridData['jsid'];
+            $rows[$gridName]['tzid']  = $gridData['tzid'];
             foreach ($gridData['goods'] as $goodType => $goodTypeData) {
                 foreach ($goodTypeData as $good => $goodData) {
                     $orders         = $goodData['Orders'] ?? null;
@@ -134,7 +135,7 @@ class Stores extends Controller
                         $orderGoodTypeId              = $orders['goodTypeId'];
                         $orderServerId                = $orders['serverId'];
                         $bestOrderFrom                = $this->getLowestOfferForGoodOnServer($orderGoodId,
-                            $orderGoodTypeId, $orderServerId);
+                            $orderGoodTypeId, $orderServerId, $rows[$gridName]['tzid']);
                         $bestOrderFromValue           = (empty($bestOrderFrom->get('value'))) ? 0
                             : (int)$bestOrderFrom->get('value');
                         $bestOrderFromAmount          = (empty($bestOrderFrom->get('amount'))) ? 0
@@ -153,7 +154,7 @@ class Stores extends Controller
                         $offerGoodTypeId            = $offers['goodTypeId'];
                         $offerServerId              = $offers['serverId'];
                         $bestOfferTo                = $this->getHighestOrderForGoodOnServer($offerGoodId,
-                            $offerGoodTypeId, $offerServerId);
+                            $offerGoodTypeId, $offerServerId, $rows[$gridName]['tzid']);
                         $bestOfferToValue           = (empty($bestOfferTo->get('value'))) ? 0
                             : (int)$bestOfferTo->get('value');
                         $bestOfferToAmount          = (empty($bestOfferTo->get('amount'))) ? 0
@@ -264,6 +265,7 @@ class Stores extends Controller
     {
         $tradeZone       = TradeZones::find($transaction->trade_zone_id);
         $goodType        = GoodTypes::find($transaction->good_type_id);
+        $tzId          = $transaction->trade_zone_id;
         $good            = $this->getGoodFromGoodTypeAndGoodId($goodType, $transaction->good_id);
         $transactionType = $this->getTransactionTypeFromId($transaction->transaction_type_id);
         $transactionType = ($transactionType->title === 'buy') ? 'Orders' : 'Offers';
@@ -281,6 +283,7 @@ class Stores extends Controller
                 $this->data[$gridName]['owner'] = $transaction->owner;
                 $this->data[$gridName]['GPS']   = $tradeZone->gps;
                 $this->data[$gridName]['jsid']  = $this->cleanJsName($gridName);
+                $this->data[$gridName]['tzid']  = $tzId;
                 $this->data[$gridName]['goods'] = [];
             }
             if (empty($this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType])) {
@@ -609,9 +612,15 @@ class Stores extends Controller
     }
 
 
+    /**
+     * @param $localGPS
+     * @param $remoteData
+     *
+     * @return float|int
+     */
     private function getDistanceByGPS($localGPS, $remoteData)
     {
-        $minimumDistance = 50000;
+        $minimumDistance = 1000; //this is in meters
         if ($localGPS !== 'n/a' && ! empty($remoteData->gps) && $remoteData->gps !== 'n/a') {
             $remoteGPS       = $remoteData->gps;
             $localArray      = explode(':', $localGPS);
@@ -625,7 +634,7 @@ class Stores extends Controller
 
             $distance = (($remotex - $localx) ^ 2 + (($remotey - $localy) ^ 2) + ($remotez - $localz) ^ 2) ^ (1 / 2);
 
-            return ($distance > $minimumDistance) ? $distance : 0;
+            return (abs($distance) > $minimumDistance) ? abs($distance) : 0;
         } else {
             return 0;
         }
