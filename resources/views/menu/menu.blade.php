@@ -142,21 +142,21 @@
                                 $generalStaleness = (int) $syncStaleness;
                             }
                             $generalStaleClass = '';
-                            if($generalStaleness > 5 ) {
+                            if($generalStaleness > 2 ) {
                                 $generalStaleClass = 'staleError';
-                            } elseif($generalStaleness > 2) {
+                            } elseif($generalStaleness > 1) {
                                  $generalStaleClass = 'staleWarn';
                             }
                             $dbStaleClass = '';
-                            if($dbStaleness > 5 ) {
+                            if($dbStaleness > 2 ) {
                                 $dbStaleClass = 'staleError';
-                            } elseif($dbStaleness > 2) {
+                            } elseif($dbStaleness > 1) {
                                  $dbStaleClass = 'staleWarn';
                             }
                             $syncStaleClass = '';
-                            if($syncStaleness > 5 ) {
+                            if($syncStaleness > 2 ) {
                                 $syncStaleClass = 'staleError';
-                            } elseif($syncStaleness > 2) {
+                            } elseif($syncStaleness > 1) {
                                  $syncStaleClass = 'staleWarn';
                             }
                         @endphp
