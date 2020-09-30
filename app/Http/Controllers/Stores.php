@@ -314,8 +314,6 @@ class Stores extends Controller
      */
     private function updateOwnerStoreData($transaction)
     {
-
-
         $tradeZone = TradeZones::find($transaction->trade_zone_id);
         $this->updateGridInfo($transaction, $tradeZone);
         $this->updateTransactionData($transaction, $tradeZone);
