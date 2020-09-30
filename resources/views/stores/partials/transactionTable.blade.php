@@ -10,10 +10,10 @@
             if(!is_numeric($n)) return false;
 
             // now filter it;
-            if($n>1000000000000) return round(($n/1000000000000),$roundTo).' T';
-            elseif($n>1000000000) return round(($n/1000000000),$roundTo).' B';
-            elseif($n>1000000 && $showM) return round(($n/1000000),$roundTo).' M';
-            elseif($n>1000) return round(($n/1000),$roundTo).' K';
+            if($n>1000000000000) return number_format(round(($n/1000000000000),$roundTo)).' T';
+            elseif($n>1000000000) return number_format(round(($n/1000000000),$roundTo)).' B';
+            elseif($n>1000000 && $showM) return number_format(round(($n/1000000),$roundTo)).' M';
+            elseif($n>1000) return number_format(round(($n/1000),$roundTo)).' K';
 
             return number_format($n);
         }

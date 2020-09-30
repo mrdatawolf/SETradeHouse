@@ -1,4 +1,24 @@
-@php $specialClasses = 'show active';  $specialClasses2 = 'show active'; @endphp
+@php $specialClasses = 'show active';  $specialClasses2 = 'show active';
+    #    Output easy-to-read numbers
+    #    by james at bandit.co.nz
+    if(! function_exists('bd_nice_number')) {
+        function bd_nice_number($n, $showM = true, $roundTo = 0) {
+            // first strip any formatting;
+            $n = (0+str_replace(",","",$n));
+
+            // is this a number?
+            if(!is_numeric($n)) return false;
+
+            // now filter it;
+            if($n>1000000000000) return number_format(round(($n/1000000000000),$roundTo)).' T';
+            elseif($n>1000000000) return number_format(round(($n/1000000000),$roundTo)).' B';
+            elseif($n>1000000 && $showM) return number_format(round(($n/1000000),$roundTo)).' M';
+            elseif($n>1000) return number_format(round(($n/1000),$roundTo)).' K';
+
+            return number_format($n);
+        }
+    }
+@endphp
 <style>
     td {
         padding-right: 1em;
@@ -18,29 +38,32 @@
     .right-border {
         border-right: 1px solid #ccc;
     }
-    .exposureAlert {
-        color: #9a1313;
+    .draw_attention {
+        background-color: #d3f9e5 !important;
+    }
+    .draw_attention_border {
+        border: 1px solid #2ba45f !important;
     }
 </style>
 <ul class="nav nav-tabs">
     @php $active = 'active'; @endphp
-    @foreach(['Ore', 'Ingot','Component','Tool'] as $group)
+    @foreach(\App\GoodTypes::pluck('title') as $goodType)
         <li class="nav-item">
-            <a href="#{{ $gridData->jsid }}_{{ $group }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $group }}</a>
+            <a href="#{{ $gridData->jsid }}_{{ $goodType }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $goodType }}</a>
         </li>
         @php $active = ''; @endphp
     @endforeach
 </ul>
 <div class="tab-content">
-    @foreach(\App\GoodTypes::pluck('title') as $group)
-        <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $group }}">
-            @if(! empty($gridData->$group))
+    @foreach(\App\GoodTypes::pluck('title') as $goodType)
+        <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $goodType }}">
+            @if(! empty($gridData->goods->$goodType))
                 <table class="table-striped table-responsive-xl transaction-table" style="width:100%">
                     <thead>
                     <tr class="transaction-table-groups">
                         <th class="left-border"></th>
                         <th colspan="2" class="left-border right-border storeGroup">This Store's Data</th>
-                        <th colspan="4" class="left-border right-border storeGroup" title="If you sold to this store after buying from the current store.">Sell to</th>
+                        <th colspan="5" class="left-border right-border storeGroup" title="If you sold to this store after buying from the current store.">Sell to</th>
                     </tr>
                     <tr class="transaction-table-groups text-center">
                         <th class="left-border">Name</th>
@@ -50,65 +73,25 @@
                         <th class="left-border">Name</th>
                         <th >Price</th>
                         <th>Amount</th>
-                        <th class="right-border">Profit</th>
+                        <th>Profit</th>
+                        <th class="right-border">Distance</th>
                     </tr>
                     <tr class="text-center">
                         <th colspan="8" class="left-border right-border"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($gridData->$group as $good => $goodData)
-                        @php
-                        $stores = new \App\Http\Controllers\Stores();
-                        $ordersAvgPrice = (empty($goodData->Orders->avgPrice)) ? 0 : $goodData->Orders->avgPrice;
-                        $orderAmount = (empty($goodData->Orders->amount)) ? 0 : $goodData->Orders->amount;
-                        $offerAvgPrice = (empty($goodData->Offers->avgPrice)) ? 0 : $goodData->Offers->avgPrice;
-                        $offerAmount = (empty($goodData->Offers->amount)) ? 0 : $goodData->Offers->amount;
-                        if(! empty($goodData->Orders)) {
-                            $orderGoodId = $goodData->Orders->goodId;
-                            $orderGoodTypeId = $goodData->Orders->goodTypeId;
-                            $orderServerId = $goodData->Orders->serverId;
-                            $bestOrderFrom = $stores->getLowestOfferForGoodOnServer($orderGoodId, $goodData->Orders->goodTypeId, $orderServerId);
-                            $bestOrderFromValue = (empty($bestOrderFrom->get('value'))) ? 0 : (int) $bestOrderFrom->get('value');
-                            $bestOrderFromAmount = (empty($bestOrderFrom->get('amount'))) ? 0 : (int) $bestOrderFrom->get('amount');
-                            $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $bestOrderFromAmount : $offerAmount;
-                            $orderFromTradeZone = \App\TradeZones::find($bestOrderFrom->get('trade_zone_id'));
-                        } else {
-                            $bestOrderFromValue = 0;
-                            $bestOrderFromAmount = 0;
-                            $bestAvailableOrderFromAmount = 0;
-                            $orderFromTradeZone = 'n/a';
-                        }
-                        if(! empty($goodData->Offers)) {
-                            $offerGoodId = $goodData->Offers->goodId;
-                            $offerGoodTypeId = $goodData->Offers->goodTypeId;
-                            $offerServerId = $goodData->Offers->serverId;
-                            $bestOfferTo = $stores->getHighestOrderForGoodOnServer($offerGoodId, $offerGoodTypeId, $offerServerId);
-                            $bestOfferToValue = (empty($bestOfferTo->get('value'))) ? 0 : (int) $bestOfferTo->get('value');
-                            $bestOfferToAmount = (empty($bestOfferTo->get('amount'))) ? 0 : (int) $bestOfferTo->get('amount');
-                            $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $bestOfferToAmount : $orderAmount;
-                            $offerToTradeZone = \App\TradeZones::find($bestOfferTo->get('trade_zone_id'));
-                        }
-                        else {
-                            $bestOfferToValue = 0;
-                            $bestOfferToAmount = 0;
-                            $bestAvailableOfferToAmount = 0;
-                            $offerToTradeZone = 'n/a';
-                        }
-                        $orderFromProfitRaw =($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
-                        $orderFromProfit =($orderFromProfitRaw > 0) ? $orderFromProfitRaw : 0;
-                        $offerToProfitRaw = ($bestOfferToValue - $offerAvgPrice) * $bestAvailableOfferToAmount;
-                        $offerToProfit = ($offerToProfitRaw > 0) ? $offerToProfitRaw : 0;
-                        @endphp
-                        <tr class="text-center">
-                            <td class="left-border">{{ ucfirst($good) }}</td>
-                            <td class="left-border">{{ (empty($ordersAvgPrice)) ? 'n/a' : number_format($ordersAvgPrice) }}</td>
-                            <td>{{ (empty($offerAvgPrice)) ? 'n/a' : number_format($offerAvgPrice) }}</td>
+                    @foreach($gridData->goods->$goodType as $good => $goodData)
+                        <tr class="text-center @if($goodData->offerTo->profit > 0) draw_attention_border @endif">
+                            <td class="left-border @if($goodData->offerTo->profit > 0) draw_attention @endif">{{ ucfirst($good) }}</td>
+                            <td  class="left-border" title="{{ $goodData->store->offers->avgPrice }}">{{ bd_nice_number($goodData->store->offers->avgPrice, true, 2) }}</td>
+                            <td class="right-border" title="{{ $goodData->store->offers->amount }}">{{ bd_nice_number($goodData->store->offers->amount) }}</td>
                             <!-- offer to -->
-                            <td class="left-border">{{ $offerToTradeZone->title ?? 'n/a' }}</td>
-                            <td>{{ $bestOfferToValue ?? 'n/a'}}</td>
-                            <td>{{ $bestOfferToAmount ?? 'n/a'}}</td>
-                            <td class="right-border">{{ empty($offerToProfit) ? 'n/a' : number_format($offerToProfit) }}</td>
+                            <td class="left-border">{{ $goodData->offerTo->tradeZoneTitle }}</td>
+                            <td title="{{ $goodData->offerTo->bestValue }}">{{ bd_nice_number($goodData->offerTo->bestValue, true, 2) }}</td>
+                            <td title="{{ $goodData->offerTo->bestAmount }}">{{ bd_nice_number($goodData->offerTo->bestAmount) }}</td>
+                            <td class="@if($goodData->offerTo->profit > 0) draw_attention @endif" title="{{ $goodData->offerTo->profit }}">{{ bd_nice_number($goodData->offerTo->profit, true, 2) }}</td>
+                            <td class="right-border" title="{{ $goodData->offerTo->distance }}">{{ bd_nice_number(round($goodData->offerTo->distance), false) }}M</td>
                         </tr>
                     @endforeach
                     </tbody>
