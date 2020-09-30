@@ -20,6 +20,7 @@ Route::get('/', 'HomeController@index')->name('root');
 //routes to show server data for users who are not logged in
 Route::get('/nebulon', 'NotLoggedInController@index')->name('nebulon');
 Route::get('/tnc', 'NotLoggedInController@index')->name('tnc');
+Route::get('/TNC', 'NotLoggedInController@index')->name('TNC');
 
 //normally authenticated users.
 Route::group(['middleware' => ['auth', 'session.data']], function () {

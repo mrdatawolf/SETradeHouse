@@ -111,10 +111,12 @@ class Stores extends Controller
     public function condenseData($data)
     {
         $rows = [];
+
         foreach ($data as $gridName => $gridData) {
             $rows[$gridName]['owner'] = $gridData['owner'];
             $rows[$gridName]['GPS']   = $gridData['GPS'];
             $rows[$gridName]['jsid']  = $gridData['jsid'];
+            $rows[$gridName]['tzid']  = $gridData['tzid'];
             foreach ($gridData['goods'] as $goodType => $goodTypeData) {
                 foreach ($goodTypeData as $good => $goodData) {
                     $orders         = $goodData['Orders'] ?? null;
@@ -134,13 +136,13 @@ class Stores extends Controller
                         $orderGoodTypeId              = $orders['goodTypeId'];
                         $orderServerId                = $orders['serverId'];
                         $bestOrderFrom                = $this->getLowestOfferForGoodOnServer($orderGoodId,
-                            $orderGoodTypeId, $orderServerId);
+                            $orderGoodTypeId, $orderServerId, $rows[$gridName]['tzid']);
                         $bestOrderFromValue           = (empty($bestOrderFrom->get('value'))) ? 0
                             : (int)$bestOrderFrom->get('value');
                         $bestOrderFromAmount          = (empty($bestOrderFrom->get('amount'))) ? 0
                             : (int)$bestOrderFrom->get('amount');
-                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $bestOrderFromAmount
-                            : $offerAmount;
+                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $offerAmount
+                            : $bestOrderFromAmount;
                         $orderFromTradeZone           = \App\TradeZones::find($bestOrderFrom->get('trade_zone_id'));
                     }
                     if (empty($offers)) {
@@ -153,13 +155,13 @@ class Stores extends Controller
                         $offerGoodTypeId            = $offers['goodTypeId'];
                         $offerServerId              = $offers['serverId'];
                         $bestOfferTo                = $this->getHighestOrderForGoodOnServer($offerGoodId,
-                            $offerGoodTypeId, $offerServerId);
+                            $offerGoodTypeId, $offerServerId, $rows[$gridName]['tzid']);
                         $bestOfferToValue           = (empty($bestOfferTo->get('value'))) ? 0
                             : (int)$bestOfferTo->get('value');
                         $bestOfferToAmount          = (empty($bestOfferTo->get('amount'))) ? 0
                             : (int)$bestOfferTo->get('amount');
-                        $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $bestOfferToAmount
-                            : $orderAmount;
+                        $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $orderAmount
+                            : $bestOfferToAmount;
                         $offerToTradeZone           = \App\TradeZones::find($bestOfferTo->get('trade_zone_id'));
                     }
                     $orderFromProfitRaw                         = ($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
@@ -264,6 +266,7 @@ class Stores extends Controller
     {
         $tradeZone       = TradeZones::find($transaction->trade_zone_id);
         $goodType        = GoodTypes::find($transaction->good_type_id);
+        $tzId            = $transaction->trade_zone_id;
         $good            = $this->getGoodFromGoodTypeAndGoodId($goodType, $transaction->good_id);
         $transactionType = $this->getTransactionTypeFromId($transaction->transaction_type_id);
         $transactionType = ($transactionType->title === 'buy') ? 'Orders' : 'Offers';
@@ -281,6 +284,7 @@ class Stores extends Controller
                 $this->data[$gridName]['owner'] = $transaction->owner;
                 $this->data[$gridName]['GPS']   = $tradeZone->gps;
                 $this->data[$gridName]['jsid']  = $this->cleanJsName($gridName);
+                $this->data[$gridName]['tzid']  = $tzId;
                 $this->data[$gridName]['goods'] = [];
             }
             if (empty($this->data[$gridName]['goods'][$goodTypeTitle][$goodTitle][$transactionType])) {
@@ -381,6 +385,7 @@ class Stores extends Controller
             $this->ownerStoreData[$gridName]['owner'] = $transaction->owner;
             $this->ownerStoreData[$gridName]['GPS']   = $tradeZone->gps;
             $this->ownerStoreData[$gridName]['jsid']  = $this->cleanJsName($gridName);
+            $this->ownerStoreData[$gridName]['tzid']  = $tradeZone->id;
         }
     }
 
@@ -529,10 +534,10 @@ class Stores extends Controller
     /**
      * note: if currentTradeZoneId is set then it will ignore those tradezones
      *
-     * @param int       $goodId
-     * @param int       $goodTypeId
-     * @param int       $serverId
-     * @param array|int $currentTradeZoneId
+     * @param int            $goodId
+     * @param int            $goodTypeId
+     * @param int            $serverId
+     * @param array|int|null $currentTradeZoneId
      *
      * @return \Illuminate\Support\Collection
      */
@@ -540,9 +545,9 @@ class Stores extends Controller
         int $goodId,
         int $goodTypeId,
         int $serverId,
-        $currentTradeZoneId = []
+        $currentTradeZoneId = null
     ) {
-        if ( ! is_int($currentTradeZoneId) && ! empty($currentTradeZoneId)) {
+        if ( ! is_array($currentTradeZoneId) && ! empty($currentTradeZoneId)) {
             $currentTradeZoneId = [$currentTradeZoneId];
         }
         if (empty($currentTradeZoneId)) {
@@ -580,9 +585,10 @@ class Stores extends Controller
         int $serverId,
         $currentTradeZoneId = null
     ) {
-        if ( ! is_int($currentTradeZoneId) && ! empty($currentTradeZoneId)) {
-            $currentTradeZoneId = [$currentTradeZoneId];
+        if ( ! is_array($currentTradeZoneId) && ! empty($currentTradeZoneId)) {
+            $currentTradeZoneId = [(int)$currentTradeZoneId];
         }
+
         if (empty($currentTradeZoneId)) {
             $bestValue = Transactions::where('server_id', $serverId)
                                      ->where('transaction_type_id', 2)
@@ -609,23 +615,29 @@ class Stores extends Controller
     }
 
 
+    /**
+     * @param $localGPS
+     * @param $remoteData
+     *
+     * @return float|int
+     */
     private function getDistanceByGPS($localGPS, $remoteData)
     {
-        $minimumDistance = 50000;
+        $minimumDistance = 1000; //this is in meters
         if ($localGPS !== 'n/a' && ! empty($remoteData->gps) && $remoteData->gps !== 'n/a') {
-            $remoteGPS       = $remoteData->gps;
-            $localArray      = explode(':', $localGPS);
-            $localx          = $localArray[2];
-            $localy          = $localArray[3];
-            $localz          = $localArray[4];
-            $remoteArray     = explode(':', $remoteGPS);
-            $remotex         = $remoteArray[2];
-            $remotey         = $remoteArray[3];
-            $remotez         = $remoteArray[4];
+            $remoteGPS   = $remoteData->gps;
+            $localArray  = explode(':', $localGPS);
+            $localx      = $localArray[2];
+            $localy      = $localArray[3];
+            $localz      = $localArray[4];
+            $remoteArray = explode(':', $remoteGPS);
+            $remotex     = $remoteArray[2];
+            $remotey     = $remoteArray[3];
+            $remotez     = $remoteArray[4];
 
             $distance = (($remotex - $localx) ^ 2 + (($remotey - $localy) ^ 2) + ($remotez - $localz) ^ 2) ^ (1 / 2);
 
-            return ($distance > $minimumDistance) ? $distance : 0;
+            return (abs($distance) > $minimumDistance) ? abs($distance) : 0;
         } else {
             return 0;
         }
