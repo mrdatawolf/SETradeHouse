@@ -46,8 +46,8 @@
                     <tr class="transaction-table-groups text-center">
                         <th class="left-border">Name</th>
                         <th class="left-border">Order<br>Prices</th>
+                        <th class="right-border">Order<br>Amount</th>
                         <th>Offer<br>Prices</th>
-                        <th>Order<br>Amount</th>
                         <th class="right-border">Offer<br>Amount</th>
                         <!-- Order-->
                         <th class="left-border">Name</th>
@@ -71,8 +71,8 @@
                         <tr class="text-center">
                             <td class="left-border">{{ ucfirst($good) }}</td>
                             <td class="left-border">{{ number_format($goodData->store->orders->avgPrice) }}</td>
+                            <td class="right-border">{{ number_format($goodData->store->orders->amount) }}</td>
                             <td>{{ number_format($goodData->store->offers->avgPrice) }}</td>
-                            <td>{{ number_format($goodData->store->orders->amount) }}</td>
                             <td class="right-border">{{ number_format($goodData->store->offers->amount) }}</td>
                             <!-- order from -->
                             <td class="left-border">{{ $goodData->orderFrom->tradeZoneTitle }}</td>
