@@ -2,6 +2,7 @@
 
 use App\Http\Traits\FindingGoods;
 use App\NpcStorageValues;
+use App\OwnerServer;
 use App\UserItems;
 use App\UserStorageValues;
 use Carbon\Carbon;
@@ -39,6 +40,7 @@ class GeneralStorageData
             $userItems->chunk(400, function ($userItems) use ($runningTotals) {
                 foreach ($userItems as $row) {
                     $owner    = $row['Owner'];
+                    $this->addOwnerToOwnerServer($owner);
                     $goodType = $this->seNameToGoodType($row['Item']);
                     if ( ! empty($goodType->id) && ! empty($owner)) {
                         $amount          = $row['Qty'];
@@ -89,5 +91,13 @@ class GeneralStorageData
 
         return empty($runningTotals[$owner][$groupId][$itemId]) ? $amount
             : $runningTotals[$owner][$groupId][$itemId] + $amount;
+    }
+
+    private function addOwnerToOwnerServer($owner) {
+        //select DISTINCT Owner FROM everyonesitems WHERE Owner NOT LIKE 'NPC%';
+        OwnerServer::firstOrCreate([
+            'owner_title' => $owner,
+            'server_id' => 1
+        ]);
     }
 }

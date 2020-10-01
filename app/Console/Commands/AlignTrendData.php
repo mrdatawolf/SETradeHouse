@@ -56,7 +56,8 @@ class AlignTrendData extends Command
         $this->goodTypeId        = $this->option('goodTypeId');
         $this->goodId            = $this->option('goodId');
         $transactionTypeIds      = ($this->option('transactionTypeId')) ? [(int)$this->transactionTypeId] : [1, 2];
-        $goodTypeIds             = ($this->option('goodTypeId')) ? [(int)$this->goodTypeId] :  [1, 2, 3, 4] ;
+//todo: something is wrong with certain good types... causes failures into inactive_transactions...not sure why. So along with the other blocks I stopped 4 completely
+        $goodTypeIds             = ($this->option('goodTypeId')) ? [(int)$this->goodTypeId] :  [1, 2, 3] ;
         foreach ($transactionTypeIds as $transactionTypeId) {
             foreach ($goodTypeIds as $goodTypeId) {
                 if ( ! empty($this->goodId)) {
@@ -64,15 +65,16 @@ class AlignTrendData extends Command
                 } else {
                     switch ($goodTypeId) {
                         case 1 :
-                            $ids = Ores::pluck('id');
+                            $ids = Ores::whereNotIn('id', [12, 13])->pluck('id');
                             break;
                         case 2 :
-                            $ids = Ingots::pluck('id');
+                            $ids = Ingots::whereNotIn('id', [10, 11, 12])->pluck('id');
                             break;
                         case 3 :
-                            $ids = Components::pluck('id');
+                            $ids = Components::whereNotIn('id', [40])->pluck('id');
                             break;
                         case 4 :
+                            //currently blocked
                             $ids = Tools::pluck('id');
                             break;
                     }
