@@ -100,6 +100,7 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
             });
             Route::prefix('/users')->group(function () {
                 Route::get('/', 'Administration\Admin@usersIndex')->name('admin.users');
+                Route::get('/owners', 'Administration\Admin@ownersIndex')->name('admin.users.owners');
                 Route::get('/update', 'Administration\Admin@updateUser')->name('admin.users.update');
                 Route::post('/update', 'Administration\Admin@doUpdateUser')->name('admin.users.doUpdate');
             });

@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\OwnerServer;
 use App\Servers;
 use App\User;
 use App\Worlds;
@@ -16,6 +17,13 @@ class Admin extends Controller
         return view('administration.worlds.index', compact('worlds'));
     }
 
+
+    public function ownersIndex()
+    {
+        $owners = OwnerServer::all();
+
+        return view('administration.users.owners', compact('owners'));
+    }
 
     public function createWorld()
     {

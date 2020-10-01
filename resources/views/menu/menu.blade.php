@@ -194,6 +194,7 @@
                                 <li><a class="dropdown-item" href="#"> Users &raquo </a>
                                     <ul class="submenu dropdown-menu">
                                         <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.users') }}';">Users</button></li>
+                                        <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.users.owners') }}';">Owners</button></li>
                                         <!--<li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('admin.users.update') }}';">Update User</button></li>-->
                                     </ul>
                                 </li>
