@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Components;
-use App\InActiveTransactions;
-use App\Ingots;
-use App\Ores;
-use App\Tools;
-use App\Transactions;
-use App\TransactionTypes;
+use App\Models\Components;
+use App\Models\InActiveTransactions;
+use App\Models\Ingots;
+use App\Models\Ores;
+use App\Models\Tools;
+use App\Models\Transactions;
+use App\Models\TransactionTypes;
+use App\Models\Trends as TrendsModel;
 use Carbon\Carbon;
 
 class Trends extends Controller
@@ -106,7 +107,7 @@ class Trends extends Controller
         //todo: trends should be storing the carbon date so the year is made correctly.
         $transactionTypeId = (is_int($transactionType)) ? $transactionType
             : TransactionTypes::where('title', $transactionType)->first()->id;
-        $trends            = \App\Trends::where('dated_at', '>', Carbon::now()->subHours($hoursAgo));
+        $trends            = TrendsModel::where('dated_at', '>', Carbon::now()->subHours($hoursAgo));
         if ($transactionTypeId !== 0) {
             $trends = $trends->where('transaction_type_id', $transactionTypeId);
         }

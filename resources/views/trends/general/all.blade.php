@@ -1,4 +1,4 @@
-@extends('layouts.trend')
+@extends('layouts.app')
 @section('pageTitle', 'Trends')
 
 <style>

@@ -1,4 +1,4 @@
-@extends('layouts.administration.create')
+@extends('layouts.app')
 @section('title', 'Update a user')
 
 @section('content')
@@ -39,7 +39,7 @@
                     <div class="form-group">
                         <label for="economyOreIdFormControlSelect">Economy Ore</label>
                         <select class="form-control @error('economy_ore_id') is-invalid @enderror" name="economy_ore_id" id="economyOreIdFormControlSelect" aria-describedby="economyOreIdHelp">
-                            @foreach(\App\Ores::all() as $ore)
+                            @foreach(\App\Models\Ores::all() as $ore)
                                 <option value="{{ $ore->id }}"  @if($ore->id === 13) selected @endif >{{ $ore->title }}</option>
                             @endforeach
                         </select>

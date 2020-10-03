@@ -1,10 +1,10 @@
 <?php namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
-use App\OwnerServer;
-use App\Servers;
-use App\User;
-use App\Worlds;
+use App\Models\OwnerServer;
+use App\Models\Servers;
+use App\Models\User;
+use App\Models\Worlds;
 use Redirect;
 use \Illuminate\Http\Request;
 

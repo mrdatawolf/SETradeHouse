@@ -1,4 +1,4 @@
-@extends('layouts.stocklevels')
+@extends('layouts.app')
 @section('title', 'Stock Levels')
 @section('menu')
     @parent

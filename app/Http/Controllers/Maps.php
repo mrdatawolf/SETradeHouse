@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Traits\FindingGoods;
-use App\Stores;
+use App\Models\Stores;
 
 class Maps extends Controller
 {

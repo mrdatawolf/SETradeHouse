@@ -1,11 +1,11 @@
 <?php namespace App\Http\Controllers\Gather;
 
 use App\Http\Traits\FindingGoods;
-use App\InActiveTransactions;
-use App\Stores;
-use App\TradeZones;
-use App\Transactions;
-use App\TransactionTypes;
+use App\Models\InActiveTransactions;
+use App\Models\Stores;
+use App\Models\TradeZones;
+use App\Models\Transactions;
+use App\Models\TransactionTypes;
 use Carbon\Carbon;
 
 class GeneralStoreData

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Components;
-use App\GoodTypes;
+use App\Models\Components;
+use App\Models\GoodTypes;
 use App\Http\Traits\FindingGoods;
-use App\Ingots;
-use App\NpcStorageValues;
-use App\Ores;
-use App\Tools;
-use App\UserStorageValues;
+use App\Models\Ingots;
+use App\Models\NpcStorageValues;
+use App\Models\Ores;
+use App\Models\Tools;
+use App\Models\UserStorageValues;
 
 class Stocklevels extends Controller
 {

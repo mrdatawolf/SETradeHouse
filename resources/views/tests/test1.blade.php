@@ -13,7 +13,7 @@
     @foreach($transactions as $transType => $transData)
         @foreach($transData as $typeId => $typeData)
             <div style="padding-bottom: 1em">
-                <h4>{{ $transType }} - {{ \App\GoodTypes::find($typeId)->title }}</h4><br>
+                <h4>{{ $transType }} - {{ \App\Models\GoodTypes::find($typeId)->title }}</h4><br>
             <table class="table-striped" border="1">
                 <thead>
                 <tr>

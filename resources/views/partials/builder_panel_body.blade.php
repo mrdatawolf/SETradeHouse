@@ -1,5 +1,4 @@
 <div class="panel-heading">
-    <H2>{{ $header }}</H2>
     <div class="pull-right">
         <label for="set_amount">Override all amounts: </label><input id="set_amount" name="set_amount" type="text" value="{{ $defaultAmount }}"> <label for="set_modifier">Base Value Modifier: </label><input id="set_modifier" name="set_modifier" type="text" value="{{ $defaultMultiplier }}">
         <br><i>note: changing either of these resets the values on the column they effect. The first will update all Amounts for sale. The second will update the Price Per.</i>

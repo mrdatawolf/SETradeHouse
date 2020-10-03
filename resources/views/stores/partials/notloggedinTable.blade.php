@@ -47,7 +47,7 @@
 </style>
 <ul class="nav nav-tabs">
     @php $active = 'active'; @endphp
-    @foreach(\App\GoodTypes::pluck('title') as $goodType)
+    @foreach(\App\Models\GoodTypes::pluck('title') as $goodType)
         <li class="nav-item">
             <a href="#{{ $gridData->jsid }}_{{ $goodType }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $goodType }}</a>
         </li>
@@ -55,7 +55,7 @@
     @endforeach
 </ul>
 <div class="tab-content">
-    @foreach(\App\GoodTypes::pluck('title') as $goodType)
+    @foreach(\App\Models\GoodTypes::pluck('title') as $goodType)
         <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $goodType }}">
             @if(! empty($gridData->goods->$goodType))
                 <table class="table-striped table-responsive-xl transaction-table" style="width:100%">

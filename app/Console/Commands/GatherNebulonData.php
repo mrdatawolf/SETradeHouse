@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\Gather\GeneralStorageData;
 use App\Http\Controllers\Gather\GeneralStoreData;
-use App\Servers;
-use App\Worlds;
+use App\Models\Servers;
+use App\Models\Worlds;
 use Illuminate\Console\Command;
 
 class GatherNebulonData extends Command

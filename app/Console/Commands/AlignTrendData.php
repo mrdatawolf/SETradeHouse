@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Components;
+use App\Models\Components;
 use App\Http\Controllers\Trends as TrendsController;
-use App\Ingots;
-use App\Ores;
-use App\Tools;
-use App\Trends;
+use App\Models\Ingots;
+use App\Models\Ores;
+use App\Models\Tools;
+use App\Models\Trends;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 

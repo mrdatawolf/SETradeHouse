@@ -13,7 +13,7 @@ class TncOresWorldPivot extends Migration
     {
         for($i=13;$i<=16;$i++) {
             for($j=1;$j<=3;$j++) {
-                $ores = new \App\Ores();
+                $ores = new \App\Models\Ores();
                 $ore = $ores->find($i);
                 $ore->worlds()->attach($j);
             }
@@ -29,7 +29,7 @@ class TncOresWorldPivot extends Migration
     {
         for($i=13;$i<=16;$i++) {
             for($j=1;$j<=3;$j++) {
-                $ores = new \App\Ores();
+                $ores = new \App\Models\Ores();
                 $ore = $ores->find($i);
                 $ore->worlds()->detach($j);
             }

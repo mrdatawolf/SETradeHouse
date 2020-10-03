@@ -1,11 +1,11 @@
 <?php namespace App\Http\Traits;
 
-use App\Components;
-use App\GoodTypes;
-use App\Ingots;
-use App\Ores;
-use App\Tools;
-use App\TransactionTypes;
+use App\Models\Components;
+use App\Models\GoodTypes;
+use App\Models\Ingots;
+use App\Models\Ores;
+use App\Models\Tools;
+use App\Models\TransactionTypes;
 
 trait FindingGoods {
     /**
