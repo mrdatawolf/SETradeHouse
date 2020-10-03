@@ -1,4 +1,4 @@
-@extends('layouts.tests')
+@extends('layouts.app')
 @section('title', 'Nebulon in The Nebulon Cluster')
 @section('menu')
 @parent

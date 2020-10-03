@@ -2,10 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\Stocklevels;
-use App\Http\Controllers\Stores;
-use App\NpcStorageValues;
-use App\Transactions;
 use Carbon\Carbon;
 use Closure;
 use \Session;
@@ -22,20 +18,11 @@ class CheckSessionData
      */
     public function handle($request, Closure $next) {
         $this->carbonNow = Carbon::now();
-        if(! Session::has('stockLevels')) {
-            $this->setStockData();
-        }
         if(! Session::has('serverId')) {
             $this->setGeneralValues();
         }
 
         return $next($request);
-    }
-
-    public function setStockData() {
-        $stockController = new Stocklevels();
-        $stockLevels = $stockController->getStockLevels();
-        Session::put('stockLevels', $stockLevels);
     }
 
 

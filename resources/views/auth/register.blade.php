@@ -1,106 +1,52 @@
-@extends('layouts.app')
+<x-guest-layout>
+    <x-jet-authentication-card>
+        <x-slot name="logo">
+            <x-jet-authentication-card-logo />
+        </x-slot>
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+        <x-jet-validation-errors class="mb-4" />
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
-                        <div class="form-group row">
-                            <label for="server" class="col-md-4 col-form-label text-md-right">Server</label>
-                            <div class="col-md-6">
-                                <select id="server" class="form-control @error('server') is-invalid @enderror" name="server" required>
-                                    @foreach(\App\Servers::all() as $server)
-                                        <option value="{{ $server->id }}">{{ $server->title }}</option>
-                                    @endforeach
-                                </select>
-                                @error('server')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('UserName') }}</label>
-                            <div class="col-md-6">
-                                <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>
-                                @error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="seusername" class="col-md-4 col-form-label text-md-right">Space Engineer Username</label>
-                            <div class="col-md-6">
-                                <input id="username" type="text" class="form-control @error('seusername') is-invalid @enderror" name="seusername" value="{{ old('seusername') }}" autocomplete="seusername">
-                                @error('seusername')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <i>note: Space Engineer Username is not required if username is se server username</i>
-                        </div>
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+            <div>
+                @livewire('server-select')
             </div>
-        </div>
-        <div class="col-md-8">
-            @foreach ($errors->all() as $error)
-                {{ $error }}
-            @endforeach
-        </div>
-    </div>
-</div>
-@endsection
+
+            <div>
+                <x-jet-label value="{{ __('Username') }}" />
+                <x-jet-input class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+            </div>
+
+            <div>
+                <x-jet-label value="Space Engineer Username" title="Fill in Space Engineer Username if the Username is different here is different then the ingame username" />
+                <x-jet-input class="block mt-1 w-full" type="text" name="seusername" :value="old('seusername')" autocomplete="seusername" />
+            </div>
+
+            <div class="mt-4">
+                <x-jet-label value="{{ __('Email') }}" />
+                <x-jet-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+            </div>
+
+            <div class="mt-4">
+                <x-jet-label value="{{ __('Password') }}" />
+                <x-jet-input class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+            </div>
+
+            <div class="mt-4">
+                <x-jet-label value="{{ __('Confirm Password') }}" />
+                <x-jet-input class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+            </div>
+
+            <div class="flex items-center justify-end mt-4">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
+                    {{ __('Already registered?') }}
+                </a>
+
+                <x-jet-button class="ml-4">
+                    {{ __('Register') }}
+                </x-jet-button>
+            </div>
+        </form>
+    </x-jet-authentication-card>
+</x-guest-layout>

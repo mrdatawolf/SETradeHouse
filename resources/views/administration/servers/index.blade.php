@@ -1,4 +1,4 @@
-@extends('layouts.administration.servers')
+@extends('layouts.app')
 @section('title', 'All Severs')
 
 @section('content')

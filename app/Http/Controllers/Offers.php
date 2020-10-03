@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Components;
-use App\Ingots;
-use App\Ores;
-use App\Tools;
+use App\Models\Components;
+use App\Models\Ingots;
+use App\Models\Ores;
+use App\Models\Tools;
 
 /**
  * Class Offers

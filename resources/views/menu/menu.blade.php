@@ -126,11 +126,11 @@
                     </li>
                     <li class="nav-item dropdown">
                         @php
-                            $npcStorageValue = \App\NpcStorageValues::latest('origin_timestamp')->first();
+                            $npcStorageValue = \App\Models\NpcStorageValues::latest('origin_timestamp')->first();
                             $newestDbRecord = (empty($npcStorageValue->origin_timestamp)) ? 'N/A' : $npcStorageValue->origin_timestamp . ' -7';
                             $dbCarbonDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$npcStorageValue->origin_timestamp, 'America/Los_Angeles');
                             $dbStaleness = (int) \Carbon\Carbon::now()->diffInHours($dbCarbonDate);
-                            $transaction = \App\Transactions::latest('updated_at')->first();
+                            $transaction = \App\Models\Transactions::latest('updated_at')->first();
                             $newestSyncRecord = (empty($transaction->updated_at)) ? 'N/A' : $transaction->updated_at->toDateTimeString() . ' +0';
                             $npcCarbonDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$transaction->updated_at);
                             $syncStaleness = (int) \Carbon\Carbon::now()->diffInHours($npcCarbonDate);
@@ -174,6 +174,7 @@
                                 <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('tests.test1') }}';">Test1</button></li>
                                 <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('tests.solarSystem') }}';">solarSystem</button></li>
                                 <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('tests.solarSystem3d') }}';">solarSystem3d</button></li>
+                                <li class="nav-item"><a href="{{ route('stocklevels') }}" class="nav-link">Stock Levels</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -205,8 +206,8 @@
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ $currentUser->username }}</a>
                         <ul class="dropdown-menu">
                             <li>Known on the server as: {{ $currentUser->server_username ?? $currentUser->username }}</a></li>
-                            <li class="font-weight-bold">Current Server: {{ \App\Servers::find((int) Session::get('serverId'))->title ?? '' }}</li>
-                            <li class="font-weight-bold">Current World: {{ \App\Worlds::find((int) Session::get('worldId'))->title ?? '' }}</li>
+                            <li class="font-weight-bold">Current Server: {{ \App\Models\Servers::find((int) Session::get('serverId'))->title ?? '' }}</li>
+                            <li class="font-weight-bold">Current World: {{ \App\Models\Worlds::find((int) Session::get('worldId'))->title ?? '' }}</li>
                             <li><button class="nav-link dropdown-item" onclick="window.location.href='{{ route('logout') }}';">{{ __('Logout') }}</button></li>
                         </ul>
                     </li>

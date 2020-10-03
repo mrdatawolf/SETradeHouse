@@ -58,7 +58,7 @@
     @endforeach
 </ul>
 <div class="tab-content">
-    @foreach(\App\GoodTypes::pluck('title') as $goodType)
+    @foreach(\App\Models\GoodTypes::pluck('title') as $goodType)
         <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $goodType }}">
             @if(! empty($gridData->goods->$goodType))
                 <table class="table-striped table-responsive-xl transaction-table" style="width:100%">

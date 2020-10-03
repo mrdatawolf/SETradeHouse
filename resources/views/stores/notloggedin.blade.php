@@ -1,4 +1,4 @@
-@extends('layouts.notloggedin')
+@extends('layouts.guest')
 @section('title', 'Server Stores')
 
 @section('content')

@@ -1,4 +1,4 @@
-@extends('layouts.administration.create')
+@extends('layouts.app')
 @section('title', 'Create World')
 
 @section('content')

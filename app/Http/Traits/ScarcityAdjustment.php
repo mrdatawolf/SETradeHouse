@@ -1,8 +1,8 @@
 <?php namespace App\Http\Traits;
 
 use App\Http\Controllers\Stores;
-use App\Trends;
-use App\Servers;
+use App\Models\Trends;
+use App\Models\Servers;
 use Carbon\Carbon;
 use \Session;
 
@@ -127,16 +127,16 @@ trait ScarcityAdjustment
     {
         $goodTypeId = false;
         switch (get_class($this)) {
-            case 'App\Ores' :
+            case 'App\Models\Ores' :
                 $goodTypeId = 1;
                 break;
-            case 'App\Ingots' :
+            case 'App\Models\Ingots' :
                 $goodTypeId = 2;
                 break;
-            case 'App\Components' :
+            case 'App\Models\Components' :
                 $goodTypeId = 3;
                 break;
-            case 'App\Tools' :
+            case 'App\Models\Tools' :
                 $goodTypeId = 4;
                 break;
         }

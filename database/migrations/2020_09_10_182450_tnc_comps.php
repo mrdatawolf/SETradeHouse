@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use \App\Components;
+use \App\Models\Components;
 
 class TncComps extends Migration
 {

@@ -1,5 +1,5 @@
-@extends('layouts.trend')
-@section('pageTitle', 'Oron Trends')
+@extends('layouts.app')
+@section('pageTitle', 'Iron Trends')
 
 @section('content')
     <div id="app" class="flex-center position-ref full-height">

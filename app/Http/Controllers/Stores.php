@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\GoodTypes;
+use App\Models\GoodTypes;
 use App\Http\Traits\FindingGoods;
-use App\TradeZones;
-use App\Transactions;
+use App\Models\TradeZones;
+use App\Models\Transactions;
 use \Illuminate\Support\Collection;
 
 Collection::macro('sortByDate', function ($column = 'created_at', $order = SORT_DESC) {
@@ -157,7 +157,7 @@ class Stores extends Controller
                             : (int)$bestOrderFrom->get('amount');
                         $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $bestOrderFromAmount
                             : $offerAmount;
-                        $orderFromTradeZone           = \App\TradeZones::find($bestOrderFrom->get('trade_zone_id'));
+                        $orderFromTradeZone           = TradeZones::find($bestOrderFrom->get('trade_zone_id'));
                     }
                     if (empty($offers)) {
                         $bestOfferToValue           = 0;
@@ -176,7 +176,7 @@ class Stores extends Controller
                             : (int)$bestOfferTo->get('amount');
                         $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $bestOfferToAmount
                             : $orderAmount;
-                        $offerToTradeZone           = \App\TradeZones::find($bestOfferTo->get('trade_zone_id'));
+                        $offerToTradeZone           = TradeZones::find($bestOfferTo->get('trade_zone_id'));
                     }
                     $orderFromProfitRaw                         = ($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
                     $orderFromProfit                            = ($orderFromProfitRaw > 0) ? $orderFromProfitRaw : 0;

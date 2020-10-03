@@ -1,10 +1,10 @@
 <?php namespace App\Http\Controllers\Gather;
 
 use App\Http\Traits\FindingGoods;
-use App\NpcStorageValues;
-use App\OwnerServer;
-use App\UserItems;
-use App\UserStorageValues;
+use App\Models\NpcStorageValues;
+use App\Models\OwnerServer;
+use App\Models\UserItems;
+use App\Models\UserStorageValues;
 use Carbon\Carbon;
 
 class GeneralStorageData
