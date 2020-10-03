@@ -26,7 +26,7 @@ Route::get('/', 'HomeController@index')->name('root');
 Route::get('/nebulon', 'NotLoggedInController@index')->name('nebulon');
 
 //normally authenticated users.
-Route::group(['middleware' => ['auth', 'session.data']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/welcome', function () {
         return view('welcome');
@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
     });
 });
 //trends
-Route::group(['middleware' => ['auth', 'session.data']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
     Route::prefix('/trends')->group(function () {
         Route::prefix('/ores')->group(function () {
             Route::get('/', 'Trends@oresOfferIndex')->name('trends.ores');
@@ -78,7 +78,7 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
     });
 });
 //tests
-Route::group(['middleware' => ['auth', 'session.data']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
     Route::prefix('/maps')->group(function () {
         Route::get('/nebulonSystem', 'Maps@nebulonSystem')->name('maps.nebulonSystem');
         Route::get('/nebulonSystem3D', 'Maps@nebulonSystem3D')->name('maps.nebulonSystem3D');
@@ -91,7 +91,7 @@ Route::group(['middleware' => ['auth', 'session.data']], function () {
     });
 
 //admin tools
-    Route::group(['middleware' => ['auth', 'session.data']], function () {
+    Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
         Route::prefix('/admin')->group(function () {
             Route::prefix('/worlds')->group(function () {
                 Route::get('/', 'Administration\Admin@worldsIndex')->name('admin.worlds');
