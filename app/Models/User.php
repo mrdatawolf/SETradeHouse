@@ -30,7 +30,8 @@ class User extends Authenticatable
         'password',
         'created_at',
         'server_id',
-        'server_username'
+        'server_username',
+        'current_team_id'
     ];
 
     /**
