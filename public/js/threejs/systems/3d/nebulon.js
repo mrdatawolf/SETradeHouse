@@ -74,13 +74,12 @@ function onDocumentMouseMove( event ) {
 
 function init() {
 
-    container = document.createElement( 'div' );
-    document.body.appendChild( container );
+    container = document.getElementById( 'canvas' );
 
     var info = document.createElement( 'div' );
     info.style.position = 'absolute';
     info.style.top = '10px';
-    info.style.width = '100%';
+    info.style.width = '80%';
     info.style.textAlign = 'center';
     info.innerHTML = 'Drag to spin the system';
     container.appendChild( info );

@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('title', 'Nebulon in The Nebulon Cluster')
-@section('content')
 <style>
     body {
         font-family: Monospace;
@@ -8,9 +7,13 @@
         margin: 0px;
         overflow: hidden;
     }
+    canvas {
+        width: 50%;
+        height: 50%
+    }
 </style>
-
-
+@section('content')
+    <div id="canvas"></div>
 @endsection
 @section('scripts')
     @parent
