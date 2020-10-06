@@ -6,7 +6,7 @@
 A standalone web service allowing users to see trade data from participating Space Engineers (SE) Servers.  The goal is to display data to help a user smartly position themselves in their choosen SE Server's markets. Whether the user is running their own trades or are simply looking to maximze their profits; this system will help them understand the market forces in play and give guidance on the setting up the best trade positions.
  
 ##Development setup Quick Start (for local development and testing)
-1. It is now built on laravel 7 so get that running.
+1. It is now built on laravel 8 so get that running.
 2. Do composer update
 3. Configure your .env to handle your dbs etc.
 4. run ```php artisan migrate:fresh```
@@ -34,7 +34,7 @@ Road to 1.0 MVP
 ##Future Roadmap
 1.  Revised +1.0 goals.
     1. ~~Expand the active and inactive transactions to use all columns.~~
-    2. Add a three.js map of the system.
+    2. ~~Add a three.js map of the system.~~
     3. Add sheets as needed to flesh out the user experience. Anything that can help the users visualize or work with the data.
     4. Have the three.js map show current  store locations.
     5. Add a thrust to weight calculator.
@@ -45,6 +45,9 @@ Road to 1.0 MVP
     10. ~~Get the ticker working~~.
     11. A Map Generator showing cluster servers and their tradezones. Or maybe just a common format for making a diagram for the users.
     12. There's alot more but where we go will depend on where the people helping see the project going from here.
+
+##Notes
+We have started moving to livewire. 1d
 
 ## Contributing
 
