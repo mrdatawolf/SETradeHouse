@@ -4,90 +4,59 @@
     @parent
 @endsection
 @section('content')
-    @if(! empty($stockLevels))
-<div class="flex-center position-ref full-height">
+<style>
+    @media (min-width: 576px) {
+        .card-columns {
+            column-count: 2;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .card-columns {
+            column-count: 3;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .card-columns {
+            column-count: 4;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .card-columns {
+            column-count: 5;
+        }
+    }
+</style>
+@if(! empty($stockLevels))
     <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a href="#npc" class="nav-link active" data-toggle="tab">NPCs</a>
-            </li>
+        <li class="nav-item">
+            <a href="#npc" class="nav-link active" data-toggle="tab">NPCs</a>
+        </li>
         @if($currentUser->roles->contains(8))
-            <li class="nav-item">
-                <a href="#user" class="nav-link" data-toggle="tab">Users</a>
-            </li>
+        <li class="nav-item">
+            <a href="#user" class="nav-link" data-toggle="tab">Users</a>
+        </li>
         @endif
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="npc">
-            <div class="card">
-                <div class="card-header">NPC Data</div>
-                <div class="card-body">
-                    <table class="table-striped">
-                        <thead>
-                        <tr>
-                            <th>Good</th>
-                            <th>Total Amount</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                            @foreach($stockLevels['npc'] as $goodType => $data)
-                                <tr>
-                                    <th colspan="2">{{ $goodType }}</th>
-                                </tr>
-                                @foreach($data as $good => $amount)
-                                    <tr>
-                                        <td>{{ $good }}</td>
-                                        <td>{{ $amount }}</td>
-                                    </tr>
-                                @endforeach
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            @livewire('stocklevels.npc', ['stockLevels' => $stockLevels])
         </div>
         @if($currentUser->roles->contains(8))
         <div class="tab-pane fade" id="user">
-            <div class="card">
-                <div class="card-header">User Data</div>
-                <div class="card-body">
-                    <table class="table-striped">
-                        <thead>
-                        <tr>
-                            <th>Good</th>
-                            <th>Total Amount</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        @foreach($stockLevels['user'] as $goodType => $data)
-                            <tr>
-                                <th colspan="2">{{ $goodType }}</th>
-                            </tr>
-                            @foreach($data as $good => $amount)
-                                <tr>
-                                    <td>{{ $good }}</td>
-                                    <td>{{ $amount }}</td>
-                                </tr>
-                            @endforeach
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            @livewire('stocklevels.users', ['stockLevels' => $stockLevels])
         </div>
         @endif
+
+    </div>
+@else
+<div class="card">
+    <div class="card-header">Error</div>
+    <div class="card-body">
+    No Data Found
     </div>
 </div>
-@else
-    <div class="card">
-        <div class="card-header">Error</div>
-        <div class="card-body">
-        No Data Found
-        </div>
-    </div>
 @endif
-@endsection
-@section('scripts')
-    @parent
 @endsection
