@@ -47,7 +47,6 @@ class LoginController extends Controller
      */
     protected function authenticated(\Illuminate\Http\Request $request, $user)
     {
-//        return redirect()->route('welcome');
         return redirect()->route('dashboard');
     }
 
