@@ -13,14 +13,14 @@ class TrendsController extends Controller
         if(!auth()->user()->tokenCan('read')) {
                        abort(403, 'Unauthorized');
         }
-//
+
 
         if(! empty($request)) {
             $transactionTypeId = (empty($request->transactionType) || $request->transactionType === 'order') ? 1 : 2;
             //todo:: these need to be converted to string names... so goodId should be carbon and goodType shoudl be ore.
             $goodTypeId = $request->goodTypeId;
             $goodId = $request->goodId;
-            $earliestDate = (empty($request->earlisetDate)) ? Carbon::now()->subHours(6) : Carbon::createFromDate($request->earlisetDate);
+            $earliestDate = (empty($request->earliestDate)) ? Carbon::now()->subHours(6) : Carbon::createFromDate($request->earliestDate);
 
             $trends = Trends::where('transaction_type_id',$transactionTypeId)
                             ->where('good_type_id', $goodTypeId)
