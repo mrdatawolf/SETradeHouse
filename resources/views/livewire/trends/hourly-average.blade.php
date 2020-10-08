@@ -17,7 +17,8 @@
                     var ctx = doc.getContext('2d');
                     @if(empty($jsonHourlyAvg) || empty($jsonHourlyAvgLabels))
                         ctx.font = "30px Arial";
-                    ctx.fillText("No data found", 10, 50);
+                        ctx.fillText("No data found", 10, 50);
+                        console.log('No data found!');
                     @else
                     var trend{{ $title }}Hourly = new Chart(ctx, {
                         type: 'line',
@@ -38,7 +39,8 @@
                             }
                         }
                     });
-                @endif
+                    @endif
+                }
             </script>
         @endif
     @endforeach
