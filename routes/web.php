@@ -31,18 +31,19 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
     Route::get('/welcome', function () {
         return view('welcome');
     })->name('welcome');
-
-    Route::prefix('/orders')->group(function () {
-        Route::get('ores', 'Orders@ores')->name('orders.ores');
-        Route::get('ingots', 'Orders@ingots')->name('orders.ingots');
-        Route::get('components', 'Orders@components')->name('orders.components');
-        Route::get('tools', 'Orders@tools')->name('orders.tools');
-    });
-    Route::prefix('/offers')->group(function () {
-        Route::get('ores', 'Offers@ores')->name('offers.ores');
-        Route::get('ingots', 'Offers@ingots')->name('offers.ingots');
-        Route::get('components', 'Offers@components')->name('offers.components');
-        Route::get('tools', 'Offers@tools')->name('offers.tools');
+    Route::prefix('/transactions')->group(function () {
+        Route::prefix('/orders')->group(function () {
+            Route::get('ores', 'Orders@ores')->name('transactions.orders.ores');
+            Route::get('ingots', 'Orders@ingots')->name('transactions.orders.ingots');
+            Route::get('components', 'Orders@components')->name('transactions.orders.components');
+            Route::get('tools', 'Orders@tools')->name('transactions.orders.tools');
+        });
+        Route::prefix('/offers')->group(function () {
+            Route::get('ores', 'Offers@ores')->name('transactions.offers.ores');
+            Route::get('ingots', 'Offers@ingots')->name('transactions.offers.ingots');
+            Route::get('components', 'Offers@components')->name('transactions.offers.components');
+            Route::get('tools', 'Offers@tools')->name('transactions.offers.tools');
+        });
     });
     Route::get('/stocklevels', 'Stocklevels@index')->name('stocklevels');
     Route::get('store/{id}', 'Stores@storeIndex')->name('store');

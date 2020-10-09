@@ -41,45 +41,6 @@
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
-                    <!-- Transactions -->
-                    <x-jet-dropdown align="left" width="48">
-                        <x-slot name="trigger">
-                            <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                {{ __('Transactions') }}
-                            </button>
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </x-slot>
-                        <x-slot name="content">
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Orders') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('orders.ores') }}">
-                                &nbsp;&nbsp; Ores
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('orders.ingots') }}">
-                                &nbsp;&nbsp; Ingots
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('orders.components') }}">
-                                &nbsp;&nbsp; Components
-                            </x-jet-dropdown-link>
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Offers') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('offers.ores') }}">
-                                &nbsp;&nbsp; Ores
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('offers.ingots') }}">
-                                &nbsp;&nbsp; Ingots
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('offers.components') }}">
-                                &nbsp;&nbsp;Components
-                            </x-jet-dropdown-link>
-                        </x-slot>
-                    </x-jet-dropdown>
                     <!-- Stores -->
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
@@ -252,8 +213,36 @@
                             </button>
                         @endif
                     </x-slot>
-
                     <x-slot name="content">
+                        <!-- Transactions -->
+                        <div class="block px-4 py-2 text-xs text-gray-400">
+                            {{ __('Transactions') }}
+                        </div>
+                            <div class="block px-4 py-2 text-xs text-gray-600">
+                                &nbsp;&nbsp; {{ __('Orders') }}
+                            </div>
+                            <x-jet-dropdown-link href="{{ route('transactions.orders.ores') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ores
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.orders.ingots') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ingots
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.orders.components') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Components
+                            </x-jet-dropdown-link>
+                            <div class="block px-4 py-2 text-xs text-gray-600">
+                                &nbsp;&nbsp; {{ __('Offers') }}
+                            </div>
+                            <x-jet-dropdown-link href="{{ route('transactions.offers.ores') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ores
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.offers.ingots') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ingots
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.offers.components') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Components
+                            </x-jet-dropdown-link>
+                        <div class="border-t border-gray-100"></div>
                         <!-- Account Management -->
                         <div class="block px-4 py-2 text-xs text-gray-400">
                             {{ __('Manage Account') }}
