@@ -51,6 +51,40 @@ class DataStatusController extends Controller
         if(!auth()->user()->tokenCan('read')) {
             abort(403, 'Unauthorized');
         }
+
         return response()->json(['Nothing to see here']);
+    }
+
+    public function import() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+        $npcStorageValue  = NpcStorageValues::latest('origin_timestamp')->first();
+        $newestDbRecord   = (empty($npcStorageValue->origin_timestamp)) ? 'N/A'
+            : $npcStorageValue->origin_timestamp.' -7';
+        $dbCarbonDate     = Carbon::createFromFormat('Y-m-d H:i:s', $npcStorageValue->origin_timestamp,
+            'America/Los_Angeles');
+        $dbStaleness      = (int)Carbon::now()->diffInHours($dbCarbonDate);
+
+        return response()->json([
+            'newestDbRecord'   => $newestDbRecord,
+            'dbStaleness'      => $dbStaleness,
+        ]);
+    }
+
+    public function sync() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+        $transaction      = Transactions::latest('updated_at')->first();
+        $newestSyncRecord = (empty($transaction->updated_at)) ? 'N/A'
+            : $transaction->updated_at->toDateTimeString().' +0';
+        $npcCarbonDate    = Carbon::createFromFormat('Y-m-d H:i:s', $transaction->updated_at);
+        $syncStaleness    = (int)Carbon::now()->diffInHours($npcCarbonDate);
+
+        return response()->json([
+            'newestSyncRecord' => $newestSyncRecord,
+            'syncStaleness'    => $syncStaleness
+        ]);
     }
 }
