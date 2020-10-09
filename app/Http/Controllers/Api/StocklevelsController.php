@@ -1,29 +1,29 @@
 <?php namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use  \App\Models\TradeZones;
+use App\Http\Controllers\Stocklevels;
 use Illuminate\Http\Request;
 
-class StoresController extends Controller
+class StocklevelsController extends Controller
 {
     public function index() {
         if(!auth()->user()->tokenCan('read')) {
             abort(403, 'Unauthorized');
         }
-        $stores = TradeZones::all();
+        $stocklevel = new Stocklevels();
 
         return response()->json([
-            'stores' => $stores
+            'stocklevels' => $stocklevel->getStockLevels()
         ]);
     }
 
-    public function show(TradeZones  $tradezone) {
+    public function show() {
         if(!auth()->user()->tokenCan('read')) {
             abort(403, 'Unauthorized');
         }
 
         return response()->json([
-            'store' => $tradezone
+            'stocklevels' => 'Comming Soon'
         ]);
     }
 }

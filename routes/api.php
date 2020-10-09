@@ -18,3 +18,7 @@ Route::apiResource('trends', 'Api\TrendsController')->middleware('auth:sanctum')
 Route::apiResource('stores', 'Api\StoresController')->middleware('auth:sanctum');
 Route::apiResource('data', 'Api\DataStatusController')->middleware('auth:sanctum');
 
+/* Specific routes to match the web options */
+Route::apiResource('stocklevels', 'Api\StocklevelsController')->middleware('auth:sanctum');
+
+

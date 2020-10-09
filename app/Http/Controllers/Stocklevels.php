@@ -24,9 +24,14 @@ class Stocklevels extends Controller
     public function getStockLevels() {
         $usersStorage       = new UserStorageValues();
         $npcsStorage        = new NpcStorageValues();
-        $summedUserTotals   = $usersStorage->select('server_id','world_id','group_id','item_id', \DB::raw('sum(amount) amount'))->groupBy('server_id','world_id','group_id','item_id')->get();
-        $summedNpcTotals    = $npcsStorage->select('server_id','world_id','group_id','item_id', \DB::raw('sum(amount) amount'))->groupBy('server_id','world_id','group_id','item_id')->get();
 
+        if(\Auth::user()->isAdmin()) {
+            $summedUserTotals = $usersStorage->select('server_id', 'world_id', 'group_id', 'item_id',
+                \DB::raw('sum(amount) amount'))->groupBy('server_id', 'world_id', 'group_id', 'item_id')->get();
+        } else {
+            $summedUserTotals = [];
+        }
+        $summedNpcTotals    = $npcsStorage->select('server_id','world_id','group_id','item_id', \DB::raw('sum(amount) amount'))->groupBy('server_id','world_id','group_id','item_id')->get();
         $stockLevels = [];
         foreach($summedUserTotals as $row) {
             $group = GoodTypes::find($row->group_id);
