@@ -40,4 +40,92 @@ class TrendsController extends Controller
         }
         return response()->json([]);
     }
+
+    //methods beyond crud
+    public function oresOrders() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+        $trends = new \App\Http\Controllers\Trends();
+        $trend = $trends->gatherTrends(1, 720, 1);
+
+        return response()->json(['trends' => $trend]);
+    }
+
+    public function oresOffers() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $trends = new \App\Http\Controllers\Trends();
+        $trend = $trends->gatherTrends(2, 720, 1);
+
+        return response()->json(['trends' => $trend]);
+    }
+
+    public function ingotsOrders() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $trends = new \App\Http\Controllers\Trends();
+        $trend = $trends->gatherTrends(1, 720, 2);
+
+        return response()->json(['trends' => $trend]);
+    }
+
+    public function ingotsOffers() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $trends = new \App\Http\Controllers\Trends();
+        $trend = $trends->gatherTrends(2, 720, 2);
+
+        return response()->json(['trends' => $trend]);
+    }
+
+    public function componentsOrders() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $trends = new \App\Http\Controllers\Trends();
+        $trend = $trends->gatherTrends(1, 720, 3);
+
+        return response()->json(['trends' => $trend]);
+    }
+
+    public function componentsOffers() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $trends = new \App\Http\Controllers\Trends();
+        $trend = $trends->gatherTrends(2, 720, 3);
+
+        return response()->json(['trends' => $trend]);
+    }
+
+    public function toolsOrders() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $trends = new \App\Http\Controllers\Trends();
+        $trend = $trends->gatherTrends(1, 720, 4);
+
+        return response()->json(['trends' => $trend]);
+    }
+
+    public function toolsOffers() {
+        if(!auth()->user()->tokenCan('read')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $trends = new \App\Http\Controllers\Trends();
+        $trend = $trends->gatherTrends(2, 720, 4);
+
+        return response()->json(['trends' => $trend]);
+    }
 }

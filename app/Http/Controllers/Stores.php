@@ -31,8 +31,7 @@ class Stores extends Controller
         $hoursWindow = 12;
         $title       = "Stores";
         $storeType   = "personal";
-        $username    = \Auth::user()->server_username;
-        $stores      = $this->getTransactionsOfOwner($username);
+        $stores      = $this->getTransactionsOfOwner();
 
         return view('stores.personal', compact('stores', 'storeType', 'title', 'hoursWindow'));
     }
@@ -43,10 +42,10 @@ class Stores extends Controller
      */
     public function worldIndex()
     {
-        $serverId  = $this->getServerId();
+        $worldId   = $this->getWorldId();
         $title     = "Stores";
         $storeType = "world";
-        $stores    = $this->getTransactionsUsingTitles($serverId);
+        $stores    = $this->getTransactionsUsingTitles($worldId);
 
         return view('stores.world', compact('stores', 'storeType', 'title'));
     }
@@ -57,10 +56,9 @@ class Stores extends Controller
      */
     public function serverIndex()
     {
-        $serverId  = $this->getServerId();
         $title     = "Stores";
         $storeType = "server";
-        $stores    = $this->getTransactionsUsingTitles($serverId);
+        $stores    = $this->getTransactionsUsingTitles();
 
         return view('stores.server', compact('stores', 'storeType', 'title'));
     }
@@ -79,18 +77,18 @@ class Stores extends Controller
     /**
      * note: this gets all the transactions for the stores and returns it with the ids converted to titles.
      *
-     * @param int      $serverId
      * @param null|int $worldId
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getTransactionsUsingTitles(int $serverId, $worldId = null)
+    public function getTransactionsUsingTitles($worldId = null)
     {
+        $serverId  = $this->getServerId();
         $this->data   = [];
         $transactions = new Transactions();
 
-        if ($serverId) {
-            $transactions->where('server_id', $serverId)
+        if ($worldId) {
+            $transactions->where('world_id', $worldId)
                          ->orderBy('good_type_id', 'ASC')
                          ->orderBy('transaction_type_id', 'DESC')
                          ->orderBy('good_id', 'DESC')
@@ -225,14 +223,15 @@ class Stores extends Controller
     /**
      * note: this gets all the transactions for a given owners stores and returns it with the ids converted to titles.
      *
-     * @param $owner
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getTransactionsOfOwner($owner)
+    public function getTransactionsOfOwner()
     {
-        $serverId             = \Session::get('serverId');
-        $worldId              = \Session::get('worldId');
+        $owner                = \Auth::user()->server_username;
+        $serverId             = $this->getServerId();
+        $worldId              = $this->getWorldId();
+
         $this->ownerStoreData = [];
         $transactionsModel    = new Transactions();
         $transactions         = $transactionsModel->where('owner', $owner)
@@ -621,10 +620,17 @@ class Stores extends Controller
     }
 
 
-    //because the active serve could change we should look at seesion id and find out where the user currently is.
+    //todo::find a better way then session for deciding the active server
     private function getServerId()
     {
-        return \Session::get('serverId');
+        return (empty(\Session::get('serverId'))) ? 1 : \Session::get('serverId');
+    }
+
+
+    //todo::find a better way then session for deciding the active world
+    private function getWorldId()
+    {
+        return (empty(\Session::get('worldId'))) ? 1 : \Session::get('worldId');
     }
 
 
