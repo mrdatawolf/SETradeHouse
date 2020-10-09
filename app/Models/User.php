@@ -10,6 +10,11 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Class User
+ *
+ * @package App\Models
+ */
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -67,5 +72,22 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany('App\Models\Roles');
+    }
+
+
+    /**
+     * note: is the user a website admin
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        foreach ($this->roles()->get() as $role)
+        {
+            if ($role->id === 8)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
