@@ -41,8 +41,12 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
             Route::middleware('auth:sanctum')->get('/offers', 'Api\TrendsController@toolsOffers');
         });
     });
+    Route::prefix('/status')->group(function () {
+        Route::middleware('auth:sanctum')->get('/import', 'Api\DataStatusController@import');
+        Route::middleware('auth:sanctum')->get('/sync', 'Api\DataStatusController@sync');
+    });
 });
 Route::apiResource('stores', 'Api\StoresController')->middleware('auth:sanctum');
 Route::apiResource('trends', 'Api\TrendsController')->middleware('auth:sanctum');
 //other routes
-Route::apiResource('data', 'Api\DataStatusController')->middleware('auth:sanctum');
+Route::apiResource('status', 'Api\DataStatusController')->middleware('auth:sanctum');
