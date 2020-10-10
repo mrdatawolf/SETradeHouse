@@ -2,13 +2,13 @@
 
 use Livewire\Component;
 
-class HourlyAverage extends Component
+class HourlyAmount extends Component
 {
-    public $trendHourlyAvg;
+    public $trendHourlyAvailable;
     public $trendHourlyLabels;
 
     public function render()
     {
-        return view('livewire.trends.hourly-average');
+        return view('livewire.trends.hourly-amount');
     }
 }

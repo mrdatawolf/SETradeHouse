@@ -10,7 +10,7 @@
             <script>
             @php
                 $jsonDaily       = json_encode($dailyAvailable, true);
-                $jsonDailyLabels = json_encode($trendDailyAvgLabels[$title]);
+                $jsonDailyLabels = json_encode($trendDailyLabels[$title]);
             @endphp
             var doc = document.getElementById('trend{{ $title }}DailyAmount');
             if (doc != null) {

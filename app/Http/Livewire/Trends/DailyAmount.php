@@ -7,7 +7,7 @@ use Livewire\Component;
 class DailyAmount extends Component
 {
     public $trendDailyAvailable;
-    public $trendDailyAvgLabels;
+    public $trendDailyLabels;
 
     public function render()
     {

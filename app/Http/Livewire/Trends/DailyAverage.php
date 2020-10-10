@@ -7,7 +7,7 @@ use Livewire\Component;
 class DailyAverage extends Component
 {
     public $trendDailyAvg;
-    public $trendDailyAvgLabels;
+    public $trendDailyLabels;
 
     public function render()
     {

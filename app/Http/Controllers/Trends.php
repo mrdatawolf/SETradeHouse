@@ -122,14 +122,15 @@ class Trends extends Controller
         $trends     = $trends->orderBy('transaction_type_id')->orderBy('dated_at');
         $goodTitles = $this->goodTitlesByTypeId($goodTypeId);
         foreach ($trends->get() as $trend) {
-            $title        = (empty($goodTitles)) ?  $this->goodTitleByIds($trend->good_type_id, $trend->good_id) : $goodTitles[$trend->good_id];
-            $title = str_replace(' ', '', $title);
-            $title = str_replace('.', '', $title);
-            $title = str_replace('-', '', $title);
-            $title = str_replace('[', '', $title);
-            $title = str_replace(']', '', $title);
-            $title = str_replace('(', '', $title);
-            $title = str_replace(')', '', $title);
+            $title        = (empty($goodTitles)) ? $this->goodTitleByIds($trend->good_type_id, $trend->good_id)
+                : $goodTitles[$trend->good_id];
+            $title        = str_replace(' ', '', $title);
+            $title        = str_replace('.', '', $title);
+            $title        = str_replace('-', '', $title);
+            $title        = str_replace('[', '', $title);
+            $title        = str_replace(']', '', $title);
+            $title        = str_replace('(', '', $title);
+            $title        = str_replace(')', '', $title);
             $dataPoints[] = [
                 'title'               => $title,
                 'transaction_type_id' => $trend->transaction_type_id,
@@ -145,6 +146,7 @@ class Trends extends Controller
 
         return $this->dataPointsToCollection($dataPoints);
     }
+
 
     /**
      * @param $goodTypeId
@@ -229,14 +231,15 @@ class Trends extends Controller
     {
         $hourly               = $this->trendingHourly($dataPoints);
         $daily                = $this->trendingDaily($dataPoints);
-        $trendHourlyAvg       = $hourly[0] ?? [];
-        $trendHourlyAvgLabels = $hourly[1] ?? [];
-        $trendDailyAvg        = $daily[0] ?? [];
-        $trendDailyAvailable  = $daily[1] ?? [];
-        $trendDailyAvgLabels  = $daily[2] ?? [];
+        $trendHourlyAvg       = $hourly['averages'] ?? [];
+        $trendHourlyAvailable = $hourly['amount'] ?? [];
+        $trendHourlyLabels    = $hourly['labels'] ?? [];
+        $trendDailyAvg        = $daily['averages'] ?? [];
+        $trendDailyAvailable  = $daily['amount'] ?? [];
+        $trendDailyLabels     = $daily['labels'] ?? [];
 
-        return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyAvgLabels', 'trendDailyAvg', 'trendDailyAvgLabels',
-            'trendDailyAvailable');
+        return compact('pageTitle', 'trendHourlyAvg', 'trendHourlyLabels', 'trendDailyAvg', 'trendDailyLabels',
+            'trendHourlyAvailable', 'trendDailyAvailable');
     }
 
 
@@ -249,6 +252,7 @@ class Trends extends Controller
     private function trendingHourly($dataPoints, $totalHours = 24)
     {
         $averages = [];
+        $amount   = [];
         $labels   = [];
 
         if ( ! empty($dataPoints)) {
@@ -257,11 +261,12 @@ class Trends extends Controller
                 $day                      = $updatedAt->day;
                 $hour                     = $updatedAt->hour;
                 $averages[$data->title][] = round($data->average, 2);
+                $amount[$data->title][]   = ceil($data->amount);
                 $labels[$data->title][]   = "d:".$day." h:".$hour;
             }
         }
 
-        return [$averages, $labels];
+        return ['averages' => $averages, 'amount' => $amount, 'labels' => $labels];
     }
 
 
@@ -275,7 +280,7 @@ class Trends extends Controller
     {
         $averages            = [];
         $trendDailyAmount    = [];
-        $trendDailyAvgLabels = [];
+        $trendDailyLabels = [];
         $current             = [];
         $carbon              = Carbon::now();
         $month               = (int)$carbon->month;
@@ -301,12 +306,12 @@ class Trends extends Controller
                     $averages[$title][]            = ($data['amount'] > 0) ? round($data['sum'] / $data['amount'], 2)
                         : 0;
                     $trendDailyAmount[$title][]    = round($data['amount'] / $data['count'], 2);
-                    $trendDailyAvgLabels[$title][] = $data['title'];
+                    $trendDailyLabels[$title][] = $data['title'];
                 }
             }
         }
 
-        return [$averages, $trendDailyAmount, $trendDailyAvgLabels];
+        return ['averages' => $averages, 'amount' =>  $trendDailyAmount, 'labels' =>  $trendDailyLabels];
     }
 
 
