@@ -123,7 +123,6 @@ class Stores extends Controller
     public function condenseData($data)
     {
         $rows = [];
-
         foreach ($data as $gridName => $gridData) {
             $rows[$gridName]['owner'] = $gridData['owner'];
             $rows[$gridName]['GPS']   = $gridData['GPS'];
@@ -153,8 +152,8 @@ class Stores extends Controller
                             : (int)$bestOrderFrom->get('value');
                         $bestOrderFromAmount          = (empty($bestOrderFrom->get('amount'))) ? 0
                             : (int)$bestOrderFrom->get('amount');
-                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $offerAmount) ? $bestOrderFromAmount
-                            : $offerAmount;
+                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $orderAmount) ? $bestOrderFromAmount
+                            : $orderAmount;
                         $orderFromTradeZone           = TradeZones::find($bestOrderFrom->get('trade_zone_id'));
                     }
                     if (empty($offers)) {
@@ -175,6 +174,10 @@ class Stores extends Controller
                         $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $bestOfferToAmount
                             : $orderAmount;
                         $offerToTradeZone           = TradeZones::find($bestOfferTo->get('trade_zone_id'));
+                    }
+
+                    if($gridName === "GSI Neutronium Plant" && $good === 'platinum') {
+                        //dd($bestOrderFromAmount, "<", $orderAmount);
                     }
                     $orderFromProfitRaw                         = ($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
                     $orderFromProfit                            = ($orderFromProfitRaw > 0) ? $orderFromProfitRaw : 0;
