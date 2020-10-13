@@ -38,6 +38,9 @@
     .right-border {
         border-right: 1px solid #ccc;
     }
+    .exposureAlert {
+        color: #9a1313;
+    }
     .draw_attention {
         background-color: #d3f9e5 !important;
     }
@@ -47,7 +50,7 @@
 </style>
 <ul class="nav nav-tabs">
     @php $active = 'active'; @endphp
-    @foreach(\App\Models\GoodTypes::pluck('title') as $goodType)
+    @foreach(['Ore', 'Ingot','Component','Tool'] as $goodType)
         <li class="nav-item">
             <a href="#{{ $gridData->jsid }}_{{ $goodType }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $goodType }}</a>
         </li>
@@ -62,13 +65,15 @@
                     <thead>
                     <tr class="transaction-table-groups">
                         <th class="left-border"></th>
-                        <th colspan="2" class="left-border right-border storeGroup">This Store's Data</th>
-                        <th colspan="5" class="left-border right-border storeGroup" title="If you sold to this store after buying from the current store.">Sell to</th>
+                        <th colspan="4" class="left-border right-border storeGroup">This Store's Data</th>
+                        <th colspan="5" class="left-border right-border storeGroup" title="If you sold to this store after buying from the current store.">Best store to offer to</th>
                     </tr>
                     <tr class="transaction-table-groups text-center">
                         <th class="left-border">Name</th>
                         <th class="left-border">Order<br>Prices</th>
+                        <th class="right-border">Order<br>Amount</th>
                         <th>Offer<br>Prices</th>
+                        <th class="right-border">Offer<br>Amount</th>
                         <!-- Offer -->
                         <th class="left-border">Name</th>
                         <th >Price</th>
@@ -84,7 +89,9 @@
                     @foreach($gridData->goods->$goodType as $good => $goodData)
                         <tr class="text-center @if($goodData->offerTo->profit > 0) draw_attention_border @endif">
                             <td class="left-border @if($goodData->offerTo->profit > 0) draw_attention @endif">{{ ucfirst($good) }}</td>
-                            <td  class="left-border" title="{{ $goodData->store->offers->avgPrice }}">{{ bd_nice_number($goodData->store->offers->avgPrice, true, 2) }}</td>
+                            <td class="left-border" title="{{ $goodData->store->orders->avgPrice }}">{{ bd_nice_number($goodData->store->orders->avgPrice, true, 2) }}</td>
+                            <td class="right-border" title="{{ $goodData->store->orders->amount }}">{{ bd_nice_number($goodData->store->orders->amount) }}</td>
+                            <td title="{{ $goodData->store->offers->avgPrice }}">{{ bd_nice_number($goodData->store->offers->avgPrice, true, 2) }}</td>
                             <td class="right-border" title="{{ $goodData->store->offers->amount }}">{{ bd_nice_number($goodData->store->offers->amount) }}</td>
                             <!-- offer to -->
                             <td class="left-border">{{ $goodData->offerTo->tradeZoneTitle }}</td>
