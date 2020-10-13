@@ -39,6 +39,24 @@ class Servers extends Model
     }
 
 
+    public function scarcity() {
+        return $this->hasOne('App\Models\Scarcity', 'id', 'scarcity_id');
+    }
+
+    /**
+     * note: ratios is what a server admin wants the distrubution of worlds to be like.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function ratio() {
+        return $this->hasOne('App\Models\Ratios', 'id', 'id');
+    }
+
+
+    public function magicNumbers() {
+        return $this->hasOne('App\Models\MagicNumbers', 'server_id', 'id');
+    }
+
+
     /**
      * note: this is all the ores in the cluster
      *
@@ -64,8 +82,8 @@ class Servers extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function servers() {
-        return $this->hasMany('App\Models\Servers');
+    public function worlds() {
+        return $this->hasMany('App\Models\Worlds','server_id');
     }
 
 
@@ -76,14 +94,6 @@ class Servers extends Model
      */
     public function activeTransactions() {
         return $this->hasMany('App\Models\ActiveTransactions');
-    }
-
-    public function scarcity() {
-        return $this->hasOne('App\Models\Scarcity', 'id', 'scarcity_id');
-    }
-
-    public function magicNumbers() {
-        return $this->hasOne('App\Models\MagicNumbers', 'server_id', 'id');
     }
 
 
@@ -143,6 +153,20 @@ class Servers extends Model
      */
     public function getTotalSellOrders($typeId, $id) {
         return $this->getOrdersTransactionType(2, $typeId, $id);
+    }
+
+
+    public function getWorldsRarityTotals() {
+        $worldsRarityCount = [];
+        $collection = $this->worlds()->groupBy('rarity')
+                               ->selectRaw('count(*) as total, rarity as id')
+                               ->get();
+        foreach($collection as $rarity) {
+            $worldsRarityCount[$rarity->id] = ['title' => Rarity::find($rarity->id)->title, 'total' => $rarity->total];
+        }
+
+
+        return collect($worldsRarityCount);
     }
 
 
