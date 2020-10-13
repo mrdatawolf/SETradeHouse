@@ -33,7 +33,7 @@
             </div>
         </a>
         <h6>then</h6>
-        <a href="{{ route('orders.ores') }}">
+        <a href="{{ route('transactions.orders.ores') }}">
             <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
                 <div>Create an order for ores</div>
 
