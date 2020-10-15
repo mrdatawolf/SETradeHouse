@@ -41,15 +41,14 @@ trait HasProfilePhoto
     }
 
     /**
-     * Get the URL to the user's profile photo.
+     * Get the URL to the user's profile photo. If local ignore the local storage.
      *
      * @return string
      */
     public function getProfilePhotoUrlAttribute()
     {
             if (env('APP_ENV') === 'local') {
-                return $this->profile_photo_path ? 'https://setradinghouse.com/storage/'.$this->profile_photo_path
-                    : $this->defaultProfilePhotoUrl();
+                return $this->defaultProfilePhotoUrl();
             }
 
             return $this->profile_photo_path ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
