@@ -10,7 +10,7 @@
                    <thead>
                    <tr>
                        @foreach($users->first()->toArray() as $title => $value)
-                           @if($title !== 'email')
+                           @if(!in_array($title, ['email', 'profile_photo_path']))
                             <th>{{ $title }}</th>
                            @endif
                        @endforeach
@@ -20,8 +20,14 @@
                    @foreach($users as $user)
                        <tr>
                            @foreach($user->toArray() as $title => $value)
-                               @if($title !== 'email')
-                           <td>{{ $value }}</td>
+                               @if(!in_array($title, ['email', 'profile_photo_path']))
+                                   <td>
+                                   @if(in_array($title, ['profile_photo_url', 'profile_photo_path']))
+                                           <img style="width: 3em; height: 3em;" src="{{ $value }}">
+                                   @else
+                                       {{ $value }}
+                                   @endif
+                                   </td>
                                @endif
                            @endforeach
                        </tr>
