@@ -25,17 +25,17 @@
                    <tbody>
                    @foreach($servers as $server)
                        <tr>
-                           <td>{{ $server->id }}</td>
-                           <td>{{ $server->title }}</td>
-                           <td>{{ $server->short_name }}</td>
-                           <td>{{ $server->scarcity_id }}</td>
-                           <td>{{ $server->economy_ore_id }}</td>
-                           <td>{{ $server->economy_ore_value }}</td>
-                           <td>{{ $server->economy_stone_modifier }}</td>
-                           <td>{{ $server->scaling_modifier }}</td>
-                           <td>{{ $server->asteroid_scarcity_modifier }}</td>
-                           <td>{{ $server->planet_scarcity_modifier }}</td>
-                           <td>{{ $server->base_modifier }}</td>
+                           <td>{{ $server->id ?? 'n/a'}}</td>
+                           <td>{{ $server->title ?? 'n/a' }}</td>
+                           <td>{{ $server->short_name ?? 'n/a' }}</td>
+                           <td>{{ $server->scarcity_id ?? 'n/a' }}</td>
+                           <td>{{ $server->economy_ore_id ?? 'n/a' }}</td>
+                           <td>{{ $server->economy_ore_value ?? 'n/a' }}</td>
+                           <td>{{ $server->economy_stone_modifier ?? 'n/a' }}</td>
+                           <td>{{ $server->scaling_modifier ?? 'n/a' }}</td>
+                           <td>{{ $server->asteroid_scarcity_modifier ?? 'n/a' }}</td>
+                           <td>{{ $server->planet_scarcity_modifier ?? 'n/a' }}</td>
+                           <td>{{ $server->base_modifier ?? 'n/a' }}</td>
                        </tr>
                    @endforeach
                    </tbody>
@@ -43,7 +43,4 @@
             </div>
         </div>
     </div>
-@endsection
-@section('scripts')
-    @parent
 @endsection
