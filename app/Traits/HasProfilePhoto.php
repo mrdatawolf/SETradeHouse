@@ -47,14 +47,13 @@ trait HasProfilePhoto
      */
     public function getProfilePhotoUrlAttribute()
     {
-        if(env('APP_ENV') === 'local') {
-            return $this->profile_photo_path
-                ? 'https://setradinghouse.com/storage/' . $this->profile_photo_path
+            if (env('APP_ENV') === 'local') {
+                return $this->profile_photo_path ? 'https://setradinghouse.com/storage/'.$this->profile_photo_path
+                    : $this->defaultProfilePhotoUrl();
+            }
+
+            return $this->profile_photo_path ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
                 : $this->defaultProfilePhotoUrl();
-        }
-        return $this->profile_photo_path
-            ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
-            : $this->defaultProfilePhotoUrl();
     }
 
     /**
@@ -64,7 +63,13 @@ trait HasProfilePhoto
      */
     protected function defaultProfilePhotoUrl()
     {
-        return 'https://ui-avatars.com/api/?name='.urlencode($this->username).'&color=7F9CF5&background=EBF4FF';
+        $getUrl = 'https://ui-avatars.com/api/?name=' . urlencode($this->username) . '&color=7F9CF5&background=EBF4FF';
+        if(! empty($this->email)) {
+            $hash = md5(strtolower(trim($this->attributes['email'])));
+            $getUrl = 'https://www.gravatar.com/avatar/' . $hash . '?d=https%3A%2F%2Fui-avatars.com%2Fapi%2F/' . urlencode($this->username) . '/128/7F9CF5/EBF4FF';
+        }
+
+        return $getUrl;
     }
 
     /**
