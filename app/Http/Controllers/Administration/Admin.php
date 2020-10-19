@@ -96,6 +96,7 @@ class Admin extends Controller
     //this take sthe user supplied data and adds the server to the table.
     public function addWorld(Request $request)
     {
+        dd('here');
         $isAdmin = \Auth::user()->roles()->where('title', 'Admin')->exists();
         if ($isAdmin) {
             $validatedData = $request->validate([
@@ -113,9 +114,10 @@ class Admin extends Controller
             $world->short_name = $request->short_name;
             $world->save();
             $worlds = Worlds::all();
-
-            return view('administration.worlds.index', compact('worlds'));
+dd('here', $world);
+            return view('administration.worlds.index', compact('worlds'))->with(['msg', 'Sucess']);
         } else {
+            dd($isAdmin);
             return Redirect::back()->withErrors(['msg', 'Not Authorized!']);
         }
     }
