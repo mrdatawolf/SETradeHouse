@@ -80,7 +80,7 @@ class AlignTrendData extends Command
                     }
                 }
 
-                if ( ! empty($ids)) {
+                if (! empty($ids)) {
                     foreach ($ids as $id) {
                         $this->output->note('transactionTypeId: '.$transactionTypeId.' goodTypeId: '.$goodTypeId.' goodId: '.$id);
                         $trends     = new TrendsController();

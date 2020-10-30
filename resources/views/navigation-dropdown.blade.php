@@ -119,8 +119,6 @@
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
-                    <!--Staleness -->
-                    @livewire('staleness-info')
                     <!-- Testing -->
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
@@ -157,6 +155,8 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <!--Staleness -->
+                        @livewire('staleness-info')
                         <!-- World Management -->
                         <div class="block px-4 py-2 text-xs text-gray-400">
                             {{ __('Worlds') }}

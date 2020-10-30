@@ -1,36 +1,67 @@
 <?php namespace App\Http\Livewire;
 
-use App\Models\Rarity;
-use App\Models\Ratios;
-use App\Models\Servers;
+use App\Http\Traits\worldInfo;
 use Livewire\Component;
 use App\Models\Worlds;
 
 class WorldForm extends Component
 {
+    use worldInfo;
+
     public $title;
     public $serverId;
     public $typeId;
     public $systemStockWeight;
     public $shortName;
-    public $ratio;
-    public $rarity;
-    public $rarityPercentages;
-    public $worldsCount;
-    public $worldTypesAllowed;
+    public $rarityTypesAllowed;
+    public $worldTypes;
 
+    protected $rules = [
+        'title'             => 'required',
+        'serverId'          => 'required',
+        'rarityTypesAllowed' => 'required',
+        'systemStockWeight' => 'required',
+        'shortName'         => 'required',
+        'worldTypes'        => 'required'
+    ];
 
-    public function submit()
+    public function mount() {
+        $this->rarityTypesAllowed = $this->getAllowedWorlds();
+        $this->worldTypes = $this->getWorldTypes();;
+        $this->systemStockWeight = 1;
+    }
+
+    public function updated($propertyName)
     {
-        $validatedData = $this->validate([
-            'title'             => 'required',
-            'serverId'          => 'required',
-            'typeId'            => 'required',
-            'systemStockWeight' => 'required',
-            'shortName'         => 'required'
-        ]);
+        $this->validateOnly($propertyName);
+    }
 
-        Worlds::create($validatedData);
+    public function saveWorld()
+    {
+        $validatedData = $this->validate();
+
+        switch($validatedData['rarityTypesAllowed']) {
+            case 2 :
+                $rarity = 2;
+                break;
+            case 3 :
+            case 4 :
+            case 5 :
+                $rarity = 3;
+                break;
+            default:
+                $rarity = 1;
+        }
+        $modifiedCreateData = [
+            'title' => $validatedData['title'],
+            'server_id' => $validatedData['serverId'],
+            'type_id'   => $validatedData['worldTypes'],
+            'system_stock_weight' => $validatedData['systemStockWeight'],
+            'short_name' => $validatedData['shortName'],
+            'rarity'    => $rarity
+        ];
+        dd($modifiedCreateData);
+        Worlds::create($modifiedCreateData);
 
         return redirect()->to('/admin/worlds/create');
     }
@@ -38,54 +69,7 @@ class WorldForm extends Component
 
     public function render()
     {
-        $this->serverId          = \Session::get('serverId');
-        $server                  = Servers::find($this->serverId);
-        $this->worldsCount       = $server->worlds()->count();
-        $this->ratio             = $server->ratio;
-        $this->rarity            = $server->getWorldsRarityTotals();
-        $this->worldTypesAllowed = $this->getAllowedWorlds();
-
-        return view('livewire.world-form', [
-            'ratio'             => $this->ratio,
-            'rarity'            => $this->rarity,
-            'worldsCount'       => $this->worldsCount,
-            'worldTypesAllowed' => $this->worldTypesAllowed,
-            'serverId'          => $this->serverId,
-            'rarityPercentages' => $this->rarityPercentages
-        ]);
-    }
-
-
-    private function getAllowedWorlds()
-    {
-        $totalWorlds            = $this->worldsCount;
-        $rarityTotals           = $this->rarity;
-        $possibleWorldAvailable = false;
-        $worldsAllowed          = [];
-        $rarityPercentages      = [];
-        foreach ([1, 2, 3, 4, 5, 6, 7, 8] as $rarityId) {
-            $rareData       = Rarity::find($rarityId);
-            $percentMaximum = (int)$this->ratio[$rareData->title] ?? 0;
-            if (empty($rarityTotals[$rarityId])) {
-                $rarityPercentage = 0;
-            } else {
-                $rarityPercentage = floor(($rarityTotals[$rarityId]['total'] / $totalWorlds) * 100);
-            }
-            $rarityPercentages[] = ['title' => $rareData->title, 'percentage' => $rarityPercentage];
-            $isAllowed           = ($rareData->minimum_for_first >= $totalWorlds && $rarityPercentage <= $percentMaximum);
-            if ($isAllowed) {
-                $worldsAllowed[$rarityId] = $rareData->title;
-                $possibleWorldAvailable   = true;
-            }
-        }
-        if ( ! $possibleWorldAvailable) {
-            $rareData         = Rarity::find(1);
-            $worldsAllowed[1] = $rareData->title;
-            $rareData         = Rarity::find(2);
-            $worldsAllowed[2] = $rareData->title;
-        }
-        $this->rarityPercentages = collect($rarityPercentages);
-
-        return $worldsAllowed;
+        info($this->worldTypes);
+        return view('livewire.world-form');
     }
 }

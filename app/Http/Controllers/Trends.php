@@ -256,7 +256,7 @@ class Trends extends Controller
         $labels   = [];
 
         if ( ! empty($dataPoints)) {
-            foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subHours($totalHours)) as $data) {
+            foreach ($dataPoints->where('title', '!=', 'scrap')->where('updated_at', '>=', Carbon::now()->subHours($totalHours))->sortBy('updated_at') as $data) {
                 $updatedAt                = Carbon::createFromDate($data->updated_at);
                 $day                      = $updatedAt->day;
                 $hour                     = $updatedAt->hour;
@@ -283,11 +283,11 @@ class Trends extends Controller
         $trendDailyLabels = [];
         $current             = [];
         $carbon              = Carbon::now();
-        $month               = (int)$carbon->month;
         if ( ! empty($dataPoints)) {
-            foreach ($dataPoints->where('updated_at', '>=', Carbon::now()->subDays($totalDays)) as $data) {
+            foreach ($dataPoints->where('title', '!=', 'scrap')->where('updated_at', '>=', Carbon::now()->subDays($totalDays))->sortBy('updated_at') as $data) {
                 $updatedAt = Carbon::createFromDate($data->updated_at);
                 $day       = $updatedAt->day;
+                $month     = $updatedAt->month;
                 if (empty($current[$day])) {
                     $current[$data->title][$day] = [
                         'title'         => $month."/".$day,
@@ -301,6 +301,7 @@ class Trends extends Controller
                 $current[$data->title][$day]['amount'] += $data->amount;
                 $current[$data->title][$day]['count']++;
             }
+
             foreach ($current as $title => $currentData) {
                 foreach ($currentData as $day => $data) {
                     $averages[$title][]            = ($data['amount'] > 0) ? round($data['sum'] / $data['amount'], 2)
