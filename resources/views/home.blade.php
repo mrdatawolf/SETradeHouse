@@ -12,7 +12,7 @@
             <div class="card">
                 <div class="card-header">Space Engineers Trading House</div>
                 <div class="card-body">
-                    Stores of @livewire('active-world') in @livewire('active-server')
+                    Stores @livewire('active-world') in @livewire('active-server')
                 </div>
             </div>
         </div>

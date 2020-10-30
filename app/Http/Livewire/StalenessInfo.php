@@ -1,12 +1,12 @@
 <?php namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\NpcStorageValues;
-use Carbon\Carbon;
-use App\Models\Transactions;
+use App\Http\Traits\Staleness;
 
 class StalenessInfo extends Component
 {
+    use Staleness;
+
     public $syncStaleness;
     public $syncStaleClass;
     public $dbStaleness;
@@ -18,45 +18,19 @@ class StalenessInfo extends Component
 
     public function render()
     {
-        $warningMaximum = 60;
-        $errorMaximum = 120;
+        $syncObject = $this->syncStaleness();
+        $dbSyncObject = $this->dbStaleness();
+        $generalSyncObject = $this->generalStaleness();
+        $this->syncStaleness = $syncObject->minutes;
+        $this->syncStaleClass = $syncObject->class;
+        $this->dbStaleness = $dbSyncObject->minutes;
+        $this->dbStaleClass = $dbSyncObject->class;
+        $this->newestDbRecord = $dbSyncObject->newest;
+        $this->newestSyncRecord = $syncObject->newest;
+        $this->generalStaleness = $generalSyncObject->minutes;
+        $this->generalStaleClass = $generalSyncObject->class;
 
-        $npcStorageValue        = NpcStorageValues::latest('origin_timestamp')->first();
-        $this->newestDbRecord   = (empty($npcStorageValue->origin_timestamp)) ? 'N/A'
-            : $npcStorageValue->origin_timestamp.' -7';
-        $dbCarbonDate           = Carbon::createFromFormat('Y-m-d H:i:s', $npcStorageValue->origin_timestamp,
-            'America/Los_Angeles');
-        $this->dbStaleness      = (int)Carbon::now()->diffInMinutes($dbCarbonDate);
-        $transaction            = Transactions::latest('updated_at')->first();
-        $this->newestSyncRecord = (empty($transaction->updated_at)) ? 'N/A'
-            : $transaction->updated_at->toDateTimeString().' +0';
-        $npcCarbonDate          = Carbon::createFromFormat('Y-m-d H:i:s', $transaction->updated_at);
-        $this->syncStaleness    = (int)Carbon::now()->diffInMinutes($npcCarbonDate);
-        $this->generalStaleness = 0;
-        if ($this->dbStaleness > $this->generalStaleness) {
-            $this->generalStaleness = (int)$this->dbStaleness;
-        }
-        if ($this->syncStaleness > $this->generalStaleness) {
-            $this->generalStaleness = (int)$this->syncStaleness;
-        }
-        $this->generalStaleClass = '';
-        if ($this->generalStaleness > $errorMaximum) {
-            $this->generalStaleClass = 'staleError';
-        } elseif ($this->generalStaleness > $warningMaximum) {
-            $this->generalStaleClass = 'staleWarn';
-        }
-        $this->dbStaleClass = '';
-        if ($this->dbStaleness > $errorMaximum) {
-            $this->dbStaleClass = 'staleError';
-        } elseif ($this->dbStaleness > $warningMaximum) {
-            $this->dbStaleClass = 'staleWarn';
-        }
-        $this->syncStaleClass = '';
-        if ($this->syncStaleness > $errorMaximum) {
-            $this->syncStaleClass = 'staleError';
-        } elseif ($this->syncStaleness > $warningMaximum) {
-            $this->syncStaleClass = 'staleWarn';
-        }
+
 
         return view('livewire.staleness-info', [
             'syncStaleness' => $this->syncStaleness,
