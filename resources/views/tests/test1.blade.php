@@ -1,4 +1,4 @@
-@extends('layouts.tests')
+@extends('layouts.app')
 @section('title', 'Test 1')
 @section('menu')
     @parent

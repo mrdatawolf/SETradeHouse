@@ -20,11 +20,6 @@
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                                 {{ __('System Maps') }}
                             </button>
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
                         </x-slot>
                         <x-slot name="content">
                             <div class="block px-4 py-2 text-xs text-gray-400">
@@ -47,11 +42,6 @@
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                                 {{ __('Stores') }}
                             </button>
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
                         </x-slot>
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('stores') }}">
@@ -71,11 +61,6 @@
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                                 {{ __('Trends') }}
                             </button>
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
                         </x-slot>
                         <x-slot name="content">
                             <div class="block px-4 py-2 text-xs text-gray-400">
@@ -125,15 +110,13 @@
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                                 {{ __('Testing') }}
                             </button>
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
                         </x-slot>
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('stocklevels') }}">
                                 Stock Levels
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('tests.thrustCalculator') }}">
+                                Thrust Calculator
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
@@ -146,11 +129,6 @@
                     <x-slot name="trigger">
                         <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                             <div>@livewire('active-server')</div>
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
                         </button>
                     </x-slot>
 
@@ -164,9 +142,11 @@
                         <x-jet-dropdown-link href="{{ route('admin.worlds') }}">
                             &nbsp;&nbsp;{{ __('List') }}
                         </x-jet-dropdown-link>
+                        @if(Auth::user()->isAdmin())
                         <x-jet-dropdown-link href="{{ route('admin.worlds.create') }}">
                             &nbsp;&nbsp;{{ __('Create') }}
                         </x-jet-dropdown-link>
+                        @endif
                         <div class="border-t border-gray-100"></div>
                         <!-- Server Management -->
                         <div class="block px-4 py-2 text-xs text-gray-400">
@@ -175,6 +155,7 @@
                         <x-jet-dropdown-link href="{{ route('admin.servers') }}">
                             &nbsp;&nbsp;{{ __('List') }}
                         </x-jet-dropdown-link>
+                        @if(Auth::user()->isAdmin())
                         <x-jet-dropdown-link href="{{ route('admin.servers.create') }}">
                             &nbsp;&nbsp;{{ __('Create') }}
                         </x-jet-dropdown-link>
@@ -189,6 +170,7 @@
                         <x-jet-dropdown-link href="{{ route('admin.users.owners') }}">
                             &nbsp;&nbsp;{{ __('Owners') }}
                         </x-jet-dropdown-link>
+                            @endif
                     </x-slot>
                 </x-jet-dropdown>
             </div>
