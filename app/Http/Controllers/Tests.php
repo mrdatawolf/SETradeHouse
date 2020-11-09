@@ -68,4 +68,8 @@ class Tests extends Controller
     public function solarSystem() {
         return view('tests.solarSystem');
     }
+
+    public function thrustCalculator() {
+        return view('tests.thrustCalculator');
+    }
 }

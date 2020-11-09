@@ -88,6 +88,7 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
         Route::get('/test1', 'Tests@test1')->name('tests.test1');
         Route::get('/solarSystem', 'Tests@solarSystem')->name('tests.solarSystem');
         Route::get('/solarSystem3d', 'Tests@solarSystem3d')->name('tests.solarSystem3d');
+        Route::get('/thrust_calculator', 'Tests@thrustCalculator')->name('tests.thrustCalculator');
 
     });
 
