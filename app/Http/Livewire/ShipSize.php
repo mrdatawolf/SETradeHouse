@@ -10,11 +10,10 @@ class ShipSize extends Component
 
     public function render()
     {
-        $this->updatedShipSize();
         return view('livewire.ship-size');
     }
 
-    public function updatedShipSize() {
-        $this->emit('updatedShipSize', $this->shipSize);
+    public function shipSizeChanged() {
+        $this->emit('shipSizeChanged', $this->shipSize);
     }
 }
