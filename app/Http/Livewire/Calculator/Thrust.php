@@ -12,8 +12,11 @@ class Thrust extends Component
     public $gravity                        = 0;
     public $serverId;
     public $worldId;
+
     public $planetId;
     public $planetName                     = '';
+    public $planet;
+
     public $shipSize                       = '';
     public $dryMass                        = 0;
     public $cargoMass                      = 0;
@@ -38,6 +41,10 @@ class Thrust extends Component
     public $plasmaMinimumPlanetAdjustment  = .6;
     public $atmosphericPlanetAdjustment    = .87;
 
+    public $metersPerSecond;
+    public $baseAcceleration;
+    public $totalMass;
+
     protected $listeners = [
         'planetIdChanged',
         'shipSizeChanged',
@@ -54,11 +61,10 @@ class Thrust extends Component
     {
         $this->gatherServerId();
         $this->gatherWorldId();
-        $planets        = Planets::where('world_id', $this->worldId)->where('server_id', $this->serverId)->orderBy('title')->get();
-        $planet         = $planets->first();
-        $this->planetId = $planet->id;
-        $this->planetName = $planet->title;
-        $server         = Servers::find($this->serverId);
+        $this->planet       = Planets::where('world_id', $this->worldId)->where('server_id', $this->serverId)->orderBy('id')->first();
+        $this->planetId     = $this->planet->id;
+        $this->planetName   = $this->planet->title;
+        $server             = Servers::find($this->serverId);
 
         $this->shipSize                       = 'small';
         $this->thrusterType                   = 'ion';
@@ -72,12 +78,13 @@ class Thrust extends Component
         $this->cargoMultiplier     = $server->scaling_modifier;
 
         $this->planetIdChanged($this->planetId);
-        $this->gravityChanged($planet->surface_gravity);
+        $this->gravityChanged($this->planet->surface_gravity);
         $this->cargoMassChanged(0);
         $this->dryMassChanged(0);
         $this->calculateNewtonsRequired();
         $this->gatherThrusterData();
         $this->gatherReactorData();
+        $this->gatherMetersPerSecond();
     }
 
 
@@ -93,12 +100,14 @@ class Thrust extends Component
     public function planetIdChanged($id)
     {
         $this->planetId = $id;
+        $this->planet = Planets::find($id);
+        $this->gravityChanged($this->planet->surface_gravity);
     }
 
 
     public function gravityChanged($value)
     {
-        $this->gravity = (int)$value;
+        $this->gravity = (int) $value;
         $this->calculateNewtonsRequired();
         $this->gatherThrusterData();
         $this->gatherReactorData();
@@ -113,7 +122,7 @@ class Thrust extends Component
 
     public function cargoMassChanged($value)
     {
-        $this->cargoMass = (int)$value;
+        $this->cargoMass = (int) $value;
         $this->calculateNewtonsRequired();
         $this->gatherThrusterData();
         $this->gatherReactorData();
@@ -122,7 +131,7 @@ class Thrust extends Component
 
     public function dryMassChanged($value)
     {
-        $this->dryMass = (int)$value;
+        $this->dryMass = (int) $value;
         $this->calculateNewtonsRequired();
         $this->gatherThrusterData();
         $this->gatherReactorData();
@@ -147,7 +156,9 @@ class Thrust extends Component
 
     public function calculateNewtonsRequired()
     {
-        $this->newtonsRequired = $this->gravity * ($this->dryMass + ($this->cargoMass / $this->cargoMultiplier)) * $this->gravityAcceleration;
+        $this->totalMass = $this->dryMass + ($this->cargoMass / $this->cargoMultiplier);
+        $this->newtonsRequired = $this->gravity * ($this->totalMass) * $this->gravityAcceleration;
+        $this->baseAcceleration = ($this->totalMass === 0 || $this->gravity === 0) ? 0 : $this->newtonsRequired/$this->totalMass*$this->gravity;
     }
 
 
@@ -194,6 +205,7 @@ class Thrust extends Component
     private function gatherThrusterData()
     {
         $this->numberThrustersRequired        = $this->thrustersRequired();
+        $this->gatherMetersPerSecond();
     }
 
 
@@ -238,5 +250,20 @@ class Thrust extends Component
             }
 
         return $this->thruster->newtons * $adjustment;
+    }
+
+
+    private function gatherMetersPerSecond() {
+        $metersPerSecond = ($this->baseAcceleration > 0) ? $this->baseAcceleration : 1;
+        $this->metersPerSecond = [
+            'ten' => ceil(10/$metersPerSecond) . " s",
+            'twentyFive' => ceil(25/$metersPerSecond) . " s",
+            'fifty' => ceil(50/$metersPerSecond) . " s",
+            'oneHunderedFifty' => ceil(150/$metersPerSecond) . " s",
+            'oneHundered' => ceil(100/$metersPerSecond) . " s",
+            'twoHunderedFifty' => ceil(250/$metersPerSecond) . " s",
+            'fiveHundered' => ceil(500/$metersPerSecond) . " s",
+            'thousand' => ceil(1000/$metersPerSecond) . " s",
+        ];
     }
 }
