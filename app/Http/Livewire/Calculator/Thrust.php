@@ -1,6 +1,7 @@
 <?php namespace App\Http\Livewire\Calculator;
 
 use App\Models\Planets;
+use App\Models\Reactors;
 use App\Models\Servers;
 use App\Models\Thrusters;
 use Livewire\Component;
@@ -9,21 +10,30 @@ use \Session;
 class Thrust extends Component
 {
     public $gravity                        = 0;
+    public $serverId;
+    public $worldId;
     public $planetId;
+    public $planetName                     = '';
     public $shipSize                       = '';
     public $dryMass                        = 0;
     public $cargoMass                      = 0;
     public $cargoMultiplier                = 1;
     public $newtonsRequired                = 0;
     public $gravityAcceleration            = 9.81;
+
     public $thrusters;
     public $thruster;
     public $thrusterType                   = '';
     public $thrusterSize                   = '';
-    public $numberThrustersRequired        = 0;
-    public $numberLargeReactorsRequired    = 0;
-    public $numberSmallReactorsRequired    = 0;
-    public $numberNaquadahReactorsRequired = 0;
+
+    public $smallReactor;
+    public $largeReactor;
+    public $naquadahReactor;
+    public $numberThrustersRequired;
+    public $numberLargeReactorsRequired;
+    public $numberSmallReactorsRequired;
+    public $numberSpecialReactorsRequired;
+
     public $ionMinimumPlanetAdjustment     = .2;
     public $plasmaMinimumPlanetAdjustment  = .6;
     public $atmosphericPlanetAdjustment    = .87;
@@ -42,12 +52,13 @@ class Thrust extends Component
 
     public function mount()
     {
-        $serverId       = (int) Session::get('serverId');
-        $worldId        = (int) Session::get('worldId');
-        $planets        = Planets::where('world_id', $worldId)->where('server_id', $serverId)->orderBy('title')->get();
+        $this->gatherServerId();
+        $this->gatherWorldId();
+        $planets        = Planets::where('world_id', $this->worldId)->where('server_id', $this->serverId)->orderBy('title')->get();
         $planet         = $planets->first();
         $this->planetId = $planet->id;
-        $server         = Servers::find($serverId);
+        $this->planetName = $planet->title;
+        $server         = Servers::find($this->serverId);
 
         $this->shipSize                       = 'small';
         $this->thrusterType                   = 'ion';
@@ -55,7 +66,7 @@ class Thrust extends Component
         $this->numberThrustersRequired        = 0;
         $this->numberLargeReactorsRequired    = 0;
         $this->numberSmallReactorsRequired    = 0;
-        $this->numberNaquadahReactorsRequired = 0;
+        $this->numberSpecialReactorsRequired  = 0;
 
         $this->gravityAcceleration = 9.81;
         $this->cargoMultiplier     = $server->scaling_modifier;
@@ -66,12 +77,14 @@ class Thrust extends Component
         $this->dryMassChanged(0);
         $this->calculateNewtonsRequired();
         $this->gatherThrusterData();
+        $this->gatherReactorData();
     }
 
 
     public function render()
     {
         $this->gatherThrusterData();
+        $this->gatherReactorData();
 
         return view('livewire.calculator.thrust');
     }
@@ -88,6 +101,7 @@ class Thrust extends Component
         $this->gravity = (int)$value;
         $this->calculateNewtonsRequired();
         $this->gatherThrusterData();
+        $this->gatherReactorData();
     }
 
 
@@ -102,6 +116,7 @@ class Thrust extends Component
         $this->cargoMass = (int)$value;
         $this->calculateNewtonsRequired();
         $this->gatherThrusterData();
+        $this->gatherReactorData();
     }
 
 
@@ -110,6 +125,7 @@ class Thrust extends Component
         $this->dryMass = (int)$value;
         $this->calculateNewtonsRequired();
         $this->gatherThrusterData();
+        $this->gatherReactorData();
     }
 
 
@@ -117,6 +133,7 @@ class Thrust extends Component
     {
         $this->thrusterSize = $size;
         $this->gatherThrusterData();
+        $this->gatherReactorData();
     }
 
 
@@ -124,6 +141,7 @@ class Thrust extends Component
     {
         $this->thrusterType = $type;
         $this->gatherThrusterData();
+        $this->gatherReactorData();
     }
 
 
@@ -133,30 +151,56 @@ class Thrust extends Component
     }
 
 
+    private function gatherServerId() {
+        $serverId = 1;
+        if(! empty(Session::get('serverId'))) {
+            $serverId = (int) Session::get('serverId');
+        }
+
+        $this->serverId = $serverId;
+    }
+
+
+    private function gatherWorldId() {
+        $worldId = 1;
+        if(! empty(Session::get('worldId'))) {
+            $worldId = (int) Session::get('worldId');
+        }
+
+        $this->worldId = $worldId;
+    }
+
     private function largeReactorsRequired()
     {
-        return 1;
+        $this->largeReactor = Reactors::where('size', 'large')->where('type', 'normal')->where('ship_size', $this->shipSize)->first();
+        $this->numberLargeReactorsRequired = ceil($this->numberThrustersRequired*($this->thruster->power_draw/$this->largeReactor->watts));
     }
 
 
     private function smallReactorsRequired()
     {
-        return 1;
+        $this->smallReactor = Reactors::where('size', 'small')->where('type', 'normal')->where('ship_size', $this->shipSize)->first();
+        $this->numberSmallReactorsRequired = ceil($this->numberThrustersRequired*($this->thruster->power_draw/$this->smallReactor->watts));
     }
 
 
-    private function naquadahReactorsRequired()
+    private function specialReactorsRequired()
     {
-        return 1;
+        $this->naquadahReactor = Reactors::where('size', 'large')->where('type', 'normal')->where('ship_size', $this->shipSize)->first();
+        $this->numberSpecialReactorsRequired = ceil($this->numberThrustersRequired*($this->thruster->power_draw/$this->smallReactor->watts));
     }
 
 
     private function gatherThrusterData()
     {
         $this->numberThrustersRequired        = $this->thrustersRequired();
-        $this->numberLargeReactorsRequired    = $this->largeReactorsRequired();
-        $this->numberSmallReactorsRequired    = $this->smallReactorsRequired();
-        $this->numberNaquadahReactorsRequired = $this->naquadahReactorsRequired();
+    }
+
+
+    private function gatherReactorData() {
+        $this->smallReactorsRequired();
+        $this->largeReactorsRequired();
+        $this->specialReactorsRequired();
     }
 
 
@@ -185,6 +229,9 @@ class Thrust extends Component
                 break;
             case 'plasma' :
                 $adjustment = $this->plasmaMinimumPlanetAdjustment;
+                break;
+            case 'atomospheric' :
+                $adjustment = $this->atmosphericPlanetAdjustment;
                 break;
             default :
                 $adjustment = 1;

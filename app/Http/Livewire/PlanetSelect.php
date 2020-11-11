@@ -2,6 +2,7 @@
 
 use Livewire\Component;
 use App\Models\Planets;
+use \Session;
 
 class PlanetSelect extends Component
 {
@@ -14,8 +15,8 @@ class PlanetSelect extends Component
     protected $listeners = ['planetChanged'];
 
     public function mount() {
-        $this->serverId = (int) \Session::get('serverId');
-        $this->worldId = (int) \Session::get('worldId');
+        $this->gatherServerId();
+        $this->gatherWorldId();
         $this->planets = Planets::where('world_id', $this->worldId)->where('server_id', $this->serverId)->orderBy('title')->get();
         $this->planetId = $this->planets->first()->id;
         $this->planetIdChanged();
@@ -31,5 +32,25 @@ class PlanetSelect extends Component
         $this->gravity = $this->planet->surface_gravity;
         $this->emit('planetIdChanged', $this->planetId);
         $this->emit('updatedGravity', $this->gravity);
+    }
+
+
+    private function gatherServerId() {
+        $serverId = 1;
+        if(! empty(Session::get('serverId'))) {
+            $serverId = (int) Session::get('serverId');
+        }
+
+        $this->serverId = $serverId;
+    }
+
+
+    private function gatherWorldId() {
+        $worldId = 1;
+        if(! empty(Session::get('worldId'))) {
+            $worldId = (int) Session::get('worldId');
+        }
+
+        $this->worldId = $worldId;
     }
 }
