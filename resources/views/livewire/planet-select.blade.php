@@ -7,7 +7,7 @@
     <div class="md:w-2/3">
         <select wire:model="planetId" wire:change="planetIdChanged" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="select-planet">
             @foreach($planets as $thisPlanet)
-                <option value="{{ $thisPlanet->id }}">{{$thisPlanet->title}}</option>
+                <option value="{{ $thisPlanet->id }}">{{ ucfirst($thisPlanet->title) }}</option>
             @endforeach
         </select>
     </div>

@@ -6,8 +6,8 @@
     </div>
     <div class="md:w-2/3">
         <select wire:model="shipSize" wire:change="shipSizeChanged" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="select-ship-size">
-            <option value="small" selected>small</option>
-            <option value="large">large</option>
+            <option value="small" selected>Small</option>
+            <option value="large">Large</option>
         </select>
     </div>
 </div>

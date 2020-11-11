@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends($layout)
 @section('title', 'Server Stores')
 
 @section('content')

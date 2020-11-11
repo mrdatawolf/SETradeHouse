@@ -11,6 +11,7 @@ class NotLoggedInController extends Controller
      */
     public function index()
     {
+        $layout =(! empty(\Auth::user())) ? 'layouts.app' : 'layouts.guest';
         //todo = from the url apply a default serverID
         $serverId = 1;
         $title           = "Stores";
@@ -18,6 +19,6 @@ class NotLoggedInController extends Controller
         $storeController = new Stores();
         $stores          = $storeController->getTransactionsUsingTitles($serverId);
 
-        return view('stores.notloggedin', compact('stores', 'storeType', 'title'));
+        return view('stores.notloggedin', compact('stores', 'storeType', 'title', 'layout'));
     }
 }
