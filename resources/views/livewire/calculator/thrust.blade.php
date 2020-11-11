@@ -18,47 +18,60 @@
         </div>
         <div class="card">
             <div class="card-header">
-                <h2>Initial thrusters</h2>
+                <h2>User defined thrusters</h2>
             </div>
             <div class="card-body">
-
+                <label for="usr-set-small-ion" type="text">Small Ion:</label>
+                <input wire:model="usrSetSmallIon" wire:change="usrThrustChange" id="usr-set-small-ion">
+                <br>
+                <label for="usr-set-large-ion" type="text">Large Ion:</label>
+                <input wire:model="usrSetLargeIon" wire:change="usrThrustChange" id="usr-set-large-ion">
+                <br>
+                <label for="usr-set-small-hydrogen" type="text">Small Hydrogen:</label>
+                <input wire:model="usrSetSmallHydrogen" wire:change="usrThrustChange" id="usr-set-small-hydrogen">
+                <br>
+                <label for="usr-set-large-hydrogen" type="text">Large Hydrogen:</label>
+                <input wire:model="usrSetLargeHydrogen" wire:change="usrThrustChange" id="usr-set-large-hydrogen">
+                <br>
+                <label for="usr-set-small-atmospheric" type="text">Small Atmospheric:</label>
+                <input wire:model="usrSetSmallAtmospheric" wire:change="usrThrustChange" id="usr-set-small-atmospheric">
+                <br>
+                <label for="usr-set-large-atmospheric" type="text">Large Atmospheric:</label>
+                <input wire:model="usrSetLargeAtmospheric" wire:change="usrThrustChange" id="usr-set-large-atmospheric">
+                <br>
+                <label for="usr-set-small-plasma" type="text">Small Ion:</label>
+                <input wire:model="usrSetSmallPlasma" wire:change="usrThrustChange" id="usr-set-small-plasma">
+                <br>
+                <label for="usr-set-large-plasma" type="text">Large Plasma:</label>
+                <input wire:model="usrSetLargePlasma" wire:change="usrThrustChange" id="usr-set-large-plasma">
             </div>
         </div>
     </div>
+    <hr>
+    <hr>
+    <hr>
     <div class="card-columns">
         <div class="card">
             <div class="card-header">
                 <h2>General Info</h2>
             </div>
             <div class="card-body">
-                <label for="gravity">
-                    Gravity:
-                </label>
+                <label for="gravity">Gravity:</label>
                 <input wire:model="gravity" id="info-gravity" type="text" readonly>
                 <br>
-                <label for="planet-id">
-                    Planet Name:
-                </label>
+                <label for="planet-id">Planet Name:</label>
                 <input wire:model="planetName" id="info-planet-id" type="text" readonly>
                 <br>
-                <label for="ship-size">
-                    Grid type:
-                </label>
+                <label for="ship-size">Grid type:</label>
                 <input wire:model="shipSize" id="info-ship-size" type="text" readonly>
                 <br>
-                <label for="cargo-mass">
-                    Cargo's mass:
-                </label>
+                <label for="cargo-mass">Cargo's mass:</label>
                 <input wire:model="cargoMass" id="info-cargo-mass" type="text" readonly>
                 <br>
-                <label for="dry-mass">
-                    Ship dry mass:
-                </label>
+                <label for="dry-mass">Ship dry mass:</label>
                 <input wire:model="dryMass" id="info-dry-mass" type="text" readonly>
                 <br>
-                <label for="newtons-required">
-                    Newtons Required:
-                </label>
+                <label for="newtons-required">Newtons Required:</label>
                 <input wire:model="newtonsRequired" id="info-newtons-required" type="text" readonly>
             </div>
         </div>
