@@ -17,32 +17,32 @@
                 <label for="gravity">
                     Gravity:
                 </label>
-                <input wire:model="gravity" id="gravity" type="text" readonly>
+                <input wire:model="gravity" id="info-gravity" type="text" readonly>
                 <br>
                 <label for="planet-id">
                     planet-id:
                 </label>
-                <input wire:model="planetId" id="planet-id" type="text" readonly>
+                <input wire:model="planetName" id="info-planet-id" type="text" readonly>
                 <br>
                 <label for="ship-size">
                     ship-size:
                 </label>
-                <input wire:model="shipSize" id="ship-size" type="text" readonly>
+                <input wire:model="shipSize" id="info-ship-size" type="text" readonly>
                 <br>
                 <label for="cargo-mass">
                     cargo-mass:
                 </label>
-                <input wire:model="cargoMass" id="cargo-mass" type="text" readonly>
+                <input wire:model="cargoMass" id="info-cargo-mass" type="text" readonly>
                 <br>
                 <label for="dry-mass">
                     dry-mass:
                 </label>
-                <input wire:model="dryMass" id="dry-mass" type="text" readonly>
+                <input wire:model="dryMass" id="info-dry-mass" type="text" readonly>
                 <br>
                 <label for="newtons-required">
                     newtons-required:
                 </label>
-                <input wire:model="newtonsRequired" id="newtons-required" type="text" readonly>
+                <input wire:model="newtonsRequired" id="info-newtons-required" type="text" readonly>
             </div>
         </div>
         <div class="card">
@@ -68,7 +68,7 @@
                 <input wire:model="numberSmallReactorsRequired" id="small-reactors-required" type="text" readonly>
                 <br>
                 <label for="naquadah-reactors-required"> # Naquadah reactors needed:</label>
-                <input wire:model="numberNaquadahReactorsRequired" id="naquadah-reactors-required" type="text" readonly>
+                <input wire:model="numberSpecialReactorsRequired" id="naquadah-reactors-required" type="text" readonly>
             </div>
         </div>
     </div>

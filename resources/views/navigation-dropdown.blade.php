@@ -11,9 +11,9 @@
                 </div>
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    <!--<x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
-                    </x-jet-nav-link>
+                    </x-jet-nav-link>-->
                     <!-- System Maps -->
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
@@ -104,6 +104,46 @@
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
+                    <!-- Other -->
+                    <x-jet-dropdown align="left" width="48">
+                        <x-slot name="trigger">
+                            <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                                {{ __('Other') }}
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <x-jet-dropdown-link href="{{ route('thrustCalculator') }}">
+                                Thrust Calculator
+                            </x-jet-dropdown-link>
+                            <div class="border-t border-gray-100"></div>
+                            <!-- Transactions -->
+                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                {{ __('Order Transactions') }}
+                            </div>
+                            <x-jet-dropdown-link href="{{ route('transactions.orders.ores') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ores
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.orders.ingots') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ingots
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.orders.components') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Components
+                            </x-jet-dropdown-link>
+                            <div class="border-t border-gray-100"></div>
+                            <div class="block px-4 py-2 text-xs text-gray-600">
+                                &nbsp;&nbsp; {{ __('Offer Transactions') }}
+                            </div>
+                            <x-jet-dropdown-link href="{{ route('transactions.offers.ores') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ores
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.offers.ingots') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ingots
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.offers.components') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Components
+                            </x-jet-dropdown-link>
+                        </x-slot>
+                    </x-jet-dropdown>
                     <!-- Testing -->
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
@@ -114,9 +154,6 @@
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('stocklevels') }}">
                                 Stock Levels
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('tests.thrustCalculator') }}">
-                                Thrust Calculator
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
@@ -196,35 +233,6 @@
                         @endif
                     </x-slot>
                     <x-slot name="content">
-                        <!-- Transactions -->
-                        <div class="block px-4 py-2 text-xs text-gray-400">
-                            {{ __('Transactions') }}
-                        </div>
-                            <div class="block px-4 py-2 text-xs text-gray-600">
-                                &nbsp;&nbsp; {{ __('Orders') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('transactions.orders.ores') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ores
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('transactions.orders.ingots') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ingots
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('transactions.orders.components') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Components
-                            </x-jet-dropdown-link>
-                            <div class="block px-4 py-2 text-xs text-gray-600">
-                                &nbsp;&nbsp; {{ __('Offers') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('transactions.offers.ores') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ores
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('transactions.offers.ingots') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ingots
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('transactions.offers.components') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Components
-                            </x-jet-dropdown-link>
-                        <div class="border-t border-gray-100"></div>
                         <!-- Account Management -->
                         <div class="block px-4 py-2 text-xs text-gray-400">
                             {{ __('Manage Account') }}

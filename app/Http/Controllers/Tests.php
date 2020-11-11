@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
 use App\Http\Traits\FindingGoods;
 use App\Models\Stores;
@@ -67,9 +65,5 @@ class Tests extends Controller
 
     public function solarSystem() {
         return view('tests.solarSystem');
-    }
-
-    public function thrustCalculator() {
-        return view('tests.thrustCalculator');
     }
 }

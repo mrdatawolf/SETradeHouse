@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends($layout)
 @section('title', 'Thrust Calc')
 @section('menu')
     @parent
