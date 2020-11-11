@@ -21,7 +21,9 @@ class Thrust extends Component
     public $dryMass                        = 0;
     public $cargoMass                      = 0;
     public $cargoMultiplier                = 1;
+    public $userAppliedNewtons             = 0;
     public $newtonsRequired                = 0;
+    public $totalNewtonsApplied            = 0;
     public $gravityAcceleration            = 9.81;
 
     public $thrusters;
@@ -36,6 +38,14 @@ class Thrust extends Component
     public $numberLargeReactorsRequired;
     public $numberSmallReactorsRequired;
     public $numberSpecialReactorsRequired;
+    public $usrSetSmallIon;
+    public $usrSetLargeIon;
+    public $usrSetSmallHydrogen;
+    public $usrSetLargeHydrogen;
+    public $usrSetSmallAtmospheric;
+    public $usrSetLargeAtmospheric;
+    public $usrSetSmallPlasma;
+    public $usrSetLargePlasma;
 
     public $ionMinimumPlanetAdjustment     = .2;
     public $plasmaMinimumPlanetAdjustment  = .6;
@@ -53,7 +63,8 @@ class Thrust extends Component
         'cargoMassChanged',
         'dryMassChanged',
         'shipSizeChanged',
-        'gravityChanged'
+        'gravityChanged',
+        'usrSetSmallIonChanged'
     ];
 
 
@@ -74,6 +85,7 @@ class Thrust extends Component
         $this->numberSmallReactorsRequired    = 0;
         $this->numberSpecialReactorsRequired  = 0;
 
+
         $this->gravityAcceleration = 9.81;
         $this->cargoMultiplier     = $server->scaling_modifier;
 
@@ -81,7 +93,8 @@ class Thrust extends Component
         $this->gravityChanged($this->planet->surface_gravity);
         $this->cargoMassChanged(0);
         $this->dryMassChanged(0);
-        $this->calculateNewtonsRequired();
+        $this->calculateNewtons();
+        $this->resetUserThrusters();
         $this->gatherThrusterData();
         $this->gatherReactorData();
         $this->gatherMetersPerSecond();
@@ -107,8 +120,8 @@ class Thrust extends Component
 
     public function gravityChanged($value)
     {
-        $this->gravity = (int) $value;
-        $this->calculateNewtonsRequired();
+        $this->gravity = (double) $value;
+        $this->calculateNewtons();
         $this->gatherThrusterData();
         $this->gatherReactorData();
     }
@@ -123,7 +136,7 @@ class Thrust extends Component
     public function cargoMassChanged($value)
     {
         $this->cargoMass = (int) $value;
-        $this->calculateNewtonsRequired();
+        $this->calculateNewtons();
         $this->gatherThrusterData();
         $this->gatherReactorData();
     }
@@ -132,7 +145,7 @@ class Thrust extends Component
     public function dryMassChanged($value)
     {
         $this->dryMass = (int) $value;
-        $this->calculateNewtonsRequired();
+        $this->calculateNewtons();
         $this->gatherThrusterData();
         $this->gatherReactorData();
     }
@@ -154,11 +167,106 @@ class Thrust extends Component
     }
 
 
+    public function usrThrustChange() {
+        $this->calculateUserAppliedNewtons();
+        $this->calculateNewtons();
+        $this->gatherThrusterData();
+        $this->gatherReactorData();
+    }
+
+
+    public function calculateNewtons() {
+        $this->calculateNewtonsRequired();
+        $this->calculateTotalNewtonsApplied();
+        $this->calculateBaseAcceleration();
+    }
+
     public function calculateNewtonsRequired()
     {
         $this->totalMass = $this->dryMass + ($this->cargoMass / $this->cargoMultiplier);
         $this->newtonsRequired = $this->gravity * ($this->totalMass) * $this->gravityAcceleration;
-        $this->baseAcceleration = ($this->totalMass === 0 || $this->gravity === 0) ? 0 : $this->newtonsRequired/$this->totalMass*$this->gravity;
+    }
+
+    public function calculateBaseAcceleration() {
+        $this->baseAcceleration = ($this->totalMass === 0 || $this->gravity === 0) ? 0 : $this->totalNewtonsApplied/$this->totalMass*$this->gravity;
+    }
+
+    public function calculateTotalNewtonsApplied() {
+        $this->totalNewtonsApplied = ($this->newtonsRequired > $this->userAppliedNewtons) ? $this->newtonsRequired : $this->userAppliedNewtons;
+    }
+
+    public function calculateUserAppliedNewtons() {
+        $adjustedNewtonsOfThrust = 0;
+        if($this->usrSetSmallIon > 0) {
+            $thruster = Thrusters::where('ship_size', $this->shipSize)
+                                       ->where('type', 'ion')
+                                       ->where('size', 'small')
+                                       ->first();
+            $adjustedNewtonsOfThrust += $this->usrSetSmallIon * $this->adjustThrusterNewtonOutput($thruster);
+        }
+        if($this->usrSetLargeIon > 0) {
+            $thruster = Thrusters::where('ship_size', $this->shipSize)
+                                 ->where('type', 'ion')
+                                 ->where('size', 'large')
+                                 ->first();
+            $adjustedNewtonsOfThrust += $this->usrSetLargeIon * $this->adjustThrusterNewtonOutput($thruster);
+        }
+        if($this->usrSetSmallHydrogen > 0) {
+            $thruster = Thrusters::where('ship_size', $this->shipSize)
+                                 ->where('type', 'hydrogen')
+                                 ->where('size', 'small')
+                                 ->first();
+            $adjustedNewtonsOfThrust += $this->usrSetSmallHydrogen * $this->adjustThrusterNewtonOutput($thruster);
+        }
+        if($this->usrSetLargeHydrogen > 0) {
+            $thruster = Thrusters::where('ship_size', $this->shipSize)
+                                 ->where('type', 'hydrogen')
+                                 ->where('size', 'large')
+                                 ->first();
+            $adjustedNewtonsOfThrust += $this->usrSetLargeHydrogen * $this->adjustThrusterNewtonOutput($thruster);
+        }
+        if($this->usrSetSmallAtmospheric > 0) {
+            $thruster = Thrusters::where('ship_size', $this->shipSize)
+                                 ->where('type', 'atmospheric')
+                                 ->where('size', 'small')
+                                 ->first();
+            $adjustedNewtonsOfThrust += $this->usrSetSmallAtmospheric * $this->adjustThrusterNewtonOutput($thruster);
+        }
+        if($this->usrSetLargeAtmospheric > 0) {
+            $thruster = Thrusters::where('ship_size', $this->shipSize)
+                                 ->where('type', 'atmospheric')
+                                 ->where('size', 'large')
+                                 ->first();
+            $adjustedNewtonsOfThrust += $this->usrSetLargeAtmospheric * $this->adjustThrusterNewtonOutput($thruster);
+        }
+        if($this->usrSetSmallPlasma > 0) {
+            $thruster = Thrusters::where('ship_size', $this->shipSize)
+                                 ->where('type', 'plasma')
+                                 ->where('size', 'small')
+                                 ->first();
+            $adjustedNewtonsOfThrust += $this->usrSetSmallPlasma * $this->adjustThrusterNewtonOutput($thruster);
+        }
+        if($this->usrSetLargePlasma > 0) {
+            $thruster = Thrusters::where('ship_size', $this->shipSize)
+                                 ->where('type', 'plasma')
+                                 ->where('size', 'large')
+                                 ->first();
+            $adjustedNewtonsOfThrust += $this->usrSetLargePlasma * $this->adjustThrusterNewtonOutput($thruster);
+        }
+
+        $this->userAppliedNewtons = $adjustedNewtonsOfThrust;
+    }
+
+
+    private function resetUserThrusters() {
+        $this->usrSetSmallIon                = 0;
+        $this->usrSetLargeIon                = 0;
+        $this->usrSetSmallHydrogen           = 0;
+        $this->usrSetLargeHydrogen           = 0;
+        $this->usrSetSmallAtmospheric        = 0;
+        $this->usrSetLargeAtmospheric        = 0;
+        $this->usrSetSmallPlasma             = 0;
+        $this->usrSetLargePlasma             = 0;
     }
 
 
@@ -204,7 +312,7 @@ class Thrust extends Component
 
     private function gatherThrusterData()
     {
-        $this->numberThrustersRequired        = $this->thrustersRequired();
+        $this->numberThrustersRequired = $this->thrustersRequired();
         $this->gatherMetersPerSecond();
     }
 
@@ -222,20 +330,21 @@ class Thrust extends Component
                              ->where('type', $this->thrusterType)
                              ->where('size', $this->thrusterSize)
                              ->first();
-        $adjustedNewtonsOfThrust = $this->adjustThrusterNewtonOutput();
-        if ($this->newtonsRequired < 1 || $adjustedNewtonsOfThrust < 1) {
+        $adjustedNewtonsOfThrust = $this->adjustThrusterNewtonOutput($this->thruster);
+        $newtonsLeft = $this->newtonsRequired - $this->userAppliedNewtons;
+        if ($newtonsLeft < 1 || $adjustedNewtonsOfThrust < 1) {
             return 0;
         } else {
-            return ceil($this->newtonsRequired / $adjustedNewtonsOfThrust);
+            return ceil($newtonsLeft / $adjustedNewtonsOfThrust);
         }
     }
 
 
-    private function adjustThrusterNewtonOutput() {
-        if(empty($this->thruster)) {
+    private function adjustThrusterNewtonOutput($thruster) {
+        if(empty($thruster)) {
             return 0;
         }
-        switch($this->thruster->type) {
+        switch($thruster->type) {
             case 'ion' :
                 $adjustment = $this->ionMinimumPlanetAdjustment;
                 break;
@@ -249,7 +358,7 @@ class Thrust extends Component
                 $adjustment = 1;
             }
 
-        return $this->thruster->newtons * $adjustment;
+        return $thruster->newtons * $adjustment;
     }
 
 
