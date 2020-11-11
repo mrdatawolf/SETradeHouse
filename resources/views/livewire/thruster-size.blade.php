@@ -7,7 +7,7 @@
     <div class="md:w-2/3">
         <select wire:model="thrusterSize" wire:change="thrusterSizeChanged" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="select-thruster-size">
             @foreach($thrusterSizes as $thrusterSize)
-                <option value="{{ $thrusterSize }}">{{ $thrusterSize }}</option>
+                <option value="{{ $thrusterSize }}">{{ucfirst($thrusterSize) }}</option>
             @endforeach
         </select>
     </div>
