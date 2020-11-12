@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "livewire/livewire": "^2.0",
+        "mediconesystems/livewire-datatables": "^0.4.2",
         "spatie/laravel-menu": "^3.5"
     },
     "require-dev": {
