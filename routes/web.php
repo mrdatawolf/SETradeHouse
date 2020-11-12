@@ -58,26 +58,7 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
 //trends
 Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
     Route::prefix('/trends')->group(function () {
-        Route::prefix('/ores')->group(function () {
-            Route::get('/', 'Trends@oresOfferIndex')->name('trends.ores');
-            Route::get('/orders', 'Trends@oresOrderIndex')->name('trends.ores.orders');
-            Route::get('/offers', 'Trends@oresOfferIndex')->name('trends.ores.offers');
-        });
-        Route::prefix('/ingots')->group(function () {
-            Route::get('/', 'Trends@ingotsOfferIndex')->name('trends.ingots');
-            Route::get('/orders', 'Trends@ingotsOrderIndex')->name('trends.ingots.orders');
-            Route::get('/offers', 'Trends@ingotsOfferIndex')->name('trends.ingots.offers');
-        });
-        Route::prefix('/components')->group(function () {
-            Route::get('/', 'Trends@componentsOfferIndex')->name('trends.components');
-            Route::get('/orders', 'Trends@componentsOrderIndex')->name('trends.components.orders');
-            Route::get('/offers', 'Trends@componentsOfferIndex')->name('trends.components.offers');
-        });
-        Route::prefix('/tools')->group(function () {
-            Route::get('/', 'Trends@toolOfferIndex')->name('trends.tools');
-            Route::get('/orders', 'Trends@toolsOfferIndex')->name('trends.tools.orders');
-            Route::get('/offers', 'Trends@toolsOfferIndex')->name('trends.tools.offers');
-        });
+        Route::get('/', 'Trends@index')->name('trends');
     });
 });
 //tests
