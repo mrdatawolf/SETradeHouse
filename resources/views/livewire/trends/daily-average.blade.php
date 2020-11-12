@@ -1,47 +1,33 @@
-<div>
-    @foreach($trendDailyAvg as $title => $dailyAvg)
-        @if(! in_array($title, ['scrap']))
-            <div class="card">
-                <div class="card-body">
-                    <canvas id="trend{{ $title }}Daily"></canvas>
-                </div>
-            </div>
+<div class="container mx-auto space-y-4 p-4 sm:p-0">
+    <ul class="flex flex-col sm:flex-row sm:space-x-8 sm:items-center">
+        <li>
+            <input type="checkbox" value="travel" wire:model="types"/>
+            <span>Travel</span>
+        </li>
+        <li>
+            <input type="checkbox" value="shopping" wire:model="types"/>
+            <span>Shopping</span>
+        </li>
+        <li>
+            <input type="checkbox" value="food" wire:model="types"/>
+            <span>Food</span>
+        </li>
+        <li>
+            <input type="checkbox" value="entertainment" wire:model="types"/>
+            <span>Entertainment</span>
+        </li>
+        <li>
+            <input type="checkbox" value="other" wire:model="types"/>
+            <span>Other</span>
+        </li>
+    </ul>
 
-            <script>
-                @php
-                    $jsonDailyAvg       = json_encode($dailyAvg, true);
-                    $jsonDailyLabels = json_encode($trendDailyLabels[$title]);
-                @endphp
-                var doc = document.getElementById('trend{{ $title }}Daily');
-                if (doc != null) {
-                    var ctx = doc.getContext('2d');
-                    @if(empty($jsonDailyAvg) || empty($jsonDailyLabels))
-                        ctx.font = "30px Arial";
-                        ctx.fillText("No data found", 10, 50);
-                        console.log('No data found!');
-                    @else
-                    var trend{{ $title }}Daily = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: {!! $jsonDailyLabels !!},
-                            datasets: [{
-                                label: '{{ $title }}',
-                                data: {!! $jsonDailyAvg !!}
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: false
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                    @endif
-                }
-            </script>
-        @endif
-    @endforeach
+    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="shadow rounded p-4 border bg-white" style="height: 32rem;">
+            <livewire:livewire-line-chart
+                key="{{ $lineChartModel->reactiveKey() }}"
+                :line-chart-model="$lineChartModel"
+            />
+        </div>
+    </div>
 </div>

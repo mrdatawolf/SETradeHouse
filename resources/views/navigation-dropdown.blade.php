@@ -63,44 +63,8 @@
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Ores') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('trends.ores.orders') }}">
-                                &nbsp;&nbsp; Order
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('trends.ores.offers') }}">
-                                &nbsp;&nbsp; Offer
-                            </x-jet-dropdown-link>
-                            <div class="border-t border-gray-100"></div>
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Ingots') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('trends.ingots.orders') }}">
-                                &nbsp;&nbsp; Order
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('trends.ingots.offers') }}">
-                                &nbsp;&nbsp; Offer
-                            </x-jet-dropdown-link>
-                            <div class="border-t border-gray-100"></div>
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Componts') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('trends.components.orders') }}">
-                                &nbsp;&nbsp; Order
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('trends.components.offers') }}">
-                                &nbsp;&nbsp; Offer
-                            </x-jet-dropdown-link>
-                            <div class="border-t border-gray-100"></div>
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Tools') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('trends.tools.orders') }}">
-                                &nbsp;&nbsp; Order
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('trends.tools.offers') }}">
-                                &nbsp;&nbsp; Offer
+                            <x-jet-dropdown-link href="{{ route('trends') }}">
+                                &nbsp;&nbsp; Common
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
@@ -336,16 +300,6 @@
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
         </div>-->
-        <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('maps.nebulonSystem3D') }}" :active="request()->routeIs('dashboard')">
-                {{ __('3D System Map - Nebulon') }}
-            </x-jet-responsive-nav-link>
-        </div>
-        <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('maps.nebulonSystem') }}" :active="request()->routeIs('maps.nebulonSystem')">
-                {{ __('2D System Map - Nebulon') }}
-            </x-jet-responsive-nav-link>
-        </div>
         <!-- Stores -->
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('stores') }}" :active="request()->routeIs('stores')">
@@ -368,8 +322,23 @@
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('trends') }}" :active="request()->routeIs('trends')">
+                {{ __('') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('stocklevels') }}" :active="request()->routeIs('stocklevels')">
                 {{ __('Testing - Stock levels') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('maps.nebulonSystem3D') }}" :active="request()->routeIs('dashboard')">
+                {{ __('3D System Map - Nebulon') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('maps.nebulonSystem') }}" :active="request()->routeIs('maps.nebulonSystem')">
+                {{ __('2D System Map - Nebulon') }}
             </x-jet-responsive-nav-link>
         </div>
         <!-- Server Administration Options-->

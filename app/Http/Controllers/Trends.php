@@ -14,6 +14,10 @@ use Carbon\Carbon;
 
 class Trends extends Controller
 {
+    public function index() {
+        return view('trends.general.all');
+    }
+
     public function oresOrderIndex()
     {
         $pageTitle  = "Ore Order Trends";
