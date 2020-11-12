@@ -21,29 +21,29 @@
                 <h2>User defined thrusters</h2>
             </div>
             <div class="card-body">
-                <label for="usr-set-small-ion" type="text">Small Ion:</label>
-                <input wire:model="usrSetSmallIon" wire:change="usrThrustChange" id="usr-set-small-ion">
+                <label for="usr-set-small-ion" type="text" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Small Ion:</label>
+                <input wire:model="usrSetSmallIon" wire:change="usrThrustChange" id="usr-set-small-ion" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                 <br>
-                <label for="usr-set-large-ion" type="text">Large Ion:</label>
-                <input wire:model="usrSetLargeIon" wire:change="usrThrustChange" id="usr-set-large-ion">
+                <label for="usr-set-large-ion" type="text" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Large Ion:</label>
+                <input wire:model="usrSetLargeIon" wire:change="usrThrustChange" id="usr-set-large-ion" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                 <br>
-                <label for="usr-set-small-hydrogen" type="text">Small Hydrogen:</label>
-                <input wire:model="usrSetSmallHydrogen" wire:change="usrThrustChange" id="usr-set-small-hydrogen">
+                <label for="usr-set-small-hydrogen" type="text" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Small Hydrogen:</label>
+                <input wire:model="usrSetSmallHydrogen" wire:change="usrThrustChange" id="usr-set-small-hydrogen" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                 <br>
-                <label for="usr-set-large-hydrogen" type="text">Large Hydrogen:</label>
-                <input wire:model="usrSetLargeHydrogen" wire:change="usrThrustChange" id="usr-set-large-hydrogen">
+                <label for="usr-set-large-hydrogen" type="text" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Large Hydrogen:</label>
+                <input wire:model="usrSetLargeHydrogen" wire:change="usrThrustChange" id="usr-set-large-hydrogen" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                 <br>
-                <label for="usr-set-small-atmospheric" type="text">Small Atmospheric:</label>
-                <input wire:model="usrSetSmallAtmospheric" wire:change="usrThrustChange" id="usr-set-small-atmospheric">
+                <label for="usr-set-small-atmospheric" type="text" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Small Atmospheric:</label>
+                <input wire:model="usrSetSmallAtmospheric" wire:change="usrThrustChange" id="usr-set-small-atmospheric" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                 <br>
-                <label for="usr-set-large-atmospheric" type="text">Large Atmospheric:</label>
-                <input wire:model="usrSetLargeAtmospheric" wire:change="usrThrustChange" id="usr-set-large-atmospheric">
+                <label for="usr-set-large-atmospheric" type="text" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Large Atmospheric:</label>
+                <input wire:model="usrSetLargeAtmospheric" wire:change="usrThrustChange" id="usr-set-large-atmospheric" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                 <br>
-                <label for="usr-set-small-plasma" type="text">Small Ion:</label>
-                <input wire:model="usrSetSmallPlasma" wire:change="usrThrustChange" id="usr-set-small-plasma">
+                <label for="usr-set-small-plasma" type="text" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Small Ion:</label>
+                <input wire:model="usrSetSmallPlasma" wire:change="usrThrustChange" id="usr-set-small-plasma" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                 <br>
-                <label for="usr-set-large-plasma" type="text">Large Plasma:</label>
-                <input wire:model="usrSetLargePlasma" wire:change="usrThrustChange" id="usr-set-large-plasma">
+                <label for="usr-set-large-plasma" type="text" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Large Plasma:</label>
+                <input wire:model="usrSetLargePlasma" wire:change="usrThrustChange" id="usr-set-large-plasma" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
             </div>
         </div>
     </div>
