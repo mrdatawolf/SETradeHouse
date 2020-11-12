@@ -309,25 +309,92 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-jet-responsive-nav-link>
-        </div>
+        <div class="flex items-center px-4">
+            <div class="flex-shrink-0">
+                <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+            </div>
 
-        <!-- Responsive Settings Options -->
+            <div class="ml-3">
+                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            </div>
+        </div>
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-4">
                 <div class="flex-shrink-0">
-                    <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
-                </div>
-
-                <div class="ml-3">
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                    @livewire('active-server')
                 </div>
             </div>
-
+            <div class="flex items-center px-4">
+                <div class="flex-shrink-0">
+                    @livewire('staleness-info')
+                </div>
+            </div>
+        </div>
+        <!--<div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                {{ __('Dashboard') }}
+            </x-jet-responsive-nav-link>
+        </div>-->
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('maps.nebulonSystem3D') }}" :active="request()->routeIs('dashboard')">
+                {{ __('3D System Map - Nebulon') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('maps.nebulonSystem') }}" :active="request()->routeIs('maps.nebulonSystem')">
+                {{ __('2D System Map - Nebulon') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <!-- Stores -->
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('stores') }}" :active="request()->routeIs('stores')">
+                {{ __('Store - Personal') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('stores.world') }}" :active="request()->routeIs('stores.world')">
+                {{ __('Store - World') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('stores.server') }}" :active="request()->routeIs('stores.server')">
+                {{ __('Store - Server') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('thrustCalculator') }}" :active="request()->routeIs('thrustCalculator')">
+                {{ __('Thrust Calculator') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('stocklevels') }}" :active="request()->routeIs('stocklevels')">
+                {{ __('Testing - Stock levels') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <!-- Server Administration Options-->
+        @if(Auth::user()->isAdmin())
+            <div class="pt-4 pb-1 border-t border-gray-200">
+                <div class="flex items-center px-4">
+                    <div class="flex-shrink-0">
+                        <x-jet-responsive-nav-link href="{{ route('admin.worlds') }}" :active="request()->routeIs('admin.worlds')">
+                            {{ __('List Worlds') }}
+                        </x-jet-responsive-nav-link>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-4 pb-1 border-t border-gray-200">
+                <div class="flex items-center px-4">
+                    <div class="flex-shrink-0">
+                        <x-jet-responsive-nav-link href="{{ route('admin.servers') }}" :active="request()->routeIs('admin.servers')">
+                            {{ __('List Servers') }}
+                        </x-jet-responsive-nav-link>
+                    </div>
+                </div>
+            </div>
+        @endif
+        <!-- Responsive Settings Options -->
+        <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="mt-3 space-y-1">
                 <!-- Account Management -->
                 <x-jet-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
