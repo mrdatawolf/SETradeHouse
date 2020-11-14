@@ -59,7 +59,7 @@ class AlignTrendData extends Command
         $this->goodId            = $this->option('goodId');
         $transactionTypeIds      = ($this->option('transactionTypeId')) ? [(int)$this->transactionTypeId] : [1, 2];
 //todo: something is wrong with certain good types... causes failures into inactive_transactions...not sure why. So along with the other blocks I stopped 4 of them completely. Also tools, ammo and bottles which needs to be corrected
-        $goodTypeIds             = ($this->option('goodTypeId')) ? [(int)$this->goodTypeId] :  [1, 2, 3] ;
+        $goodTypeIds             = ($this->option('goodTypeId')) ? [(int)$this->goodTypeId] :  [1, 2, 3, 4, 5, 6] ;
         foreach ($transactionTypeIds as $transactionTypeId) {
             foreach ($goodTypeIds as $goodTypeId) {
                 if ( ! empty($this->goodId)) {
@@ -73,7 +73,7 @@ class AlignTrendData extends Command
                             $ids = Ingots::whereNotIn('id', [10, 11, 12])->pluck('id');
                             break;
                         case 3 :
-                            $ids = Components::whereNotIn('id', [40])->pluck('id');
+                            $ids = Components::pluck('id');
                             break;
                         case 4 :
                             //currently blocked
@@ -98,7 +98,7 @@ class AlignTrendData extends Command
                         foreach ($trendsData as $row) {
                             Trends::updateOrCreate([
                                 'transaction_type_id' => $transactionTypeId,
-                                'good_type_id'        => $goodTypeId,
+                                'type_id'        => $goodTypeId,
                                 'good_id'             => $id,
                                 'dated_at'            => Carbon::createFromDate($row->dated_at),
                             ], [
