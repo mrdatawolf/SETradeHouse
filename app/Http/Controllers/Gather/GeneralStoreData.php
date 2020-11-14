@@ -43,7 +43,7 @@ class GeneralStoreData
                     $this->updateStoreLocation($tradeZone, $transaction->GPSString);
                     $this->addTransactionToArray($tradeZone, $transaction, $goodType, $good);
                 } else {
-                    $this->result = 'updateTransactionValues: good was empty transaction Item:' . $transaction->Item . ' goodType: ' . $goodType->title;
+                    $this->result = 'updateTransactionValues: good was empty for transaction Item:' . $transaction->Item . ' goodType: ' . $goodType->title;
                 }
             }
         });
@@ -74,18 +74,22 @@ class GeneralStoreData
      * @param $good
      */
     private function addTransactionToArray($tradeZone, $transaction, $goodType, $good) {
-        $currentTransaction    = [
-            'trade_zone_id'       => $tradeZone->id,
-            'server_id'           => $this->serverId,
-            'world_id'            => $this->worldId,
-            'value'               => $transaction->pricePerUnit,
-            'amount'              => $transaction->Qty,
-            'transaction_type_id' => $this->getTransactionId($transaction),
-            'good_type_id'        => $goodType->id,
-            'good_id'             => $good->id,
-            'owner'               => $transaction->Owner
-        ];
-        $this->transactionArray[] = $currentTransaction;
+        if(! empty($transaction->Owner)) {
+            $currentTransaction       = [
+                'trade_zone_id'       => $tradeZone->id,
+                'server_id'           => $this->serverId,
+                'world_id'            => $this->worldId,
+                'value'               => $transaction->pricePerUnit,
+                'amount'              => $transaction->Qty,
+                'transaction_type_id' => $this->getTransactionId($transaction),
+                'good_type_id'        => $goodType->id,
+                'good_id'             => $good->id,
+                'owner'               => $transaction->Owner
+            ];
+            $this->transactionArray[] = $currentTransaction;
+        } else {
+            echo 'No transaction owner found!';
+        }
     }
 
 
@@ -123,7 +127,7 @@ class GeneralStoreData
         $tranactionTypeConversion   = ($transaction->offerOrOrder === 'Offer') ? 'sell' : 'buy';
         $transactionType            = TransactionTypes::where('title', $tranactionTypeConversion)->first();
 
-        return $transactionType->id;
+        return (! empty($transactionType->id)) ? $transactionType->id : null;
     }
 
     /**

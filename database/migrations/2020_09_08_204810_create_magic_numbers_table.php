@@ -39,6 +39,6 @@ class CreateMAgicNumbersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('worlds');
+        Schema::dropIfExists('magic_numbers');
     }
 }

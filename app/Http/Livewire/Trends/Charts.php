@@ -39,8 +39,8 @@ class Charts extends Component
         $this->transactionTypeId = 1;
         $this->goodTypeId        = 1;
         $this->goodId            = 1;
-        $this->fromDate          = Carbon::now()->subDays(63)->toDateString();
-        $this->toDate            = Carbon::now()->subDays(62)->toDateString();
+        $this->fromDate          = Carbon::now()->subDays(1)->startOfDay()->toDateString();
+        $this->toDate            = Carbon::now()->endOfDay()->toDateString();
 
         $this->gatherGoods();
     }

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use App\Tools;
+use App\Models\Tools;
 
 class UpdateToolsSeNames extends Migration
 {

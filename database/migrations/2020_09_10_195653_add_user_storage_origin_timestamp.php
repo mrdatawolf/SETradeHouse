@@ -13,9 +13,9 @@ class AddUserStorageOriginTimestamp extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('user_storage_values')) {
-            if (!Schema::hasColumn('user_storage_values','origin_timestamp')) {
-                Schema::table('user_storage_values', function (Blueprint $table) {
+        if (Schema::connection('storage')->hasTable('user_storage_values')) {
+            if (!Schema::connection('storage')->hasColumn('user_storage_values','origin_timestamp')) {
+                Schema::connection('storage')->table('user_storage_values', function (Blueprint $table) {
                     $table->timestamp('origin_timestamp')->nullable();
                 });
             }
@@ -29,9 +29,9 @@ class AddUserStorageOriginTimestamp extends Migration
      */
     public function down()
     {
-        if (Schema::hasTable('user_storage_values')) {
-            if (Schema::hasColumn('user_storage_values','origin_timestamp')) {
-                Schema::table('user_storage_values', function (Blueprint $table) {
+        if (Schema::connection('storage')->hasTable('user_storage_values')) {
+            if (Schema::connection('storage')->hasColumn('user_storage_values','origin_timestamp')) {
+                Schema::connection('storage')->table('user_storage_values', function (Blueprint $table) {
                     $table->dropColumn('origin_timestamp');
                 });
             }

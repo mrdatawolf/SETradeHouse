@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIngotsTable extends Migration
+class SeperateDb extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateIngotsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ingots', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('se_name');
-            $table->double('keen_crap_fix');
-        });
+        Schema::dropIfExists('trends');
+        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('inactive_transactions');
+        Schema::dropIfExists('user_storage_values');
+        Schema::dropIfExists('npc_storage_values');
     }
 
     /**
@@ -28,6 +27,6 @@ class CreateIngotsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ingots');
+        //
     }
 }

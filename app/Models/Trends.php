@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Builder;
 class Trends extends Model
 {
     use ScarcityAdjustment;
+
+    protected $connection   ='trends';
     protected $table = 'trends';
     protected $fillable = ['transaction_type_id', 'good_type_id', 'good_id', 'dated_at', 'sum', 'amount', 'average', 'count'];
     protected $dates = ['dated_at'];

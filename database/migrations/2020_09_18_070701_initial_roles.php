@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use App\Roles;
+use App\Models\Roles;
 
 class InitialRoles extends Migration
 {

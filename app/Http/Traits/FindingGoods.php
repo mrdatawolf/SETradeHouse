@@ -1,5 +1,7 @@
 <?php namespace App\Http\Traits;
 
+use App\Models\Ammo;
+use App\Models\Bottles;
 use App\Models\Components;
 use App\Models\GoodTypes;
 use App\Models\Ingots;
@@ -8,6 +10,25 @@ use App\Models\Tools;
 use App\Models\TransactionTypes;
 
 trait FindingGoods {
+    private $specialGoods = [
+        'WelderItem',
+        'Welder2Item',
+        'Welder3Item',
+        'Welder4Item',
+        'AngleGrinderItem',
+        'AngleGrinder2Item',
+        'AngleGrinder3Item',
+        'AngleGrinder4Item',
+        'HandDrillItem',
+        'HandDrill2Item',
+        'HandDrill3Item',
+        'HandDrill4Item',
+        'AutomaticRifleItem',
+        'RapidFireAutomaticRifleItem',
+        'PreciseAutomaticRifleItem',
+        'UltimateAutomaticRifleItem'
+    ];
+
     /**
      * note: normally you want the good from the seName... this returns it for you.
      * @param $seName
@@ -22,12 +43,13 @@ trait FindingGoods {
 
 
     /**
+     * @param $seNameGroup
      * @param $seName
      *
      * @return string
      */
-    public function seNameGroupToGoodTypeTitle($seName) {
-        $seNameArray = explode('/',$seName);
+    public function seNameGroupToGoodTypeTitle($seNameGroup, $seName) {
+        $seNameArray = explode('/',$seNameGroup);
         $seGoodType = $seNameArray[0];
         switch($seGoodType) {
             case 'MyObjectBuilder_Ingot' :
@@ -39,8 +61,19 @@ trait FindingGoods {
             case 'MyObjectBuilder_Component':
                 $itemType = 'Component';
                 break;
+            case 'MyObjectBuilder_AmmoMagazine':
+            case 'MyObjectBuilder_PhysicalGunObject':
+                if(empty($seName)) {
+                    dd($seNameArray, $seGoodType);
+                }
+                $itemType = (in_array($seName, $this->specialGoods)) ? 'Tool' : 'Ammo';
+                break;
+            case 'MyObjectBuilder_GasContainerObject' :
+            case 'MyObjectBuilder_OxygenContainerObject' :
+                $itemType = 'Bottle';
+                break;
             default:
-                    /* tools should be things like :  'MyObjectBuilder_AmmoMagazine','MyObjectBuilder_ConsumableItem','MyObjectBuilder_GasContainerObject','MyObjectBuilder_OxygenContainerObject','MyObjectBuilder_PhysicalGunObject','MyObjectBuilder_Datapad','MyObjectBuilder_PhysicalObject','MyObjectBuilder_Package'*/
+                    /* tools should be things like :  'MyObjectBuilder_ConsumableItem','MyObjectBuilder_PhysicalGunObject','MyObjectBuilder_Datapad','MyObjectBuilder_PhysicalObject','MyObjectBuilder_Package'*/
                 $itemType = 'Tool';
 
         }
@@ -56,8 +89,10 @@ trait FindingGoods {
      */
     public function seNameToGoodType($goodSeName) {
         $seNameArray = explode('/',$goodSeName);
-        $goodType = $this->seNameGroupToGoodTypeTitle($seNameArray[0]);
-
+        $goodType = $this->seNameGroupToGoodTypeTitle($seNameArray[0], $seNameArray[1]);
+        if(empty($goodType)) {
+            dd($seNameArray);
+        }
 
         return GoodTypes::where('title',$goodType)->first();
     }
@@ -79,6 +114,15 @@ trait FindingGoods {
             case '3' :
                 $name = Components::where('se_name', $seName)->pluck('title')->first();
                 break;
+            case '4' :
+                $name = Tools::where('se_name', $seName)->pluck('title')->first();
+                break;
+            case '5' :
+                $name = Ammo::where('se_name', $seName)->pluck('title')->first();
+                break;
+            case '6' :
+                $name = Bottles::where('se_name', $seName)->pluck('title')->first();
+                break;
             default:
                 $name = Tools::where('se_name', $seName)->pluck('title')->first();
 
@@ -95,6 +139,7 @@ trait FindingGoods {
      * @return mixed
      */
     private function seNameAndGoodTypeToGood($goodType, $seName) {
+        $seName = $this->correctSeNameIssues($seName);
         switch($goodType->id) {
             case '1' :
                 $model = Ores::where('se_name', $seName)->first();
@@ -105,11 +150,46 @@ trait FindingGoods {
             case '3' :
                 $model = Components::where('se_name', $seName)->first();
                 break;
+            case '4' :
+                $model = Tools::where('se_name', $seName)->first();
+                break;
+            case '5' :
+                $model = Ammo::where('se_name', $seName)->first();
+                break;
+            case '6' :
+                $model = Bottles::where('se_name', $seName)->first();
+                break;
             default:
                 $model = Tools::where('se_name', $seName)->first();
         }
 
         return $model;
+    }
+
+    private function correctSeNameIssues($seName) {
+        switch($seName) {
+            case 'MyObjectBuilder_PhysicalGunObject/AutomaticRifleItem':
+                $seName = 'MyObjectBuilder_PhysicalGunObject/AutomaticRifle';
+                break;
+            case 'MyObjectBuilder_PhysicalGunObject/RapidFireAutomaticRifleItem':
+                $seName = 'MyObjectBuilder_PhysicalGunObject/RapidFireAutomaticRifle';
+                break;
+            case 'MyObjectBuilder_PhysicalGunObject/PreciseAutomaticRifleItem':
+                $seName = 'MyObjectBuilder_PhysicalGunObject/PreciseAutomaticRifle';
+                break;
+            case 'MyObjectBuilder_PhysicalGunObject/UltimateAutomaticRifleItem':
+                $seName = 'MyObjectBuilder_PhysicalGunObject/UltimateAutomaticRifle';
+                break;
+            case 'MyObjectBuilder_AmmoMagazine/NATO_25x184mmMagazine':
+                $seName = 'MyObjectBuilder_AmmoMagazine/NATO_25x184mm';
+                break;
+            case 'MyObjectBuilder_PhysicalGunObject/NATO_5p56x45mmMagazine':
+                $seName = 'MyObjectBuilder_AmmoMagazine/NATO_5p56x45mm';
+                break;
+            case 'MyObjectBuilder_PhysicalGunObject/Missile200mmMagazine':
+                $seName = 'MyObjectBuilder_AmmoMagazine/Missile200mm';
+        }
+        return $seName;
     }
 
     public function getGoodFromIds($typeId, $goodId) {
@@ -132,6 +212,15 @@ trait FindingGoods {
                 break;
             case '3' :
                 $model = Components::find($goodId);
+                break;
+            case '4' :
+                $model = Tools::find($goodId);
+                break;
+            case '5' :
+                $model = Ammo::find($goodId);
+                break;
+            case '6' :
+                $model = Bottles::find($goodId);
                 break;
             default:
                 $model = Tools::find($goodId);
@@ -158,6 +247,15 @@ trait FindingGoods {
                 break;
             case '3' :
                 $model = Components::where('title',$goodTitle)->first();
+                break;
+            case '4' :
+                $model = Tools::where('title',$goodTitle)->first();
+                break;
+            case '5' :
+                $model = Ammo::where('title',$goodTitle)->first();
+                break;
+            case '6' :
+                $model = Bottles::where('title',$goodTitle)->first();
                 break;
             default:
                 $model = Tools::where('title',$goodTitle)->first();

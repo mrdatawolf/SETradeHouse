@@ -43,6 +43,29 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+        'transactions' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL_TRANSACTIONS'),
+            'database' =>  database_path(env('DB_DATABASE_TRANSACTIONS')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS_TRANSACTIONS', true),
+        ],
+
+        'storage' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL_STORAGE'),
+            'database' =>  database_path(env('DB_DATABASE_STORAGE')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS_STORAGE', true),
+        ],
+        'trends' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL_TRENDS'),
+            'database' =>  database_path(env('DB_DATABASE_TRENDS')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS_TRENDS', true),
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL_SECOND'),

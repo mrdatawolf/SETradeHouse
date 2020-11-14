@@ -7,6 +7,8 @@ use App\Http\Controllers\Trends as TrendsController;
 use App\Models\Ingots;
 use App\Models\Ores;
 use App\Models\Tools;
+use App\Models\Ammo;
+use App\Models\Bottles;
 use App\Models\Trends;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -14,12 +16,12 @@ use Illuminate\Console\Command;
 class AlignTrendData extends Command
 {
     /**
-     * The name and signature of the console command. (order is trans id 1 offer is trans id 2
+     * note: order is transaction_id 1 is an order and 2 is an offer.
      *
      * @var string
      */
     protected $signature = 'align:trends
-    { --transactionTypeId=  : If all it will align all goods. Otherwise use the transaction id you want to limit the alignment too.}
+    { --transactionTypeId=  : If "all" it will align all goods. Otherwise use the transaction id you want to limit the alignment too.}
     { --goodTypeId=  : Limit to the goodtype of this id.}
     { --goodId= : Limit to the good with this id.}';
 
@@ -56,7 +58,7 @@ class AlignTrendData extends Command
         $this->goodTypeId        = $this->option('goodTypeId');
         $this->goodId            = $this->option('goodId');
         $transactionTypeIds      = ($this->option('transactionTypeId')) ? [(int)$this->transactionTypeId] : [1, 2];
-//todo: something is wrong with certain good types... causes failures into inactive_transactions...not sure why. So along with the other blocks I stopped 4 completely
+//todo: something is wrong with certain good types... causes failures into inactive_transactions...not sure why. So along with the other blocks I stopped 4 of them completely. Also tools, ammo and bottles which needs to be corrected
         $goodTypeIds             = ($this->option('goodTypeId')) ? [(int)$this->goodTypeId] :  [1, 2, 3] ;
         foreach ($transactionTypeIds as $transactionTypeId) {
             foreach ($goodTypeIds as $goodTypeId) {
@@ -76,6 +78,14 @@ class AlignTrendData extends Command
                         case 4 :
                             //currently blocked
                             $ids = Tools::pluck('id');
+                            break;
+                        case 5 :
+                            //currently blocked
+                            $ids = Ammo::pluck('id');
+                            break;
+                        case 6 :
+                            //currently blocked
+                            $ids = Bottles::pluck('id');
                             break;
                     }
                 }

@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use App\Roles;
-use App\User;
+use App\Models\Roles;
+use App\Models\User;
 
 class TncInitialRolesUsersPivots extends Migration
 {

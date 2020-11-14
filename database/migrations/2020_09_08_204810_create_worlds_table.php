@@ -19,6 +19,7 @@ class CreateWorldsTable extends Migration
             $table->integer('server_id');
             $table->integer('type_id');
             $table->decimal('system_stock_weight');
+            $table->timestamps();
         });
     }
 

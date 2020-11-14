@@ -2,10 +2,9 @@
 
 use App\Http\Traits\ScarcityAdjustment;
 use Illuminate\Database\Eloquent\Model;
-use \Session;
 
 /**
- * Class Components
+ * Class Tools
  *
  * @property int                   $id
  * @property string                $title
@@ -20,43 +19,53 @@ use \Session;
  * @property                       $silver
  * @property                       $gravel
  * @property                       $uranium
- * @property                       $neutronium
  * @property                       $naquadah
  * @property                       $trinium
- * @property                       $servers
+ * @property                       $neutronium
  * @property                       $mass
  * @property                       $volume
  * @package Models
  */
-class Components extends Model
+class Ammo extends Model
 {
     use ScarcityAdjustment;
 
-    protected $table    = 'components';
-    public $fillable    = ['title','se_name','cobalt','gold','iron','magnesium','nickel','platinum','silicon','silver','gravel','uranium','neutronium','naquadah','trinium','mass','volume'];
-    public $timestamps  = false;
+    public    $timestamps = false;
+    protected $table      = 'ammo';
+    protected $fillable   = [
+        'title',
+        'se_name',
+        'cobalt',
+        'gold',
+        'iron',
+        'magnesium',
+        'nickel',
+        'platinum',
+        'silicon',
+        'silver',
+        'gravel',
+        'uranium',
+        'naquadah',
+        'trinium',
+        'neutronium',
+        'mass',
+        'volume'
+    ];
 
-
-    public function worlds() {
-        return $this->belongsToMany('App\Models\Worlds');
-    }
-
-
-    public function servers() {
-        return $this->belongsToMany('App\Models\Servers');
-    }
 
     /**
      * note: take all the ingots used to make this and their base value to get a price for the component.
+     *
      * @return float|int
      */
-    public function getBaseValue() {
+    public function getBaseValue()
+    {
         $value  = 0;
         $ingots = Ingots::all();
         foreach ($ingots as $ingot) {
             $title  = $ingot->title;
             $needed = $this->$title;
-            if($needed > 0) {
+            if ($needed > 0) {
                 $value += $ingot->getBaseValue() * $needed;
             }
         }
@@ -65,23 +74,19 @@ class Components extends Model
     }
 
 
-    public function getTotalInStorage() {
-
-        return Session::get('stockLevels')['Components'][$this->title];
-    }
-
-
     /**
      * note: get the value of the component based on the store price.
+     *
      * @return float|int
      */
-    public function getKeenStoreAdjustedValue() {
+    public function getKeenStoreAdjustedValue()
+    {
         $value  = 0;
         $ingots = Ingots::all();
         foreach ($ingots as $ingot) {
             $title  = $ingot->title;
             $needed = $this->$title;
-            if($needed > 0) {
+            if ($needed > 0) {
                 $value += $ingot->getKeenStoreAdjustedValue() * $needed;
             }
         }

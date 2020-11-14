@@ -24,6 +24,7 @@ class CreateServersTable extends Migration
             $table->integer('asteroid_scarcity_modifier');
             $table->integer('planet_scarcity_modifier');
             $table->integer('base_modifier');
+            $table->timestamps();
         });
     }
 
@@ -34,6 +35,6 @@ class CreateServersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('worlds');
+        Schema::dropIfExists('servers');
     }
 }

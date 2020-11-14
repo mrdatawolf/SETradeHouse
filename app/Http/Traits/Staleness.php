@@ -31,7 +31,7 @@ trait Staleness
         $npcStorageValue        = NpcStorageValues::latest('origin_timestamp')->first();
         $newestDbRecord   = (empty($npcStorageValue->origin_timestamp)) ? 'N/A'
             : $npcStorageValue->origin_timestamp.' -7';
-        $dbCarbonDate           = Carbon::createFromFormat('Y-m-d H:i:s', $npcStorageValue->origin_timestamp,
+        $dbCarbonDate           = (empty($transaction->updated_at)) ? Carbon::now() : Carbon::createFromFormat('Y-m-d H:i:s', $npcStorageValue->origin_timestamp,
             'America/Los_Angeles');
         $dbStaleness      = (int)Carbon::now()->diffInMinutes($dbCarbonDate);
 
@@ -42,8 +42,8 @@ trait Staleness
         $transaction            = Transactions::latest('updated_at')->first();
         $newestSyncRecord = (empty($transaction->updated_at)) ? 'N/A'
             : $transaction->updated_at->toDateTimeString().' +0';
-        $npcCarbonDate          = Carbon::createFromFormat('Y-m-d H:i:s', $transaction->updated_at);
-        $syncStaleness    = (int)Carbon::now()->diffInMinutes($npcCarbonDate);
+        $npcCarbonDate = (empty($transaction->updated_at)) ? Carbon::now() : Carbon::createFromFormat('Y-m-d H:i:s', $transaction->updated_at);
+        $syncStaleness = (int)Carbon::now()->diffInMinutes($npcCarbonDate);
 
         return (object) ['class' => $this->getClass($syncStaleness), 'minutes' => $syncStaleness, 'newest' => $newestSyncRecord];
     }

@@ -63,9 +63,17 @@ class GeneralStorageData
                                     'amount'           => $amount,
                                     'origin_timestamp' => $originTimestamp
                                 ]);
+                        } else {
+                            echo "Good id was empty for " . $row['Item'] . PHP_EOL;
                         }
                     } else {
+                        if(empty($goodType->id)) {
+                            echo $row['Item'] . ' not found!' . PHP_EOL;
+                        } else {
+                            echo 'Owner missing!' . PHP_EOL;
+                        }
                         $this->result = 'upateUserAndNpcStorageValues : goodtype not found or owner was empty';
+                        echo $this->result . PHP_EOL;
                     }
                 }
             });

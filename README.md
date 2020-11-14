@@ -10,7 +10,7 @@ A standalone web service allowing users to see trade data from participating Spa
 2. Do composer update
 3. Configure your .env to handle your dbs etc.
 4. run ```php artisan migrate:fresh```
-5. You will need to add the initial user, server, and world to the db (by hand for now)
+5. You will need to add the initial user to the db (by hand for now)
 6. run ```php artisan db:seed```
 7. Let me know what I missed here :)
 

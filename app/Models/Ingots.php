@@ -53,7 +53,7 @@ class Ingots extends Model
 
 
     public function getBaseValue($modules = 0) {
-        $ore = $this->ores()->first();
+        $ore = $this->ores->first();
         $oreRequired = $ore->getOreRequiredPerIngot($modules);
 
         return $oreRequired*$ore->getKeenStoreAdjustedValue();

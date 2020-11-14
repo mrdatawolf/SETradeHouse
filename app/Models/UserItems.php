@@ -17,4 +17,5 @@ class UserItems extends Model
     public $table = 'everyonesitems';
     public $fillable = ['Owner','Item', 'Qty','Timestamp'];
     public $incrementing = false;
+    protected $primaryKey = 'Timestamp';
 }

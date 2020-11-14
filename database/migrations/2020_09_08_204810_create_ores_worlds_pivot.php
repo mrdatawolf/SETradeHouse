@@ -28,6 +28,6 @@ class CreateOresWorldsPivot extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ores_servers');
+        Schema::dropIfExists('ores_worlds');
     }
 }
