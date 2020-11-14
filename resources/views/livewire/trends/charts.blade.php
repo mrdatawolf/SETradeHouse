@@ -1,7 +1,7 @@
 <div class="container mx-auto space-y-4 p-4 sm:p-0">
     <style>
         .card {
-            padding-bottom: 3em;
+            padding-bottom: 4em;
         }
     </style>
     <ul class="flex flex-col sm:flex-row sm:space-x-8 sm:items-center">
@@ -21,7 +21,7 @@
             <input type="checkbox" value="count" wire:model="types" id="count-checkbox"/>
             <label for="count-checkbox" class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="select-ship-size">count</label>
         </li>
-        <li><--- these checkboxes are very fragile right now.  When you check or uncheck wait for them to finish updating before checking the next one</li>
+        <li><--- these checkboxes are fragile right now.  When you check or uncheck wait for them to finish updating before changing the check of the next one</li>
     </ul>
     <ul class="flex flex-col sm:flex-row sm:space-x-8 sm:items-center">
         <li>
@@ -65,10 +65,14 @@
                     Average
                 </div>
                 <div class="card-body">
-                    <livewire:livewire-line-chart
-                        key="{{ $lineChartModelAverage->reactiveKey() }}"
-                        :line-chart-model="$lineChartModelAverage"
-                    />
+                    @if($lineChartModelAverage->data->isEmpty())
+                        <h4>No Data</h4>
+                    @else
+                        <livewire:livewire-line-chart
+                            key="{{ $lineChartModelAverage->reactiveKey() }}"
+                            :line-chart-model="$lineChartModelAverage"
+                        />
+                    @endif
                 </div>
             </div>
         @endif
@@ -78,10 +82,14 @@
                     Amount
                 </div>
                 <div class="card-body">
-                    <livewire:livewire-line-chart
-                        key="{{ $lineChartModelAmount->reactiveKey() }}"
-                        :line-chart-model="$lineChartModelAmount"
-                    />
+                    @if($lineChartModelAmount->data->isEmpty())
+                        <h4>No Data</h4>
+                    @else
+                        <livewire:livewire-line-chart
+                            key="{{ $lineChartModelAmount->reactiveKey() }}"
+                            :line-chart-model="$lineChartModelAmount"
+                        />
+                    @endif
                 </div>
             </div>
         @endif
@@ -91,10 +99,14 @@
                     Sum
                 </div>
                 <div class="card-body">
-                    <livewire:livewire-line-chart
-                        key="{{ $lineChartModelSum->reactiveKey() }}"
-                        :line-chart-model="$lineChartModelSum"
-                    />
+                    @if($lineChartModelSum->data->isEmpty())
+                        <h4>No Data</h4>
+                    @else
+                        <livewire:livewire-line-chart
+                            key="{{ $lineChartModelSum->reactiveKey() }}"
+                            :line-chart-model="$lineChartModelSum"
+                        />
+                    @endif
                 </div>
             </div>
         @endif
@@ -104,10 +116,14 @@
                     Count
                 </div>
                 <div class="card-body">
-                    <livewire:livewire-line-chart
-                        key="{{ $lineChartModelCount->reactiveKey() }}"
-                        :line-chart-model="$lineChartModelCount"
-                    />
+                    @if($lineChartModelCount->data->isEmpty())
+                        <h4>No Data</h4>
+                    @else
+                        <livewire:livewire-line-chart
+                            key="{{ $lineChartModelCount->reactiveKey() }}"
+                            :line-chart-model="$lineChartModelCount"
+                        />
+                    @endif
                 </div>
             </div>
         @endif

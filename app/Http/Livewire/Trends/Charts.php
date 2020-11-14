@@ -1,5 +1,7 @@
 <?php namespace App\Http\Livewire\Trends;
 
+use App\Models\Ammo;
+use App\Models\Bottles;
 use App\Models\Components;
 use App\Models\GoodTypes;
 use App\Models\Ingots;
@@ -39,8 +41,8 @@ class Charts extends Component
         $this->transactionTypeId = 1;
         $this->goodTypeId        = 1;
         $this->goodId            = 1;
-        $this->fromDate          = Carbon::now()->subDays(1)->startOfDay()->toDateString();
-        $this->toDate            = Carbon::now()->endOfDay()->toDateString();
+        $this->fromDate          = Carbon::now()->subDays(1)->toDateString();
+        $this->toDate            = Carbon::now()->toDateString();
 
         $this->gatherGoods();
     }
@@ -51,7 +53,7 @@ class Charts extends Component
         $fromDate = Carbon::createFromDate($this->fromDate)->startOfDay();
         $toDate = Carbon::createFromDate($this->toDate)->endOfDay();
         $trends                = Trends::where('transaction_type_id', $this->transactionTypeId)
-                                       ->where('good_type_id', $this->goodTypeId)
+                                       ->where('type_id', $this->goodTypeId)
                                        ->where('good_id', $this->goodId)
                                        ->whereBetween('dated_at', [$fromDate, $toDate])
                                        ->get();
@@ -66,7 +68,7 @@ class Charts extends Component
             'lineChartModelAverage' => $lineChartModelAverage,
             'lineChartModelAmount'  => $lineChartModelAmount,
             'lineChartModelSum'     => $lineChartModelSum,
-            'lineChartModelCount'   => $lineChartModelCount
+            'lineChartModelCount'   => $lineChartModelCount,
         ]);
     }
 
@@ -141,6 +143,15 @@ class Charts extends Component
                 break;
             case '3' :
                 $this->goods = Components::select('id', 'title')->orderBy('id')->get();
+                break;
+            case '4' :
+                $this->goods = Tools::select('id', 'title')->orderBy('id')->get();
+                break;
+            case '5' :
+                $this->goods = Ammo::select('id', 'title')->orderBy('id')->get();
+                break;
+            case '6' :
+                $this->goods = Bottles::select('id', 'title')->orderBy('id')->get();
                 break;
             default:
                 $this->goods = Tools::select('id', 'title')->orderBy('id')->get();
