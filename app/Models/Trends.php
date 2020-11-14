@@ -24,7 +24,7 @@ class Trends extends Model
 
     protected $connection   ='trends';
     protected $table = 'trends';
-    protected $fillable = ['transaction_type_id', 'good_type_id', 'good_id', 'dated_at', 'sum', 'amount', 'average', 'count'];
+    protected $fillable = ['transaction_type_id', 'type_id', 'good_id', 'dated_at', 'sum', 'amount', 'average', 'count'];
     protected $dates = ['dated_at'];
     public $timestamps = false;
 }
