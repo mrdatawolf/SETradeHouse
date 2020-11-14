@@ -177,9 +177,10 @@ class Stores extends Controller
                         $offerToTradeZone           = TradeZones::find($bestOfferTo->get('trade_zone_id'));
                     }
 //leaving this checkpoint here. it's a good way to limit the data in debuging
-                    if($gridName === "Fallingwater" && $good === 'magnesium' && $goodType === 'Ingot') {
+                    //if($goodType === 'Ammo') {
+                    //if($gridName === "Fallingwater" && $good === 'magnesium' && $goodType === 'Ammo') {
                         //dd($bestOfferTo, $bestOfferToAmount, $localOfferAmount);
-                    }
+                    //}
                     $orderFromProfitRaw                         = ($localOrderPrice - $bestOrderFromPrice) * $bestAvailableOrderFromAmount;
                     $orderFromProfit                            = ($orderFromProfitRaw > 0) ? $orderFromProfitRaw : 0;
                     $orderFromDistance                          = $this->getDistanceByGPS($gridData['GPS'],

@@ -50,7 +50,7 @@
 </style>
 <ul class="nav nav-tabs">
     @php $active = 'active'; @endphp
-    @foreach(['Ore', 'Ingot','Component','Tool'] as $goodType)
+    @foreach(['Ore', 'Ingot','Component','Tool', 'Ammo', 'Bottle'] as $goodType)
         <li class="nav-item">
             <a href="#{{ $gridData->jsid }}_{{ $goodType }}" class="nav-link {{ $active }}" data-toggle="tab">{{ $goodType }}</a>
         </li>
