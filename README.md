@@ -32,14 +32,14 @@ Road to 1.0 MVP
 14. ~~Convert SQL files to migrations/seeders.~~
  
 ##Future Roadmap
-1.  Revised +1.0 goals.
+1.  Revised +2.0 goals.
     1. ~~Expand the active and inactive transactions to use all columns.~~
     2. ~~Add a three.js map of the system.~~
     3. Add sheets as needed to flesh out the user experience. Anything that can help the users visualize or work with the data.
     4. Have the three.js map show current  store locations.
-    5. Add a thrust to weight calculator.
+    5. ~~Add a thrust to weight calculator.~~
     6. Add a blueprint breakdown. It would take a blueprint file and tell the user the comps, ingots, ores needed (user choice). It would also breakdown the prices based on server averages.
-    7. Add API to get current trade data on a public store.
+    7. ~~Add API to get current trade data on a public store.~~
     8. Add weights to transactions based on distances from world to world.
     9. Improve the user system.
     10. ~~Get the ticker working~~.
@@ -47,7 +47,7 @@ Road to 1.0 MVP
     12. There's alot more but where we go will depend on where the people helping see the project going from here.
 
 ##Notes
-We have started moving to livewire. 1d
+We have started moving to livewire.
 
 ## Contributing
 

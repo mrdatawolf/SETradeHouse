@@ -130,84 +130,85 @@ class Stores extends Controller
             $rows[$gridName]['tzid']  = $gridData['tzid'];
             foreach ($gridData['goods'] as $goodType => $goodTypeData) {
                 foreach ($goodTypeData as $good => $goodData) {
-                    $orders         = $goodData['Orders'] ?? null;
-                    $offers         = $goodData['Offers'] ?? null;
-                    $ordersAvgPrice = (empty($orders['avgPrice'])) ? 0 : $orders['avgPrice'];
-                    $orderAmount    = (empty($orders['amount'])) ? 0 : $orders['amount'];
-                    $offerAvgPrice  = (empty($offers['avgPrice'])) ? 0 : $offers['avgPrice'];
-                    $offerAmount    = (empty($offers['amount'])) ? 0 : $offers['amount'];
+                    $localOrders         = $goodData['Orders'] ?? null;
+                    $localOffers         = $goodData['Offers'] ?? null;
+                    $localOrderPrice = (empty($localOrders['avgPrice'])) ? 0 : $localOrders['avgPrice'];
+                    $localOrderAmount    = (empty($localOrders['amount'])) ? 0 : $localOrders['amount'];
+                    $localOfferAmount    = (empty($localOffers['amount'])) ? 0 : $localOffers['amount'];
+                    $localOfferPrice  = (empty($localOffers['avgPrice'])) ? 0 : $localOffers['avgPrice'];
+                    $offerAmount    = (empty($localOffers['amount'])) ? 0 : $localOffers['amount'];
 
-                    if (empty($orders)) {
-                        $bestOrderFromValue           = 0;
+                    if (empty($localOrders)) {
+                        $bestOrderFromPrice           = 0;
                         $bestOrderFromAmount          = 0;
                         $bestAvailableOrderFromAmount = 0;
                         $orderFromTradeZone           = 'n/a';
                     } else {
-                        $orderGoodId                  = $orders['goodId'];
-                        $orderGoodTypeId              = $orders['goodTypeId'];
-                        $orderServerId                = $orders['serverId'];
+                        $orderGoodId                  = $localOrders['goodId'];
+                        $orderGoodTypeId              = $localOrders['goodTypeId'];
+                        $orderServerId                = $localOrders['serverId'];
                         $bestOrderFrom                = $this->getLowestOfferForGoodOnServer($orderGoodId,
                             $orderGoodTypeId, $orderServerId, $rows[$gridName]['tzid']);
-                        $bestOrderFromValue           = (empty($bestOrderFrom->get('value'))) ? 0
+                        $bestOrderFromPrice           = (empty($bestOrderFrom->get('value'))) ? 0
                             : (int)$bestOrderFrom->get('value');
                         $bestOrderFromAmount          = (empty($bestOrderFrom->get('amount'))) ? 0
                             : (int)$bestOrderFrom->get('amount');
-                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $orderAmount) ? $bestOrderFromAmount
-                            : $orderAmount;
+                        $bestAvailableOrderFromAmount = ($bestOrderFromAmount < $localOrderAmount) ? $bestOrderFromAmount
+                            : $localOrderAmount;
                         $orderFromTradeZone           = TradeZones::find($bestOrderFrom->get('trade_zone_id'));
                     }
-                    if (empty($offers)) {
-                        $bestOfferToValue           = 0;
+                    if (empty($localOffers)) {
+                        $bestOfferToPrice           = 0;
                         $bestOfferToAmount          = 0;
                         $bestAvailableOfferToAmount = 0;
                         $offerToTradeZone           = 'n/a';
                     } else {
-                        $offerGoodId                = $offers['goodId'];
-                        $offerGoodTypeId            = $offers['goodTypeId'];
-                        $offerServerId              = $offers['serverId'];
+                        $offerGoodId                = $localOffers['goodId'];
+                        $offerGoodTypeId            = $localOffers['goodTypeId'];
+                        $offerServerId              = $localOffers['serverId'];
                         $bestOfferTo                = $this->getHighestOrderForGoodOnServer($offerGoodId,
                             $offerGoodTypeId, $offerServerId, $rows[$gridName]['tzid']);
-                        $bestOfferToValue           = (empty($bestOfferTo->get('value'))) ? 0
+                        $bestOfferToPrice           = (empty($bestOfferTo->get('value'))) ? 0
                             : (int)$bestOfferTo->get('value');
                         $bestOfferToAmount          = (empty($bestOfferTo->get('amount'))) ? 0
                             : (int)$bestOfferTo->get('amount');
-                        $bestAvailableOfferToAmount = ($bestOfferToAmount < $orderAmount) ? $bestOfferToAmount
-                            : $orderAmount;
+                        $bestAvailableOfferToAmount = ($bestOfferToAmount < $localOfferAmount) ? $bestOfferToAmount
+                            : $localOrderAmount;
                         $offerToTradeZone           = TradeZones::find($bestOfferTo->get('trade_zone_id'));
                     }
-
-                    if($gridName === "GSI Neutronium Plant" && $good === 'platinum') {
-                        //dd($bestOrderFromAmount, "<", $orderAmount);
+//leaving this checkpoint here. it's a good way to limit the data in debuging
+                    if($gridName === "Fallingwater" && $good === 'magnesium' && $goodType === 'Ingot') {
+                        //dd($bestOfferTo, $bestOfferToAmount, $localOfferAmount);
                     }
-                    $orderFromProfitRaw                         = ($ordersAvgPrice - $bestOrderFromValue) * $bestAvailableOrderFromAmount;
+                    $orderFromProfitRaw                         = ($localOrderPrice - $bestOrderFromPrice) * $bestAvailableOrderFromAmount;
                     $orderFromProfit                            = ($orderFromProfitRaw > 0) ? $orderFromProfitRaw : 0;
                     $orderFromDistance                          = $this->getDistanceByGPS($gridData['GPS'],
                         $orderFromTradeZone);
-                    $offerToProfitRaw                           = ($bestOfferToValue - $offerAvgPrice) * $bestAvailableOfferToAmount;
+                    $offerToProfitRaw                           = ($bestOfferToPrice - $localOfferPrice) * $bestAvailableOfferToAmount;
                     $offerToProfit                              = ($offerToProfitRaw > 0) ? $offerToProfitRaw : 0;
                     $offerToDistance                            = $this->getDistanceByGPS($gridData['GPS'],
                         $offerToTradeZone);
                     $row                                        = [
                         'store'     => [
                             'orders' => [
-                                'avgPrice' => (empty($ordersAvgPrice)) ? 0 : $ordersAvgPrice,
-                                'amount'   => (empty($orderAmount)) ? 0 : $orderAmount
+                                'avgPrice' => (empty($localOrderPrice)) ? 0 : $localOrderPrice,
+                                'amount'   => (empty($localOrderAmount)) ? 0 : $localOrderAmount
                             ],
                             'offers' => [
-                                'avgPrice' => (empty($offerAvgPrice)) ? 0 : $offerAvgPrice,
+                                'avgPrice' => (empty($localOfferPrice)) ? 0 : $localOfferPrice,
                                 'amount'   => (empty($offerAmount)) ? 0 : $offerAmount
                             ]
                         ],
                         'orderFrom' => [
                             'tradeZoneTitle' => $orderFromTradeZone->title ?? 'n/a',
-                            'bestValue'      => (empty($bestOrderFromValue)) ? 0 : $bestOrderFromValue,
+                            'bestValue'      => (empty($bestOrderFromPrice)) ? 0 : $bestOrderFromPrice,
                             'bestAmount'     => (empty($bestOrderFromAmount)) ? 0 : $bestOrderFromAmount,
                             'profit'         => empty($orderFromProfit) ? 0 : $orderFromProfit,
                             'distance'       => $orderFromDistance,
                         ],
                         'offerTo'   => [
                             'tradeZoneTitle' => $offerToTradeZone->title ?? 'n/a',
-                            'bestValue'      => $bestOfferToValue ?? 0,
+                            'bestValue'      => $bestOfferToPrice ?? 0,
                             'bestAmount'     => $bestOfferToAmount ?? 0,
                             'profit'         => empty($offerToProfit) ? 0 : $offerToProfit,
                             'distance'       => $offerToDistance
