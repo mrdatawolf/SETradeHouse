@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Transactions;
 
+use App\Models\Ammo;
+use App\Models\Bottles;
 use App\Models\Components;
 use App\Models\Ingots;
 use App\Models\Ores;
@@ -41,6 +43,12 @@ class Builder extends Component
                 break;
             case 'tools':
                 $this->goods = Tools::where('se_name', '!=', 'fillme')->get();
+                break;
+            case 'ammo':
+                $this->goods = Ammo::where('se_name', '!=', 'fillme')->get();
+                break;
+            case 'bottles':
+                $this->goods = Bottles::where('se_name', '!=', 'fillme')->get();
                 break;
         }
 

@@ -39,12 +39,16 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
             Route::get('ingots', 'Orders@ingots')->name('transactions.orders.ingots');
             Route::get('components', 'Orders@components')->name('transactions.orders.components');
             Route::get('tools', 'Orders@tools')->name('transactions.orders.tools');
+            Route::get('ammo', 'Orders@ammo')->name('transactions.orders.ammo');
+            Route::get('bottles', 'Orders@bottles')->name('transactions.orders.bottles');
         });
         Route::prefix('/offers')->group(function () {
             Route::get('ores', 'Offers@ores')->name('transactions.offers.ores');
             Route::get('ingots', 'Offers@ingots')->name('transactions.offers.ingots');
             Route::get('components', 'Offers@components')->name('transactions.offers.components');
             Route::get('tools', 'Offers@tools')->name('transactions.offers.tools');
+            Route::get('ammo', 'Offers@ammo')->name('transactions.offers.ammo');
+            Route::get('bottles', 'Offers@bottles')->name('transactions.offers.bottles');
         });
     });
     Route::get('/stocklevels', 'Stocklevels@index')->name('stocklevels');

@@ -48,4 +48,24 @@ class Orders extends Controller
 
         return view('transactions.type', compact('transactionType', 'goodType', 'header'));
     }
+
+
+    public function ammo()
+    {
+        $goodType        = 'ammo';
+        $transactionType = $this->transaction;
+        $header          = 'Buy '.$goodType.' from the players';
+
+        return view('transactions.type', compact('transactionType', 'goodType', 'header'));
+    }
+
+
+    public function bottles()
+    {
+        $goodType        = 'bottles';
+        $transactionType = $this->transaction;
+        $header          = 'Buy '.$goodType.' from the players';
+
+        return view('transactions.type', compact('transactionType', 'goodType', 'header'));
+    }
 }

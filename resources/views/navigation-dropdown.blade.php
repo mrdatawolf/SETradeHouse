@@ -93,6 +93,12 @@
                             <x-jet-dropdown-link href="{{ route('transactions.orders.components') }}">
                                 &nbsp;&nbsp;&nbsp;&nbsp; Components
                             </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.orders.ammo') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ammo
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.orders.bottles') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Bottles
+                            </x-jet-dropdown-link>
                             <div class="border-t border-gray-100"></div>
                             <div class="block px-4 py-2 text-xs text-gray-600">
                                 &nbsp;&nbsp; {{ __('Offer Transactions') }}
@@ -105,6 +111,12 @@
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.offers.components') }}">
                                 &nbsp;&nbsp;&nbsp;&nbsp; Components
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.offers.ammo') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Ammo
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('transactions.offers.bottles') }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Bottles
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
