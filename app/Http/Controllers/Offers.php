@@ -52,4 +52,22 @@ class Offers extends Controller
 
         return view('transactions.type', compact('transactionType', 'goodType', 'header'));
     }
+
+    public function ammo()
+    {
+        $goodType        = 'ammo';
+        $transactionType = $this->transaction;
+        $header          = 'Sell '.$goodType.' to the players';
+
+        return view('transactions.type', compact('transactionType', 'goodType', 'header'));
+    }
+
+    public function bottles()
+    {
+        $goodType        = 'bottles';
+        $transactionType = $this->transaction;
+        $header          = 'Sell '.$goodType.' to the players';
+
+        return view('transactions.type', compact('transactionType', 'goodType', 'header'));
+    }
 }
