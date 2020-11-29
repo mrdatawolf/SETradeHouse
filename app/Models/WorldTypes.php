@@ -13,4 +13,8 @@ class WorldTypes extends Model
 {
     protected $table = 'world_types';
     protected $fillable = ['title'];
+
+    public function worlds() {
+        return $this->hasMany('App\Models\Worlds');
+    }
 }

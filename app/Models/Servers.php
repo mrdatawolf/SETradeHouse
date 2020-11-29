@@ -29,34 +29,6 @@ class Servers extends Model
     protected $table = 'servers';
     protected $fillable = ['title', 'scarcity_id', 'economy_ore_id', 'economy_stone_modifier', 'scaling_modifier', 'economy_ore_value','asteroid_scarcity_modifier','planet_scarcity_modifier','base_modifier', 'short_name'];
 
-
-    /**
-     * note: the economyOre is the basic foundation of the economy. It can be any ore (including say a "credit" ore) it just gives us somethign to pin the movements against.
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function economyOre() {
-        return $this->hasOne('App\Models\Ores', 'id', 'economy_ore_id');
-    }
-
-
-    public function scarcity() {
-        return $this->hasOne('App\Models\Scarcity', 'id', 'scarcity_id');
-    }
-
-    /**
-     * note: ratios is what a server admin wants the distrubution of worlds to be like.
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function ratio() {
-        return $this->hasOne('App\Models\Ratios', 'id', 'id');
-    }
-
-
-    public function magicNumbers() {
-        return $this->hasOne('App\Models\MagicNumbers', 'server_id', 'id');
-    }
-
-
     /**
      * note: this is all the ores in the cluster
      *
@@ -83,7 +55,34 @@ class Servers extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function worlds() {
-        return $this->hasMany('App\Models\Worlds','server_id');
+        return $this->hasMany('App\Models\Worlds', 'server_id');
+    }
+
+
+    /**
+     * note: the economyOre is the basic foundation of the economy. It can be any ore (including say a "credit" ore) it just gives us somethign to pin the movements against.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function economyOre() {
+        return $this->hasOne('App\Models\Ores', 'id', 'economy_ore_id');
+    }
+
+
+    public function scarcity() {
+        return $this->hasOne('App\Models\Scarcity', 'id', 'scarcity_id');
+    }
+
+    /**
+     * note: ratios is what a server admin wants the distrubution of worlds to be like.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function ratio() {
+        return $this->hasOne('App\Models\Ratios', 'id', 'id');
+    }
+
+
+    public function magicNumbers() {
+        return $this->hasOne('App\Models\MagicNumbers', 'server_id', 'id');
     }
 
 
@@ -158,8 +157,8 @@ class Servers extends Model
 
     public function getWorldsRarityTotals() {
         $worldsRarityCount = [];
-        $collection = $this->worlds()->groupBy('rarity')
-                               ->selectRaw('count(*) as total, rarity as id')
+        $collection = $this->worlds()->groupBy('rarity_id')
+                               ->selectRaw('count(*) as total, rarity_id as id')
                                ->get();
         foreach($collection as $rarity) {
             $worldsRarityCount[$rarity->id] = ['title' => Rarity::find($rarity->id)->title, 'total' => $rarity->total];

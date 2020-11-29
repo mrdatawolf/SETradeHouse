@@ -63,7 +63,7 @@ class WorldForm extends Component
         dd($modifiedCreateData);
         Worlds::create($modifiedCreateData);
 
-        return redirect()->to('/admin/worlds/create');
+        return redirect()->to('/worlds/create');
     }
 
 

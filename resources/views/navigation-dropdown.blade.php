@@ -18,18 +18,18 @@
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                {{ __('System Maps') }}
+                                <span class="material-icons">near_me</span>{{ __('System Maps') }}
                             </button>
                         </x-slot>
                         <x-slot name="content">
                             <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('3D') }}
+                                <span class="material-icons">360</span>{{ __('3D') }}
                             </div>
                             <x-jet-dropdown-link href="{{ route('maps.nebulonSystem3D') }}">
                                 &nbsp;&nbsp; Nebulon
                             </x-jet-dropdown-link>
                             <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('2D') }}
+                                <span class="material-icons">map</span>{{ __('2D') }}
                             </div>
                             <x-jet-dropdown-link href="{{ route('maps.nebulonSystem') }}">
                                 &nbsp; Nebulon
@@ -40,18 +40,18 @@
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                {{ __('Stores') }}
+                                <span class="material-icons">store</span>{{ __('Stores') }}
                             </button>
                         </x-slot>
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('stores') }}">
-                              {{ __('Personal') }}
+                              <span class="material-icons">local_grocery_store</span>{{ __('Personal') }}
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('stores.world') }}">
-                                {{ __('World') }}
+                                <span class="material-icons">multiple_stop</span>{{ __('World') }}
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('stores.server') }}">
-                                {{ __('Server') }}
+                                <span class="material-icons">zoom_out_map</span>{{ __('Server') }}
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
@@ -59,12 +59,12 @@
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                {{ __('Trends') }}
+                                <span class="material-icons">analytics</span>{{ __('Trends') }}
                             </button>
                         </x-slot>
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('trends') }}">
-                                &nbsp;&nbsp; Common
+                                <span class="material-icons">assessment</span> Common
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
@@ -72,12 +72,12 @@
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                {{ __('Other') }}
+                                <span class="material-icons">fact_check</span>{{ __('Other') }}
                             </button>
                         </x-slot>
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('thrustCalculator') }}">
-                                Thrust Calculator
+                                <span class="material-icons">flight_takeoff</span>Thrust Calculator
                             </x-jet-dropdown-link>
                             <div class="border-t border-gray-100"></div>
                             <!-- Transactions -->
@@ -85,38 +85,38 @@
                                 {{ __('Order Transactions') }}
                             </div>
                             <x-jet-dropdown-link href="{{ route('transactions.orders.ores') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ores
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">done</span>Ores
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.orders.ingots') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ingots
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">done_all</span>Ingots
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.orders.components') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Components
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">done_outline</span>Components
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.orders.ammo') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ammo
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">donut_large</span>Ammo
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.orders.bottles') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Bottles
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">donut_small</span>Bottles
                             </x-jet-dropdown-link>
                             <div class="border-t border-gray-100"></div>
                             <div class="block px-4 py-2 text-xs text-gray-600">
                                 &nbsp;&nbsp; {{ __('Offer Transactions') }}
                             </div>
                             <x-jet-dropdown-link href="{{ route('transactions.offers.ores') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ores
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">done</span>Ores
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.offers.ingots') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ingots
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">done_all</span>Ingots
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.offers.components') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Components
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">done_outline</span>Components
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.offers.ammo') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Ammo
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">donut_large</span>Ammo
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('transactions.offers.bottles') }}">
-                                &nbsp;&nbsp;&nbsp;&nbsp; Bottles
+                                &nbsp;&nbsp;&nbsp;&nbsp; <span class="material-icons">donut_small</span>Bottles
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
@@ -124,12 +124,15 @@
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
                             <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                {{ __('Testing') }}
+                                <span class="material-icons">anchor</span>{{ __('Testing') }}
                             </button>
                         </x-slot>
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('stocklevels') }}">
-                                Stock Levels
+                                <span class="material-icons">assessment</span> Stock Levels
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('newTable') }}">
+                                <span class="material-icons">garbage</span> New Table Test
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
@@ -152,7 +155,7 @@
                         <div class="block px-4 py-2 text-xs text-gray-400">
                             {{ __('Worlds') }}
                         </div>
-                        <x-jet-dropdown-link href="{{ route('admin.worlds') }}">
+                        <x-jet-dropdown-link href="{{ '\Worlds' }}">
                             &nbsp;&nbsp;{{ __('List') }}
                         </x-jet-dropdown-link>
                         @if(Auth::user()->isAdmin())
@@ -315,42 +318,42 @@
         <!-- Stores -->
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('stores') }}" :active="request()->routeIs('stores')">
-                {{ __('Store - Personal') }}
+                <span class="material-icons">local_grocery_store</span>{{ __('Store - Personal') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('stores.world') }}" :active="request()->routeIs('stores.world')">
-                {{ __('Store - World') }}
+                <span class="material-icons">multiple_stop</span>{{ __('Store - World') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('stores.server') }}" :active="request()->routeIs('stores.server')">
-                {{ __('Store - Server') }}
+                <span class="material-icons">zoom_out_map</span>{{ __('Store - Server') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('thrustCalculator') }}" :active="request()->routeIs('thrustCalculator')">
-                {{ __('Thrust Calculator') }}
+                <span class="material-icons">flight_takeoff</span>{{ __('Thrust Calculator') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('trends') }}" :active="request()->routeIs('trends')">
-                {{ __('') }}
+                <span class="material-icons">analytics</span>{{ __('Trends') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('stocklevels') }}" :active="request()->routeIs('stocklevels')">
-                {{ __('Testing - Stock levels') }}
+                <span class="material-icons">assessment</span>{{ __('Testing - Stock levels') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('maps.nebulonSystem3D') }}" :active="request()->routeIs('dashboard')">
-                {{ __('3D System Map - Nebulon') }}
+                <span class="material-icons">360</span>{{ __('3D System Map - Nebulon') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('maps.nebulonSystem') }}" :active="request()->routeIs('maps.nebulonSystem')">
-                {{ __('2D System Map - Nebulon') }}
+                <span class="material-icons">map</span>{{ __('2D System Map - Nebulon') }}
             </x-jet-responsive-nav-link>
         </div>
         <!-- Server Administration Options-->

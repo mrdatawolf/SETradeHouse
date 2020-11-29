@@ -11,22 +11,28 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $station_id
  * @property                       $local_weight
  * @property                       $servers
+ * @property                       $worlds
  * @property                       $activeTransactions
  * @property                       $gps
  * @package Models
  */
 class TradeZones extends Model
 {
+    protected $connection   ='sqlite';
     public $table       = 'trade_zones';
     public $timestamps  = false;
     public $fillable    = ['title', 'owner', 'server_id', 'world_id', 'local_weight', 'gps'];
 
-    public function servers() {
+    public function worlds() {
         return $this->belongsTo('App\Models\Worlds');
     }
 
-    public function activeTransactions() {
-        return $this->hasMany('App\Models\ActiveTransactions');
+    public function servers() {
+        return $this->belongsTo('App\Models\Servers');
+    }
+
+    public function transactions() {
+        return $this->hasMany('App\Models\Transactions');
     }
 
 
