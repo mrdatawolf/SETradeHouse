@@ -28,8 +28,8 @@ trait worldInfo
 
     private function getAllowedWorlds()
     {
-        $this->serverId          = \Session::get('serverId');
-        $this->server            = Servers::find($this->serverId);
+        $this->serverId          = \Auth::user()->server_id;
+        $this->server            = Servers::with('worlds')->find($this->serverId);
         $this->ratio             = $this->server->ratio;
         $totalWorlds            = $this->server->worlds()->count();
         $rarityTotals           = $this->server->getWorldsRarityTotals();

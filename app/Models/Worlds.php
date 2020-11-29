@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $system_stock_weight
  * @property int                   $server_id
  * @property int                   $type_id
- * @property int                   $rarity
+ * @property int                   $rarity_id
  * @property                       $activeTransactions
  * @property                       $tradezones
  * @package Models
@@ -29,16 +29,21 @@ class Worlds extends Model
         return $this->belongsToMany('App\Models\Ingots');
     }
 
-    public function clusters() {
-        return $this->belongsTo('App\Models\Servers');
+    public function servers() {
+        return $this->belongsTo('App\Models\Servers', 'server_id');
     }
+
 
     public function tradezones() {
         return $this->hasMany('App\Models\TradeZones');
     }
 
     public function types() {
-        $this->hasMany('App\Models\ServerTypes');
+        return $this->belongsTo('App\Models\WorldTypes', 'type_id');
+    }
+
+    public function rarity() {
+        return $this->belongsTo('App\Models\Rarity');
     }
 
     public function activeTransactions() {

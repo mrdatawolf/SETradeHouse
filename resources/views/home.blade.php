@@ -20,7 +20,12 @@
 
     <div class="row justify-content-center">
         <div class="col-md-12">
-            @livewire('trade-zones-list-table')
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <livewire:home.datatable
+                        searchable="title, owner"
+                        exportable
+                    />
+                </div>
         </div>
     </div>
 </div>

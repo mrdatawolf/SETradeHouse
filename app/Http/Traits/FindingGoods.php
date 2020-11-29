@@ -97,6 +97,36 @@ trait FindingGoods {
         return GoodTypes::where('title',$goodType)->first();
     }
 
+
+    public function getGoodFromGoodtypeIdAndGoodId($goodTypeId, $goodId) {
+        switch($goodTypeId) {
+            case '2' :
+                $model = Ingots::find($goodId);
+                break;
+            case '1' :
+                $model = Ores::find($goodId);
+                break;
+            case '3' :
+                $model = Components::find($goodId);
+                break;
+            case '4' :
+                $model = Tools::find($goodId);
+                break;
+            case '5' :
+                $model = Ammo::find($goodId);
+                break;
+            case '6' :
+                $model = Bottles::find($goodId);
+                break;
+            default:
+                $model = Tools::find($goodId);
+
+        }
+
+        return (! empty($model)) ? $model : null;
+    }
+
+
     /**
      * @param $goodType
      * @param $seName
