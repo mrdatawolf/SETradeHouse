@@ -15,7 +15,7 @@ class Rarity extends Model
     protected $table        = 'rarity';
     protected $fillable     = ['title', 'minimum_for_first', 'type'];
     protected $primaryKey   = 'id';
-    protected $connection   = 'sqlite';
+    protected $connection   = 'main';
 
     public function worlds() {
         return $this->hasMany('App\Models\Worlds');

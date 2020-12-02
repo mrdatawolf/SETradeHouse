@@ -26,7 +26,7 @@ class Ores extends Model
     public $timestamps = false;
     protected $table = 'ores';
     protected $primaryKey = 'id';
-    protected $connection = 'sqlite';
+    protected $connection = 'main';
 
 
     public function ingots() {

@@ -37,7 +37,7 @@ class Transactions extends Model
     ];
 
 
-    public function tradezones()
+    public function tradezone()
     {
         return $this->belongsTo('App\Models\TradeZones', 'trade_zone_id');
     }

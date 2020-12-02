@@ -52,10 +52,6 @@ class Tests extends Controller
         return view('tests.test1', $compacted);
     }
 
-    public function newTable() {
-        return view('newTable');
-    }
-
     public function nebulonSystem() {
         return view('maps.nebulonSystem');
     }

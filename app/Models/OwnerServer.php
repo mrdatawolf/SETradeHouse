@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 class OwnerServer extends Model
 {
     protected $primaryKey = 'id';
-    protected $connection = 'sqlite';
+    protected $connection = 'main';
     public    $timestamps = true;
     protected $table      = 'owner_server';
     protected $fillable   = ['server_id', 'user_id', 'owner_title'];

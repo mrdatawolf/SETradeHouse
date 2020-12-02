@@ -15,7 +15,7 @@ class Ratios extends Model
     protected $table        = 'ratios';
     protected $fillable     = ['server_id', 'common', 'uncommon', 'rare', 'ultra_rare'];
     protected $primaryKey   = 'id';
-    protected $connection   = 'sqlite';
+    protected $connection   = 'main';
 
 
     public function servers() {
