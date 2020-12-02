@@ -15,9 +15,15 @@ use Mediconesystems\LivewireDatatables\Http\Livewire\LivewireDatatable;
 class Datatable extends LivewireDatatable
 {
     use FindingGoods;
+
+    public $goodId;
+    public $goodTypeId;
+
     public function builder()
     {
-        return Transactions::query();
+        $tzQuery = Transactions::query();
+
+        return $tzQuery->with('tradezone');
     }
 
     /**
@@ -27,19 +33,32 @@ class Datatable extends LivewireDatatable
     {
         return [
             Column::name('owner')->filterable()->label('Owner')->sortBy('owner'),
-            NumberColumn::name('trade_zone_id')->filterable($this->tradezones->pluck('title'))->label('Trade Zone'),
-            NumberColumn::name('world_id')->filterable($this->worlds->pluck('title'))->linkTo('Worlds')->label('World Id'),
-            NumberColumn::name('server_id')->filterable($this->servers->pluck('title'))->label('Server Id'),
-            NumberColumn::name('transaction_type_id')->filterable($this->transactionTypes->pluck('title'))->label('Transaction Type Id'),
-            NumberColumn::name('good_id')->label('Good Id'),
-            NumberColumn::name('good_type_id')->filterable($this->goodTypes->pluck('title'))->label('Good Type Id'),
+            Column::callback(['trade_zone_id'], function ($id) {
+                return TradeZones::find($id)->title;
+            })->label('Trade Zone'),
+            Column::callback(['world_id'], function ($id) {
+                return Worlds::find($id)->title;
+            })->label('World'),
+            Column::callback(['server_id'], function ($id) {
+                return Worlds::find($id)->title;
+            })->label('Server'),
+            Column::callback(['transaction_type_id'], function ($id) {
+                return ucfirst(TransactionTypes::find($id)->title);
+            })->label('Transaction Type'),
+            Column::callback(['good_type_id'], function ($id) {
+                $this->goodTypeId = $id;
+                return GoodTypes::find($id)->title;
+            })->label('Good Type'),
+            Column::callback(['good_id'], function ($id) {
+                $this->goodId = $id;
+                return $this->getGoods()->title;
+            })->label('Good Name'),
             NumberColumn::name('value')->label('Value'),
             NumberColumn::name('amount')->label('Amount'),
-            DateColumn::name('created_at')->label('Created At'),
+            DateColumn::name('created_at')->format('m/d/y')->label('Created At'),
 
         ];
     }
-
 
     public function getTradezonesProperty()
     {
@@ -71,8 +90,8 @@ class Datatable extends LivewireDatatable
     }
 
 
-    public function getGoods($good_type_id, $good_id) {
-        return $this->getGoodTitleFromGoodtypeIdAndGoodId($good_type_id, $good_id);
+    public function getGoods() {
+        return $this->getGoodFromGoodtypeIdAndGoodId($this->goodTypeId, $this->goodId);
     }
 }
 

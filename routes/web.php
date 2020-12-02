@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
         Route::get('personal', 'Stores@index')->name('stores');
         Route::get('world', 'Stores@worldIndex')->name('stores.world');
         Route::get('server', 'Stores@serverIndex')->name('stores.server');
+        Route::get('transactions', 'TransactionsController@currentTransactions')->name('currentTransactions');
     });
     Route::resource('Worlds', 'WorldsController');
 });
@@ -74,7 +75,6 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
     });
     Route::prefix('/test')->group(function () {
         Route::get('/test1', 'Tests@test1')->name('tests.test1');
-        Route::get('/newTable', 'Tests@newTable')->name('newTable');
         Route::get('/solarSystem', 'Tests@solarSystem')->name('tests.solarSystem');
         Route::get('/solarSystem3d', 'Tests@solarSystem3d')->name('tests.solarSystem3d');
     });

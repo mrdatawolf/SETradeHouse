@@ -15,7 +15,7 @@ class Roles extends Model
     protected $table        = 'roles';
     protected $fillable     = ['title'];
     protected $primaryKey   = 'id';
-    protected $connection   = 'sqlite';
+    protected $connection   = 'main';
 
 
     public function users() {

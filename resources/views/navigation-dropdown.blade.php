@@ -53,6 +53,9 @@
                             <x-jet-dropdown-link href="{{ route('stores.server') }}">
                                 <span class="material-icons">zoom_out_map</span>{{ __('Server') }}
                             </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('currentTransactions') }}">
+                                <span class="material-icons">bar_chart</span> {{ __('Transactions') }}
+                            </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
                     <!-- Trends -->
@@ -130,9 +133,6 @@
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('stocklevels') }}">
                                 <span class="material-icons">assessment</span> Stock Levels
-                            </x-jet-dropdown-link>
-                            <x-jet-dropdown-link href="{{ route('newTable') }}">
-                                <span class="material-icons">garbage</span> New Table Test
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>

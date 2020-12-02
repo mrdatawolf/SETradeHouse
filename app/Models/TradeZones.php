@@ -18,21 +18,25 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TradeZones extends Model
 {
-    protected $connection   ='sqlite';
+    protected $connection   ='main';
     public $table       = 'trade_zones';
     public $timestamps  = false;
     public $fillable    = ['title', 'owner', 'server_id', 'world_id', 'local_weight', 'gps'];
 
     public function worlds() {
-        return $this->belongsTo('App\Models\Worlds');
+        return $this->belongsTo(Worlds::class);
     }
 
     public function servers() {
-        return $this->belongsTo('App\Models\Servers');
+        return $this->belongsTo(Servers::class);
     }
 
     public function transactions() {
-        return $this->hasMany('App\Models\Transactions');
+        return $this->hasMany(Transactions::class);
+    }
+
+    public function latestTransaction() {
+        return $this->hasOne(Transactions::class)->latest();
     }
 
 
