@@ -23,7 +23,9 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <livewire:home.datatable
                         searchable="title, owner"
+                        per-page="25"
                         exportable
+                        sort="title|asc"
                     />
                 </div>
         </div>
