@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Add New Product</h2>
+                <h2>Add New Mod</h2>
             </div>
             <div class="pull-right">
                 <a class="btn btn-primary" href="{{ route('mods.index') }}" title="Go back"> <i class="fas fa-backward "></i> </a>
@@ -40,6 +40,24 @@
                 <div class="form-group">
                     <label for="message">Mod:</label>
                     <textarea class="form-control" style="height:50px" name="message" id="message" placeholder="Mod"></textarea>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea class="form-control" style="height:50px" name="description" id="description" placeholder="Description"></textarea>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <label for="message">Mod Type:</label>
+                    <input type="text" class="form-control" style="height:50px" name="mod_type" id="mod_type" placeholder="mod type">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <label for="description">Mod Number:</label>
+                    <input type="text" class="form-control" style="height:50px" name="mod_number" id="mod_number" placeholder="mod number">
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">

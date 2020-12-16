@@ -20,5 +20,4 @@
             @livewire('server.notes')
         </div>
     </div>
-
 @endsection
