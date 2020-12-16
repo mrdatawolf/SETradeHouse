@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -100,4 +101,13 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
             });
         });
     });
+
+//server admin tools
+    Route::middleware(['auth:sanctum', 'verified'])->resource('welcome', WelcomeController::class);
+    Route::middleware(['auth:sanctum', 'verified'])->resource('information', InformationController::class);
+    Route::middleware(['auth:sanctum', 'verified'])->resource('rules', RulesController::class);
+    Route::middleware(['auth:sanctum', 'verified'])->resource('gps', GpsController::class);
+    Route::middleware(['auth:sanctum', 'verified'])->resource('commands', CommandsController::class);
+    Route::middleware(['auth:sanctum', 'verified'])->resource('mods', ModsController::class);
+    Route::middleware(['auth:sanctum', 'verified'])->resource('notes', NotesController::class);
 });

@@ -20,12 +20,14 @@
 
     <div class="row justify-content-center">
         <div class="col-md-12">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <livewire:home.datatable
-                        searchable="title, owner"
-                        exportable
-                    />
-                </div>
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <livewire:home.datatable
+                    searchable="title, owner"
+                    per-page="25"
+                    exportable
+                    sort="title|asc"
+                />
+            </div>
         </div>
     </div>
 </div>

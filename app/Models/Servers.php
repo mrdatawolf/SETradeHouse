@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property                       $ores
  * @property                       $ingots
  * @property                       $servers
+ * @property                       $info
  * @property                       $activeTransactions
  * @property                       $scarcity
  * @property                       $magicNumbers
@@ -56,6 +57,66 @@ class Servers extends Model
      */
     public function worlds() {
         return $this->hasMany('App\Models\Worlds', 'server_id');
+    }
+
+
+    /**
+     * note: this is all the information an admin wants to show.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function information() {
+        return $this->hasMany('App\Models\Information', 'server_id');
+    }
+
+
+    /**
+     * note: this is all the rules an admin wants to show.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function rules() {
+        return $this->hasMany('App\Models\Rules', 'server_id');
+    }
+
+
+    /**
+     * note: this is all the gpses an admin wants to show.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function gps() {
+        return $this->hasMany('App\Models\Gps', 'server_id');
+    }
+
+
+    /**
+     * note: this is all the special commands an admin wants to show.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function commands() {
+        return $this->hasMany('App\Models\Commands', 'server_id');
+    }
+
+
+    /**
+     * note: this is all the mods the server uses.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mods() {
+        return $this->hasMany('App\Models\Mods', 'server_id');
+    }
+
+
+    /**
+     * note: this is all the mods the server uses.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notes() {
+        return $this->hasMany('App\Models\Notes', 'server_id');
     }
 
 
