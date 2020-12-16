@@ -65,6 +65,13 @@ return [
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS_TRENDS', true),
         ],
+        'server_info' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL_TRENDS'),
+            'database' =>  database_path(env('DB_DATABASE_SERVER_INFO')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS_TRENDS', true),
+        ],
 
         'mysql' => [
             'driver' => 'mysql',

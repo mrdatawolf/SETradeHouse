@@ -159,9 +159,9 @@
                             &nbsp;&nbsp;{{ __('List') }}
                         </x-jet-dropdown-link>
                         @if(Auth::user()->isAdmin())
-                        <x-jet-dropdown-link href="{{ route('admin.worlds.create') }}">
-                            &nbsp;&nbsp;{{ __('Create') }}
-                        </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('admin.worlds.create') }}">
+                                &nbsp;&nbsp;{{ __('Create') }}
+                            </x-jet-dropdown-link>
                         @endif
                         <div class="border-t border-gray-100"></div>
                         <!-- Server Management -->
@@ -172,21 +172,44 @@
                             &nbsp;&nbsp;{{ __('List') }}
                         </x-jet-dropdown-link>
                         @if(Auth::user()->isAdmin())
-                        <x-jet-dropdown-link href="{{ route('admin.servers.create') }}">
-                            &nbsp;&nbsp;{{ __('Create') }}
+                            <x-jet-dropdown-link href="{{ route('admin.servers.create') }}">
+                                &nbsp;&nbsp;{{ __('Create') }}
+                            </x-jet-dropdown-link>
+                            <div class="border-t border-gray-100"></div>
+                            <!-- User Management -->
+                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                {{ __('Users') }}
+                            </div>
+                            <x-jet-dropdown-link href="{{ route('admin.users') }}">
+                                &nbsp;&nbsp;{{ __('List') }}
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('admin.users.owners') }}">
+                                &nbsp;&nbsp;{{ __('Owners') }}
+                            </x-jet-dropdown-link>
+                        @endif
+                        @if(Auth::user()->isAdmin()) <!--this needs to become isServerAdmin as they should control this-->
+                            <x-jet-dropdown-link href="{{ route('welcome.index') }}">
+                                &nbsp;&nbsp;{{ __('Welcome') }}
+                            </x-jet-dropdown-link>
+                        <x-jet-dropdown-link href="{{ route('information.index') }}">
+                            &nbsp;&nbsp;{{ __('Information') }}
                         </x-jet-dropdown-link>
-                        <div class="border-t border-gray-100"></div>
-                        <!-- User Management -->
-                        <div class="block px-4 py-2 text-xs text-gray-400">
-                            {{ __('Users') }}
-                        </div>
-                        <x-jet-dropdown-link href="{{ route('admin.users') }}">
-                            &nbsp;&nbsp;{{ __('List') }}
+                        <x-jet-dropdown-link href="{{ route('rules.index') }}">
+                            &nbsp;&nbsp;{{ __('Rules') }}
                         </x-jet-dropdown-link>
-                        <x-jet-dropdown-link href="{{ route('admin.users.owners') }}">
-                            &nbsp;&nbsp;{{ __('Owners') }}
+                        <x-jet-dropdown-link href="{{ route('gps.index') }}">
+                            &nbsp;&nbsp;{{ __('GPS') }}
                         </x-jet-dropdown-link>
-                            @endif
+                        <x-jet-dropdown-link href="{{ route('commands.index') }}">
+                            &nbsp;&nbsp;{{ __('Special Commands') }}
+                        </x-jet-dropdown-link>
+                        <x-jet-dropdown-link href="{{ route('mods.index') }}">
+                            &nbsp;&nbsp;{{ __('Mods') }}
+                        </x-jet-dropdown-link>
+                        <x-jet-dropdown-link href="{{ route('notes.index') }}">
+                            &nbsp;&nbsp;{{ __('Notes') }}
+                        </x-jet-dropdown-link>
+                        @endif
                     </x-slot>
                 </x-jet-dropdown>
             </div>
