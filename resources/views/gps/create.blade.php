@@ -38,14 +38,14 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
-                    <label for="message">Command:</label>
-                    <input type="text" class="form-control" style="height:50px" name="message" id="message" value="{{ $command->message }}">
+                    <label for="message">GPS:</label>
+                    <input type="text" class="form-control" style="height:50px" name="message" id="message" placeholder="GPS">
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <label for="description">Description:</label>
-                    <input type="text" class="form-control" style="height:50px" name="description" id="description" value="{{ $command->description }}">
+                    <input type="text" class="form-control" style="height:50px" name="description" id="description" placeholder="Description">
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">

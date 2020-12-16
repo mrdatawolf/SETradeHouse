@@ -11,6 +11,15 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * Class User
  *
+ * @property  $id
+ * @property  $username
+ * @property  $email
+ * @property  $email_verified_at
+ * @property  $password
+ * @property  $remember_token
+ * @property  $current_team_id
+ * @property  $profile_photo_path
+ * @property  $server_username
  * @property  $server_id
  *
  * @package App\Models
@@ -90,5 +99,15 @@ class User extends Authenticatable
             }
         }
         return false;
+    }
+
+    /**
+     * note: is the user the admin for a server?
+     * //todo::make this work correctly...
+     * @return bool
+     */
+    public function isServerAdmin(): bool
+    {
+        return in_array($this->id, [7,15]);
     }
 }
