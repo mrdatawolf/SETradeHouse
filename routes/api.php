@@ -2,6 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use Api\StoresController;
+use Api\TrendsController;
+use Api\DataStatusController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +18,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout']);
 
 Route::apiResource('stocklevels', 'Api\StocklevelsController')->middleware('auth:sanctum');
 //store specific routes
@@ -46,7 +57,10 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
         Route::middleware('auth:sanctum')->get('/sync', 'Api\DataStatusController@sync');
     });
 });
-Route::apiResource('stores', 'Api\StoresController')->middleware('auth:sanctum');
-Route::apiResource('trends', 'Api\TrendsController')->middleware('auth:sanctum');
-//other routes
-Route::apiResource('status', 'Api\DataStatusController')->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum', 'middleware' => 'throttle:300'])->group(function () {
+    Route::apiResources([
+        'stores' => StoresController::class,
+        'trends' => TrendsController::class,
+        'status' => DataStatusController::class,
+    ]);
+});
