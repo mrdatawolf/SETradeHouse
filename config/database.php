@@ -34,7 +34,6 @@ return [
     */
 
     'connections' => [
-
         'main' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
@@ -58,6 +57,7 @@ return [
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS_STORAGE', true),
         ],
+
         'trends' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL_TRENDS'),
@@ -65,12 +65,13 @@ return [
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS_TRENDS', true),
         ],
+
         'server_info' => [
             'driver' => 'sqlite',
-            'url' => env('DATABASE_URL_TRENDS'),
+            'url' => env('DATABASE_URL_SERVER_INFO'),
             'database' =>  database_path(env('DB_DATABASE_SERVER_INFO')),
             'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS_TRENDS', true),
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS_SERVER_INFO', true),
         ],
 
         'mysql' => [
@@ -120,7 +121,6 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
-
     ],
 
     /*
