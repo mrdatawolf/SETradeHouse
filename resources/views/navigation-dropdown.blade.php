@@ -389,7 +389,7 @@
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('newsTLDR') }}" :active="request()->routeIs('newsTLDR')">
+            <x-jet-responsive-nav-link href="{{ route('newsTldr') }}" :active="request()->routeIs('newsTLDR')">
                 <span class="material-icons">article</span>{{ __('News - TL-DR') }}
             </x-jet-responsive-nav-link>
         </div>
