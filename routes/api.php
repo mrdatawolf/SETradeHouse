@@ -4,9 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Api\StoresController;
+use Api\StocklevelsController;
 use Api\TrendsController;
 use Api\DataStatusController;
-
+use Api\NewsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,6 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
 
-Route::apiResource('stocklevels', 'Api\StocklevelsController')->middleware('auth:sanctum');
 //store specific routes
 Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
     Route::prefix('/stores')->group(function () {
@@ -57,8 +57,10 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
         Route::middleware('auth:sanctum')->get('/sync', 'Api\DataStatusController@sync');
     });
 });
+Route::apiResources(['news' => NewsController::class]);
 Route::middleware(['auth:sanctum', 'middleware' => 'throttle:300'])->group(function () {
     Route::apiResources([
+        'stocklevels' => StocklevelsController::class,
         'stores' => StoresController::class,
         'trends' => TrendsController::class,
         'status' => DataStatusController::class,
