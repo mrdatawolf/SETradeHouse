@@ -8,6 +8,8 @@ use Api\StocklevelsController;
 use Api\TrendsController;
 use Api\DataStatusController;
 use Api\NewsController;
+use Api\AunController;
+use Api\TldrController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +59,8 @@ Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {
         Route::middleware('auth:sanctum')->get('/sync', 'Api\DataStatusController@sync');
     });
 });
+Route::apiResources(['news/aun' => AunController::class]);
+Route::apiResources(['news/tldr' => TldrController::class]);
 Route::apiResources(['news' => NewsController::class]);
 Route::middleware(['auth:sanctum', 'middleware' => 'throttle:300'])->group(function () {
     Route::apiResources([
