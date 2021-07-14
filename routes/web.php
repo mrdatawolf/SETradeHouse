@@ -25,8 +25,8 @@ Route::get('/', 'HomeController@index')->name('root');
 
 //routes to show server data for users who are not logged in
 Route::get('/nebulon', 'NotLoggedInController@index')->name('nebulon');
-
 Route::get('/thrust_calculator', 'Calculators@thrust')->name('thrustCalculator');
+Route::get('/news/aun', 'NewsStories@aun')->name('newsAun');
 
 //normally authenticated users.
 Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {

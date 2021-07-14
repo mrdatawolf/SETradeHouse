@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="core.sqlite" uuid="32a75604-fa4e-420a-b1ec-71ab56d40991">
+    <data-source source="LOCAL" name="core.sqlite3" uuid="32a75604-fa4e-420a-b1ec-71ab56d40991">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/database/db/core.sqlite</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/database/db/core.sqlite3</jdbc-url>
     </data-source>
     <data-source source="LOCAL" name="@hobo" uuid="1508b455-e822-40f9-9de1-f43741598d94">
       <driver-ref>mysql.8</driver-ref>

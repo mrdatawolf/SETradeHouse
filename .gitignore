@@ -13,3 +13,5 @@ npm-debug.log
 yarn-error.log
 
 *.sqlite3
+composer.lock
+.idea

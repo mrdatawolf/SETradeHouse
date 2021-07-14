@@ -123,6 +123,19 @@
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
+                    <!-- News -->
+                    <x-jet-dropdown align="left" width="48">
+                        <x-slot name="trigger">
+                            <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                                <span class="material-icons">auto_stories</span>{{ __('News') }}
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <x-jet-dropdown-link href="{{ route('newsAun') }}">
+                                <span class="material-icons">article</span> AUN
+                            </x-jet-dropdown-link>
+                        </x-slot>
+                    </x-jet-dropdown>
                     <!-- Testing -->
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
@@ -365,6 +378,11 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('trends') }}" :active="request()->routeIs('trends')">
                 <span class="material-icons">analytics</span>{{ __('Trends') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('newsAun') }}" :active="request()->routeIs('newsAun')">
+                <span class="material-icons">article</span>{{ __('News - AUN') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
