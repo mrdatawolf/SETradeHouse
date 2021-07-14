@@ -134,6 +134,9 @@
                             <x-jet-dropdown-link href="{{ route('newsAun') }}">
                                 <span class="material-icons">article</span> AUN
                             </x-jet-dropdown-link>
+                            <x-jet-dropdown-link href="{{ route('newsTldr') }}">
+                                <span class="material-icons">article</span> TL-DR
+                            </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
                     <!-- Testing -->
@@ -383,6 +386,11 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('newsAun') }}" :active="request()->routeIs('newsAun')">
                 <span class="material-icons">article</span>{{ __('News - AUN') }}
+            </x-jet-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-jet-responsive-nav-link href="{{ route('newsTLDR') }}" :active="request()->routeIs('newsTLDR')">
+                <span class="material-icons">article</span>{{ __('News - TL-DR') }}
             </x-jet-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
