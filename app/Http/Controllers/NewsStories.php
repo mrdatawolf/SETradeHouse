@@ -7,4 +7,10 @@ class NewsStories extends Controller
 
         return view('news.aun',compact('layout'));
     }
+
+    public function tldr() {
+        $layout =(! empty(\Auth::user())) ? 'layouts.app' : 'layouts.guest';
+
+        return view('news.tldr',compact('layout'));
+    }
 }

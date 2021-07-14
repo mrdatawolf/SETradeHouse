@@ -27,6 +27,7 @@ Route::get('/', 'HomeController@index')->name('root');
 Route::get('/nebulon', 'NotLoggedInController@index')->name('nebulon');
 Route::get('/thrust_calculator', 'Calculators@thrust')->name('thrustCalculator');
 Route::get('/news/aun', 'NewsStories@aun')->name('newsAun');
+Route::get('/news/tldr', 'NewsStories@tldr')->name('newsTldr');
 
 //normally authenticated users.
 Route::group(['middleware' => ['auth:sanctum', 'session.data']], function () {

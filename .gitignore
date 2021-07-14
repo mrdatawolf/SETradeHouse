@@ -14,5 +14,5 @@ yarn-error.log
 
 *.sqlite3
 composer.lock
-.idea
-/.idea/*
+/src/.idea
+/src/.idea/*
