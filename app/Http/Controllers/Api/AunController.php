@@ -19,11 +19,15 @@ class AunController extends Controller
     /**
      * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return mixed
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request)
     {
-        return response()->json('Denied', 403);
+        if(auth()->id() === 15) {
+            return NewsArticles::create($request->all());
+        } else {
+            return response()->json('Denied', 403);
+        }
     }
 
 
@@ -46,10 +50,14 @@ class AunController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $news = NewsArticles::where('news_corp', 'AUN')->find($id);
-        $news->update($request->all());
+        if(auth()->id() === 15) {
+            $news = NewsArticles::where('news_corp', 'AUN')->find($id);
+            $news->update($request->all());
 
-        return $news;
+            return $news;
+        } else {
+            return response()->json('Denied', 403);
+        }
     }
 
 
@@ -60,8 +68,12 @@ class AunController extends Controller
      */
     public function destroy($id)
     {
+        if(auth()->id() === 15) {
         $news = NewsArticles::where('news_corp', 'AUN')->find($id);
 
         return $news->delete();
+        } else {
+            return response()->json('Denied', 403);
+        }
     }
 }
