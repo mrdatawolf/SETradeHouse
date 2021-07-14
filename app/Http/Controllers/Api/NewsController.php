@@ -1,7 +1,6 @@
 <?php namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\News;
 use App\Models\NewsArticles;
 use Illuminate\Http\Request;
 
@@ -16,14 +15,15 @@ class NewsController extends Controller
        return NewsArticles::all();
     }
 
+
     /**
+     * @param \Illuminate\Http\Request $request
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request): \Illuminate\Http\Response
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        return NewsArticles::create($request->all());
+        return response()->json('Denied', 403);
     }
 
 
@@ -46,10 +46,7 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $news = NewsArticles::find($id);
-        $news->update($request->all());
-
-        return $news;
+        return response()->json('Denied', 403);
     }
 
 
@@ -60,8 +57,6 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        $news = NewsArticles::find($id);
-
-        return $news->delete();
+        return response()->json('Denied', 403);
     }
 }
