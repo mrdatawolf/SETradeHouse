@@ -58,12 +58,13 @@ class GatherStoreData extends Command
         } else {
             die('No matching server found!');
         }
-        $worlds = Worlds::where('title', 'Nebulon');
+        $worlds = Worlds::where('title', 'General Space');
         if( $worlds->count() > 0) {
             $this->world = $worlds->first();
         } else {
             die('No matching world found!');
         }
+
         if(!empty($this->server) && !empty($this->world)) {
             $this->output->note(' Updating Stores for Server: ' . $this->server->title . ', World : ' . $this->world->title);
             $gatherGeneralStorageData = new GeneralStorageData($this->option('initial'), $this->option('extended'), $this->server->id,

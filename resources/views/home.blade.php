@@ -10,9 +10,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Space Engineers Trading House</div>
+                <div class="card-header">The Space Engineers Trading House</div>
                 <div class="card-body">
-                    Stores @livewire('active-world') in @livewire('active-server')
+                    @livewire('active-world') stores in @livewire('active-server')
                 </div>
             </div>
         </div>

@@ -14,9 +14,9 @@ class AddRarityToWorlds extends Migration
     public function up()
     {
         if (Schema::hasTable('worlds')) {
-            if ( ! Schema::hasColumn('worlds', 'rarity')) {
+            if ( ! Schema::hasColumn('worlds', 'rarity_id')) {
                 Schema::table('worlds', function (Blueprint $table) {
-                    $table->integer('rarity')->default(1);
+                    $table->integer('rarity_id')->default(1);
                 });
             }
         }
@@ -30,9 +30,9 @@ class AddRarityToWorlds extends Migration
     public function down()
     {
         if (Schema::hasTable('worlds')) {
-            if (Schema::hasColumn('worlds','rarity')) {
+            if (Schema::hasColumn('worlds','rarity_id')) {
                 Schema::table('worlds', function (Blueprint $table) {
-                    $table->dropColumn('rarity');
+                    $table->dropColumn('rarity_id');
                 });
             }
         }
