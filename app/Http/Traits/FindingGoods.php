@@ -94,7 +94,25 @@ trait FindingGoods {
             dd($seNameArray);
         }
 
-        return GoodTypes::where('title',$goodType)->first();
+        return GoodTypes::where('api_name',$goodType)->first();
+    }
+
+
+    public function getGoodTypeId($goodTypeName) {
+        switch($goodTypeName) {
+            case 'Ingot':
+                return '2';
+            case 'Ore':
+                return '1';
+            case 'Component':
+                return '3';
+            case 'Ammo':
+                return '5';
+            case 'Bottle':
+                return '6';
+            default:
+                return '4';
+        }
     }
 
 
@@ -270,25 +288,25 @@ trait FindingGoods {
     private function getGoodFromGoodTypeAndGoodTitle($goodType, $goodTitle) {
         switch($goodType->id) {
             case '2' :
-                $model = Ingots::where('title',$goodTitle)->first();
+                $model = Ingots::where('title',strtolower($goodTitle))->first();
                 break;
             case '1' :
-                $model = Ores::where('title',$goodTitle)->first();
+                $model = Ores::where('title',strtolower($goodTitle))->first();
                 break;
             case '3' :
-                $model = Components::where('title',$goodTitle)->first();
+                $model = Components::where('api_name',$goodTitle)->first();
                 break;
             case '4' :
-                $model = Tools::where('title',$goodTitle)->first();
+                $model = Tools::where('api_name',$goodTitle)->first();
                 break;
             case '5' :
-                $model = Ammo::where('title',$goodTitle)->first();
+                $model = Ammo::where('api_name',$goodTitle)->first();
                 break;
             case '6' :
-                $model = Bottles::where('title',$goodTitle)->first();
+                $model = Bottles::where('api_name',$goodTitle)->first();
                 break;
             default:
-                $model = Tools::where('title',$goodTitle)->first();
+                $model = Tools::where('api_name',$goodTitle)->first();
 
         }
 
@@ -304,5 +322,4 @@ trait FindingGoods {
     private function getTransactionTypeFromId($typeId) {
         return TransactionTypes::find($typeId);
     }
-
 }

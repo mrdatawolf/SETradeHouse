@@ -47,7 +47,7 @@ class GatherTransactionData extends Command
         if( $servers->count() > 0) {
             $this->server = $servers->first();
         }
-        $worlds = Worlds::where('title', 'Nebulon');
+        $worlds = Worlds::where('title', 'Carmenta');
         if( $worlds->count() > 0) {
             $this->world = $worlds->first();
         }

@@ -14,28 +14,6 @@
                     <!--<x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>-->
-                    <!-- System Maps -->
-                    <x-jet-dropdown align="left" width="48">
-                        <x-slot name="trigger">
-                            <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                <span class="material-icons">near_me</span>{{ __('System Maps') }}
-                            </button>
-                        </x-slot>
-                        <x-slot name="content">
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                <span class="material-icons">360</span>{{ __('3D') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('maps.nebulonSystem3D') }}">
-                                &nbsp;&nbsp; Nebulon
-                            </x-jet-dropdown-link>
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                <span class="material-icons">map</span>{{ __('2D') }}
-                            </div>
-                            <x-jet-dropdown-link href="{{ route('maps.nebulonSystem') }}">
-                                &nbsp; Nebulon
-                            </x-jet-dropdown-link>
-                        </x-slot>
-                    </x-jet-dropdown>
                     <!-- Stores -->
                     <x-jet-dropdown align="left" width="48">
                         <x-slot name="trigger">
@@ -149,6 +127,18 @@
                         <x-slot name="content">
                             <x-jet-dropdown-link href="{{ route('stocklevels') }}">
                                 <span class="material-icons">assessment</span> Stock Levels
+                            </x-jet-dropdown-link>
+                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                <span class="material-icons">360</span>{{ __('3D') }}
+                            </div>
+                            <x-jet-dropdown-link href="{{ route('maps.nebulonSystem3D') }}">
+                                &nbsp;&nbsp; Nebulon
+                            </x-jet-dropdown-link>
+                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                <span class="material-icons">map</span>{{ __('2D') }}
+                            </div>
+                            <x-jet-dropdown-link href="{{ route('maps.nebulonSystem') }}">
+                                &nbsp; Nebulon
                             </x-jet-dropdown-link>
                         </x-slot>
                     </x-jet-dropdown>
