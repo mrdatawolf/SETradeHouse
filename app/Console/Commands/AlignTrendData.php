@@ -96,11 +96,16 @@ class AlignTrendData extends Command
                         $trends     = new TrendsController();
                         $trendsData = $trends->getRawTrends($transactionTypeId, $goodTypeId, $id, false);
                         foreach ($trendsData as $row) {
+                            $carbonDate = Carbon::createFromDate($row->dated_at);
                             Trends::updateOrCreate([
                                 'transaction_type_id' => $transactionTypeId,
                                 'type_id'        => $goodTypeId,
                                 'good_id'             => $id,
-                                'dated_at'            => Carbon::createFromDate($row->dated_at),
+                                'dated_at'            => $carbonDate,
+                                'month'               => $row->month,
+                                'day'                 => $row->day,
+                                'hour'                => $row->hour,
+                                'latest_minute'       => $carbonDate->minute
                             ], [
                                 'sum'     => $row->sum,
                                 'amount'  => $row->amount,

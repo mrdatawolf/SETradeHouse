@@ -41,7 +41,11 @@ class GeneralStoreData
     {
         switch($location) {
             case 'Carmenta':
-                $uri = 'http://104.220.208.195:8050/carmenta';
+            case 'Pertam':
+            case 'Qun':
+            case 'Androktasia':
+            case 'Nemesis':
+                $uri = 'http://104.220.208.195:8050/'.strtolower($location);
                 break;
             default :
                 $uri = 'http://104.220.208.195:8050/general';
