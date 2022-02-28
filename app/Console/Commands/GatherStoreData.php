@@ -73,6 +73,4 @@ class GatherStoreData extends Command
             $this->output->note($result);
         }
     }
-
-
 }
