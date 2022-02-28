@@ -33,7 +33,9 @@
 <div class="tab-content">
 @foreach(['Ore', 'Ingot','Component','Tool'] as $goodType)
     <div class="tab-pane fade {{ $specialClasses }}" id="{{ $gridData->jsid }}_{{ $goodType }}">
-        @if(! empty($gridData->goods->$goodType))
+        @if(empty($gridData->goods->$goodType))
+            <H1>No data found.</H1>
+        @else
             <table class="table-striped table-responsive-xl transaction-table" style="width:100%">
                 <thead>
                 <tr class="transaction-table-groups">

@@ -1,6 +1,7 @@
 <?php namespace App\Http\Livewire\Calculator;
 
 use App\Models\Planets;
+use App\Models\Worlds;
 use Livewire\Component;
 use \Session;
 
@@ -15,19 +16,24 @@ class WeightOptions extends Component
     public $cargoMass = 0;
     public $dryMass = 0;
 
-    protected $listeners = ['planetChanged'];
+    protected $listeners = ['planetChanged','worldChanged'];
 
     public function mount() {
         $this->gatherServerId();
         $this->gatherWorldId();
-        $this->planets = Planets::where('world_id', $this->worldId)->where('server_id', $this->serverId)->orderBy('id')->get();
-        $this->planetId = $this->planets->first()->id;
-        $this->planetIdChanged();
+        $this->gatherPlanets();
     }
 
     public function render()
     {
         return view('livewire.calculator.weight-options');
+    }
+
+
+    public function gatherPlanets() {
+        $this->planets = Planets::where('world_id', $this->worldId)->where('server_id', $this->serverId)->orderBy('id')->get();
+        $this->planetId = $this->planets->first()->id;
+        $this->planetIdChanged();
     }
 
     public function planetIdChanged() {
@@ -64,5 +70,13 @@ class WeightOptions extends Component
         }
 
         $this->worldId = $worldId;
+    }
+
+    public function worldChanged($worldId) {
+        $this->worldId = $worldId;
+        $world = Worlds::find((int)$worldId);
+        if($world->type_id == 1) {
+            $this->gatherPlanets();
+        }
     }
 }
