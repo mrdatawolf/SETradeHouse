@@ -26,8 +26,8 @@ class Kernel extends ConsoleKernel
     {
        // $schedule->command('gather:stores')->everyThirtyMinutes();
         //$schedule->command('gather:transactions')->everyFifteenMinutes();
-        $schedule->command('gather:offersandorders', ['serverId' => 1, 'worldId' => 6])->everyThirtyMinutes();
-        $schedule->command('align:trends')->everyFifteenMinutes();
+        //$schedule->command('gather:offersandorders', ['serverId' => 1, 'worldIds' => 1,6])->everyThirtyMinutes();
+        //$schedule->command('align:trends')->everyFifteenMinutes();
     }
 
     /**
