@@ -81,7 +81,12 @@ class GeneralStoreData
             $goodType = $this->getgoodType($apiData);
             $goodValue = ($goodType->id <= 2) ? strtolower($apiData[2]) : $apiData[2];
             $good = $this->getGoodFromGoodTypeAndGoodTitle($goodType, $goodValue);
-            if ( ! empty($good)) {
+            //hack to deal with unowned grids.
+            if(empty($apiData[5])) {
+                $apiData[5] = 'hobobot';
+            }
+            //hack to hide rosa for now.
+            if ( ! empty($good) && strtolower($apiData[5]) !== 'rosa') {
                 $transaction = (object)[
                     'gridName' => $apiData[6],
                     'Owner' => $apiData[5],

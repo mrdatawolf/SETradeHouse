@@ -22,7 +22,7 @@ class GatherTransactionData extends Command
      *
      * @var string
      */
-    protected $description = 'Gather transaction data from the nebulon db';
+    protected $description = 'Gather transaction data from the nebulon db. This should be rebuilt if used again. Right now we are pulling against an api';
 
     protected $server;
     protected $world;
@@ -56,7 +56,7 @@ class GatherTransactionData extends Command
             $gatherGeneralStoreData = new GeneralStoreData($this->option('initial'), $this->option('extended'), $this->server->id,
                 $this->world->id);
             $this->output->text('now updateTransactionValues');
-           $result = $gatherGeneralStoreData->updateTransactionValues();
+           $result = $gatherGeneralStoreData->updateTransactionValues($this->world->id);
             $this->output->note($result);
         }
     }
