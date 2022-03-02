@@ -1,5 +1,6 @@
 <div>
     <div>
+        @livewire('stores.worlds.select-world',[ 'serverId'  => $serverId, 'worldId' =>  $worldId ])
         <label class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="select-planet">
             Planet:
         </label>

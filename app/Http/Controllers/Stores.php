@@ -6,6 +6,7 @@ use App\Models\GoodTypes;
 use App\Http\Traits\FindingGoods;
 use App\Models\TradeZones;
 use App\Models\Transactions;
+use App\Models\Worlds;
 use \Illuminate\Support\Collection;
 
 Collection::macro('sortByDate', function ($column = 'created_at', $order = SORT_DESC) {
@@ -43,11 +44,12 @@ class Stores extends Controller
     public function worldIndex()
     {
         $worldId   = $this->getWorldId();
+        $serverId  = $this->getServerId();
         $title     = "Stores";
         $storeType = "world";
         $stores    = $this->getTransactionsUsingTitles($worldId);
 
-        return view('stores.world', compact('stores', 'storeType', 'title'));
+        return view('stores.world', compact('stores', 'storeType', 'title','serverId', 'worldId'));
     }
 
 
@@ -278,6 +280,41 @@ class Stores extends Controller
 
 
     /**
+     * @param array  $array
+     * @param string $goodTypeTitle
+     * @param string $goodTitle
+     * @param string $transactionType
+     * @param        $goodData
+     *
+     * @return array
+     */
+    public function buildTrendDataArray(
+        array $array,
+        string $goodTypeTitle,
+        string $goodTitle,
+        string $transactionType,
+        $goodData
+    ): array {
+        if (empty($array[$goodTypeTitle][$goodTitle][$transactionType])) {
+            $array[$goodTypeTitle][$goodTitle][$transactionType] = [
+                'sum'     => 0,
+                'amount'  => 0,
+                'average' => 0,
+                'count'   => 0
+            ];
+        }
+        $array[$goodTypeTitle][$goodTitle][$transactionType]['sum']     += $goodData->sum;
+        $array[$goodTypeTitle][$goodTitle][$transactionType]['amount']  += $goodData->amount;
+        $array[$goodTypeTitle][$goodTitle][$transactionType]['average'] = ($array[$goodTypeTitle][$goodTitle][$transactionType]['amount'] == 0)
+            ? 0
+            : $array[$goodTypeTitle][$goodTitle][$transactionType]['sum'] / $array[$goodTypeTitle][$goodTitle][$transactionType]['amount'];
+        $array[$goodTypeTitle][$goodTitle][$transactionType]['count']++;
+
+        return $array;
+    }
+
+
+    /**
      * @param $transaction
      */
     private function updateData($transaction, $serverId)
@@ -425,20 +462,8 @@ class Stores extends Controller
             $goodType        = GoodTypes::find($goodData->good_type_id);
             $goodTypeTitle   = strtolower($goodType->title);
             $transactionType = ($goodData->transaction_type_id === 1) ? 'orders' : 'offers';
-            if (empty($array[$goodTypeTitle][$goodTitle][$transactionType])) {
-                $array[$goodTypeTitle][$goodTitle][$transactionType] = [
-                    'sum'     => 0,
-                    'amount'  => 0,
-                    'average' => 0,
-                    'count'   => 0
-                ];
-            }
-            $array[$goodTypeTitle][$goodTitle][$transactionType]['sum']     += $goodData->sum;
-            $array[$goodTypeTitle][$goodTitle][$transactionType]['amount']  += $goodData->amount;
-            $array[$goodTypeTitle][$goodTitle][$transactionType]['average'] = ($array[$goodTypeTitle][$goodTitle][$transactionType]['amount'] == 0)
-                ? 0
-                : $array[$goodTypeTitle][$goodTitle][$transactionType]['sum'] / $array[$goodTypeTitle][$goodTitle][$transactionType]['amount'];
-            $array[$goodTypeTitle][$goodTitle][$transactionType]['count']++;
+            $array           = $this->buildTrendDataArray($array, $goodTypeTitle, $goodTitle, $transactionType,
+                $goodData);
         }
 
         foreach ($array as $goodTypeTitle => $goodTypeData) {
@@ -477,37 +502,26 @@ class Stores extends Controller
         $goodTypeTitle   = strtolower($goodType->title);
         $good            = (is_int($goodId)) ? $this->getGoodFromGoodTypeAndGoodId($goodType, $goodId)
             : $this->getGoodFromGoodTypeAndGoodTitle($goodType, $goodId);
-        $goodTitle       = strtolower($good->title);
-        $trendData       = $trends->gatherTrends($transactionTypeId, $hoursAgo, $goodType->id, $good->id);
-        $transactionType = ($transactionTypeId === 1) ? 'orders' : 'offers';
-        $array           = [];
-        foreach ($trendData as $goodData) {
-            if (empty($array[$goodTypeTitle][$goodTitle][$transactionType])) {
-                $array[$goodTypeTitle][$goodTitle][$transactionType] = [
-                    'sum'     => 0,
-                    'amount'  => 0,
-                    'average' => 0,
-                    'count'   => 0
-                ];
+        if(! empty($good)) {
+            $goodTitle       = strtolower($good->title);
+            $trendData       = $trends->gatherTrends($transactionTypeId, $hoursAgo, $goodType->id, $good->id);
+            $transactionType = ($transactionTypeId === 1) ? 'orders' : 'offers';
+            $array           = [];
+            foreach ($trendData as $goodData) {
+                $array = $this->buildTrendDataArray($array, $goodTypeTitle, $goodTitle, $transactionType, $goodData);
             }
-            $array[$goodTypeTitle][$goodTitle][$transactionType]['sum']     += $goodData->sum;
-            $array[$goodTypeTitle][$goodTitle][$transactionType]['amount']  += $goodData->amount;
-            $array[$goodTypeTitle][$goodTitle][$transactionType]['average'] = ($array[$goodTypeTitle][$goodTitle][$transactionType]['amount'] == 0)
-                ? 0
-                : $array[$goodTypeTitle][$goodTitle][$transactionType]['sum'] / $array[$goodTypeTitle][$goodTitle][$transactionType]['amount'];
-            $array[$goodTypeTitle][$goodTitle][$transactionType]['count']++;
-        }
 
-        foreach ($array as $goodTypeTitle => $goodTypeData) {
-            foreach ($goodTypeData as $goodTitle => $goodData) {
-                foreach ($goodData as $transactionTitle => $transactionData) {
-                    $globalData[] = [
-                        'transactionType' => $transactionTitle,
-                        'goodType'        => $goodTypeTitle,
-                        'title'           => $goodTitle,
-                        'average'         => $transactionData['average'],
-                        'amount'          => $transactionData['amount']
-                    ];
+            foreach ($array as $goodTypeTitle => $goodTypeData) {
+                foreach ($goodTypeData as $goodTitle => $goodData) {
+                    foreach ($goodData as $transactionTitle => $transactionData) {
+                        $globalData[] = [
+                            'transactionType' => $transactionTitle,
+                            'goodType'        => $goodTypeTitle,
+                            'title'           => $goodTitle,
+                            'average'         => $transactionData['average'],
+                            'amount'          => $transactionData['amount']
+                        ];
+                    }
                 }
             }
         }
@@ -659,9 +673,9 @@ class Stores extends Controller
             $remotey     = $remoteArray[3];
             $remotez     = $remoteArray[4];
 
-            $distance = (($remotex - $localx) ^ 2 + (($remotey - $localy) ^ 2) + ($remotez - $localz) ^ 2) ^ (1 / 2);
+            $distance = (($remotex - $localx) ^ 2 + ($remotey - $localy) ^ 2 + ($remotez - $localz) ^ 2) ^ (1 / 2);
 
-            return (abs($distance) > $minimumDistance) ? abs($distance) : 0;
+            return ($distance > $minimumDistance) ? $distance : 0;
         } else {
             return 0;
         }

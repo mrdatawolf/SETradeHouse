@@ -73,6 +73,14 @@ class Thrust extends Component
         $this->gatherServerId();
         $this->gatherWorldId();
         $this->planet       = Planets::where('world_id', $this->worldId)->where('server_id', $this->serverId)->orderBy('id')->first();
+        if(empty($this->planet->id)){
+            Session::flash('error','Invalid world (no planets found!).  Reset to a default world!');
+            Session::put('worldId', 1);
+            $this->gatherWorldId();
+            $this->emit('worldChanged',1);
+            $this->planet       = Planets::where('world_id', $this->worldId)->where('server_id', $this->serverId)->orderBy('id')->first();
+
+        }
         $this->planetId     = $this->planet->id;
         $this->planetName   = $this->planet->title;
         $server             = Servers::find($this->serverId);
